@@ -39,18 +39,18 @@ public class ControlPlaneController {
 
     // TODO: most of these api will be replaced by data management api
 
-    @Path("/assets")
-    @POST
-    public String createAsset(Map<String, Map<String, String>> properties) {
-        var assetProperties = properties.get("asset");
-        var asset = Asset.Builder.newInstance().properties(assetProperties).build();
-
-        var dataAddressProperties = properties.get("dataAddress");
-        var dataAddress = DataAddress.Builder.newInstance().properties(dataAddressProperties).build();
-        monitor.debug("Create asset: " + asset.getId());
-        assetLoader.accept(asset, dataAddress);
-        return asset.getId();
-    }
+//    @Path("/assets")
+//    @POST
+//    public String createAsset(Map<String, Map<String, String>> properties) {
+//        var assetProperties = properties.get("asset");
+//        var asset = Asset.Builder.newInstance().properties(assetProperties).build();
+//
+//        var dataAddressProperties = properties.get("dataAddress");
+//        var dataAddress = DataAddress.Builder.newInstance().properties(dataAddressProperties).build();
+//        monitor.debug("Create asset: " + asset.getId());
+//        assetLoader.accept(asset, dataAddress);
+//        return asset.getId();
+//    }
 
     @Path("/assets/{name}")
     @GET

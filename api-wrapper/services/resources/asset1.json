@@ -1,0 +1,16 @@
+{
+  "asset": {
+    "properties": {
+      "asset:prop:id": "asset-1",
+      "asset:prop:name": "asset name",
+      "asset:prop:contenttype": "text/plain",
+      "asset:prop:policy-id": "use-eu"
+    }
+  },
+  "dataAddress": {
+    "properties": {
+      "endpoint": "http://provider-backend-service:9191/api/service/asset-1/submodel",
+      "type": "HttpData"
+    }
+  }
+}

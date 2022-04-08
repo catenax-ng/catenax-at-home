@@ -13,12 +13,15 @@ dependencies {
     api("$edcGroup:core:$edcVersion")
     api("$edcGroup:ids:$edcVersion")
     api("$edcGroup:http:$edcVersion")
+
+    api("$edcGroup:data-management-api:$edcVersion")
     api("$edcGroup:iam-mock:$edcVersion")
-    api("$edcGroup:control-api:$edcVersion")
+
     api("$edcGroup:assetindex-memory:$edcVersion")
     api("$edcGroup:transfer-process-store-memory:$edcVersion")
     api("$edcGroup:contractnegotiation-store-memory:$edcVersion")
     api("$edcGroup:contractdefinition-store-memory:$edcVersion")
+    api("$edcGroup:policy-store-memory:$edcVersion")
 
     api("$edcGroup:data-plane-transfer-spi:$edcVersion")
     api("$edcGroup:data-plane-transfer-core:$edcVersion")

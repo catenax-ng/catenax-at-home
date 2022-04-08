@@ -53,6 +53,7 @@ services:
     ports:
       - "8181:9191" # default
       - "8184:9192" # validation
+      - "8187:9193" # data
       - "5008:8090"
     environment:
       EDC_VAULT: /config/vault.properties

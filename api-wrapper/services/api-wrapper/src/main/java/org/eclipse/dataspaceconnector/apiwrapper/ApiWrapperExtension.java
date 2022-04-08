@@ -1,11 +1,7 @@
 package org.eclipse.dataspaceconnector.apiwrapper;
 
-import jakarta.ws.rs.NotAllowedException;
-import jakarta.ws.rs.NotFoundException;
 import okhttp3.OkHttpClient;
 import org.eclipse.dataspaceconnector.api.auth.AuthenticationRequestFilter;
-import org.eclipse.dataspaceconnector.api.exception.*;
-import org.eclipse.dataspaceconnector.api.exception.mappers.EdcApiExceptionMapper;
 import org.eclipse.dataspaceconnector.apiwrapper.config.ApiWrapperConfig;
 import org.eclipse.dataspaceconnector.apiwrapper.config.ApiWrapperConfigKeys;
 import org.eclipse.dataspaceconnector.apiwrapper.connector.sdk.service.ContractNegotiationService;
@@ -21,25 +17,10 @@ import org.eclipse.dataspaceconnector.spi.system.ServiceExtension;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtensionContext;
 import org.eclipse.dataspaceconnector.spi.system.configuration.Config;
 
-import java.util.Map;
-
 public class ApiWrapperExtension implements ServiceExtension {
 
     private static final String DEFAULT_CONTEXT_ALIAS = "default";
     private static final String CALLBACK_CONTEXT_ALIAS = "callback";
-
-    private final Map<Class<? extends Throwable>, Integer> exceptionMapper = Map.of(
-            IllegalArgumentException.class, 400,
-            NullPointerException.class, 400,
-            AuthenticationFailedException.class, 401,
-            NotAuthorizedException.class, 403,
-            ObjectNotFoundException.class, 404,
-            NotFoundException.class, 404,
-            NotAllowedException.class, 405,
-            ObjectExistsException.class, 409,
-            ObjectNotModifiableException.class, 423,
-            UnsupportedOperationException.class, 501
-    );
 
     @Inject
     private WebService webService;
@@ -57,10 +38,6 @@ public class ApiWrapperExtension implements ServiceExtension {
         var config = createApiWrapperConfig(context.getConfig());
         var monitor = context.getMonitor();
         var typeManager = context.getTypeManager();
-
-        // Map exceptions to proper status codes
-        webService.registerResource(new EdcApiExceptionMapper(exceptionMapper));
-        webService.registerResource(CALLBACK_CONTEXT_ALIAS, new EdcApiExceptionMapper(exceptionMapper));
 
         // Register basic authentication filter
         if (!config.getBasicAuthUsers().isEmpty()) {
