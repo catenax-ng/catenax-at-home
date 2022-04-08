@@ -15,8 +15,8 @@ services:
       EDC_KEYSTORE_PASSWORD: 123456
       EDC_FS_CONFIG: /config/configuration.properties
     volumes:
-      - config/consumer-control-plane.config:/config
-      - certs/cert.pfx:/cert.pfx
+      - ./config/consumer-control-plane.config:/config
+      - ./certs/cert.pfx:/cert.pfx
 
   consumer-data-plane:
     build:
@@ -29,7 +29,7 @@ services:
     environment:
       EDC_FS_CONFIG: /config/configuration.properties
     volumes:
-     - config/consumer-data-plane.config:/config
+     - ./config/consumer-data-plane.config:/config
 
   api-wrapper:
     build:
@@ -43,7 +43,7 @@ services:
     environment:
       EDC_FS_CONFIG: /config/configuration.properties
     volumes:
-      - config/api-wrapper.config:/config
+      - ./config/api-wrapper.config:/config
 
   provider-control-plane:
     build:
@@ -60,8 +60,8 @@ services:
       EDC_KEYSTORE_PASSWORD: 123456
       EDC_FS_CONFIG: /config/configuration.properties
     volumes:
-      - config/provider-control-plane.config:/config
-      - certs/cert.pfx:/cert.pfx
+      - ./config/provider-control-plane.config:/config
+      - ./certs/cert.pfx:/cert.pfx
 
   provider-data-plane:
     build:
@@ -75,7 +75,7 @@ services:
     environment:
       EDC_FS_CONFIG: /config/configuration.properties
     volumes:
-      - config/provider-data-plane.config:/config
+      - ./config/provider-data-plane.config:/config
 
   provider-backend-service:
     build:
@@ -88,7 +88,7 @@ services:
     environment:
       EDC_FS_CONFIG: /config/configuration.properties
     volumes:
-      - config/provider-backend-service.config:/config
+      - ./config/provider-backend-service.config:/config
 
   consumer-aas-proxy-service:
     build:
