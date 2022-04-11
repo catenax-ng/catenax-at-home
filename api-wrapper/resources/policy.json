@@ -1,0 +1,15 @@
+{
+  "uid": "general-policy-for-asset-2",
+  "permissions": [
+    {
+      "target": "asset-1",
+      "action": {
+        "type": "USE"
+      },
+      "edctype": "dataspaceconnector:permission"
+    }
+  ],
+  "@type": {
+    "@policytype": "set"
+  }
+}
