@@ -19,20 +19,20 @@ public class DataController {
     Map<String, String> asset = new HashMap<>();
 
     @GetMapping("/{id}")
-    public String get(@PathVariable("id") String contractOfferId) {
-        if (!asset.containsKey(contractOfferId)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The contract offer id was not found in database");
+    public String get(@PathVariable("id") String assetId) {
+        if (!asset.containsKey(assetId)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The asset id was not found in database");
         }
 
-        System.out.println("Returning data for contract offer " + contractOfferId);
+        System.out.println("Returning data for contract offer " + assetId);
 
-        return asset.get(contractOfferId);
+        return asset.get(assetId);
     }
 
     @PostMapping("/{id}")
-    public void store(@PathVariable("id") String contractOfferId, @RequestBody String data) {
-        System.out.println("Saving data for contract offer " + contractOfferId);
+    public void store(@PathVariable("id") String assetId, @RequestBody String data) {
+        System.out.println("Saving data for asset " + assetId);
 
-        asset.put(contractOfferId, data);
+        asset.put(assetId, data);
     }
 }
