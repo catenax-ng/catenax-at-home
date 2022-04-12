@@ -1,15 +1,17 @@
 package org.eclipse.dataspaceconnector.apiwrapper.connector.sdk.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.ws.rs.InternalServerErrorException;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
+import org.eclipse.dataspaceconnector.apiwrapper.connector.sdk.model.ContractNegotiationDto;
 import org.eclipse.dataspaceconnector.apiwrapper.connector.sdk.model.NegotiationInitiateRequestDto;
-import org.eclipse.dataspaceconnector.apiwrapper.connector.sdk.model.NegotiationStatusResponse;
 import org.eclipse.dataspaceconnector.apiwrapper.connector.sdk.Utility;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.eclipse.dataspaceconnector.spi.types.TypeManager;
 
+import java.io.IOException;
 import java.util.Map;
 
 import static java.lang.String.format;
@@ -20,8 +22,7 @@ public class ContractNegotiationService {
     private final OkHttpClient httpClient;
     private final ObjectMapper objectMapper;
 
-    private static final String NEGOTIATION_PATH = "/control/negotiation";
-    private static final String NEGOTIATION_STATE_PATH_PATTERN = NEGOTIATION_PATH + "/%s/state";
+    private static final String NEGOTIATION_PATH = "/contractnegotiations";
 
     public ContractNegotiationService(Monitor monitor, TypeManager typeManager, OkHttpClient httpClient) {
         this.monitor = monitor;
@@ -30,8 +31,12 @@ public class ContractNegotiationService {
         this.httpClient = httpClient;
     }
 
-    public String initiateNegotiation(NegotiationInitiateRequestDto contractOfferRequest, String connectorControlPlaneBaseUrl, Map<String, String> headers) {
-        var url = connectorControlPlaneBaseUrl + NEGOTIATION_PATH;
+    public String initiateNegotiation(
+            NegotiationInitiateRequestDto contractOfferRequest,
+            String consumerEdcDataManagementUrl,
+            Map<String, String> headers
+    ) throws IOException {
+        var url = consumerEdcDataManagementUrl + NEGOTIATION_PATH;
         var requestBody = RequestBody.create(
                 typeManager.writeValueAsString(contractOfferRequest),
                 Utility.JSON
@@ -46,8 +51,7 @@ public class ContractNegotiationService {
             var body = response.body();
 
             if (!response.isSuccessful() || body == null) {
-                monitor.warning(format("Control plane responded with error: %s %s", response.code(), body != null ? body.string() : ""));
-                return null;
+                throw new InternalServerErrorException(format("Control plane responded with: %s %s", response.code(), body != null ? body.string() : ""));
             }
 
             var uuid = body.string();
@@ -55,15 +59,13 @@ public class ContractNegotiationService {
 
             return uuid;
         } catch (Exception e) {
-            monitor.severe(format("Error in calling the Control plane at %s", url), e);
+            monitor.severe(format("Error in calling the control plane at %s", url), e);
+            throw e;
         }
-
-        return null;
     }
 
-    public NegotiationStatusResponse getNegotiationState(String negotiationId, String connectorControlPlaneBaseUrl, Map<String, String> headers) {
-        var negotiationStateUrlPattern = connectorControlPlaneBaseUrl + NEGOTIATION_STATE_PATH_PATTERN;
-        var url = format(negotiationStateUrlPattern, negotiationId);
+    public ContractNegotiationDto getNegotiation(String negotiationId, String connectorEdcDataManagementUrl, Map<String, String> headers) throws IOException {
+        var url = format("%s/%s", connectorEdcDataManagementUrl + NEGOTIATION_PATH, negotiationId);
         var request = new Request.Builder()
                 .url(url);
         headers.forEach(request::addHeader);
@@ -72,18 +74,16 @@ public class ContractNegotiationService {
             var body = response.body();
 
             if (!response.isSuccessful() || body == null) {
-                monitor.warning(format("Control plane responded with error: %s %s", response.code(), body != null ? body.string() : ""));
-                return null;
+                throw new InternalServerErrorException(format("Control plane responded with: %s %s", response.code(), body != null ? body.string() : ""));
             }
 
-            var negotiationStatus = objectMapper.readValue(body.string(), NegotiationStatusResponse.class);
-            monitor.info(format("Negotiation %s is in state '%s' (agreementId: %s)", negotiationId, negotiationStatus.getStatus(), negotiationStatus.getContractAgreementId()));
+            var negotiation = objectMapper.readValue(body.string(), ContractNegotiationDto.class);
+            monitor.info(format("Negotiation %s is in state '%s' (agreementId: %s)", negotiationId, negotiation.getState(), negotiation.getContractAgreementId()));
 
-            return negotiationStatus;
+            return negotiation;
         } catch (Exception e) {
             monitor.severe(format("Error in calling the Control plane at %s", url), e);
+            throw e;
         }
-
-        return null;
     }
 }

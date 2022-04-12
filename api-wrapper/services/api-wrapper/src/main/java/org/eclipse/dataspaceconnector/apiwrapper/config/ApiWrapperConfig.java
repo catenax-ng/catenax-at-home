@@ -5,20 +5,31 @@ import java.util.Map;
 
 public class ApiWrapperConfig {
 
-    private final String consumerEDCUrl;
+    private final String consumerEdcDataManagementUrl;
+    private final String consumerEdcControlUrl;
     private final String consumerEdcApiKeyName;
     private final String consumerEdcApiKeyValue;
     private final Map<String, String> basicAuthUsers;
 
-    public ApiWrapperConfig(String consumerEDCUrl, String consumerEdcApiKeyName, String consumerEdcApiKeyValue, Map<String, String> basicAuthUsers) {
-        this.consumerEDCUrl = consumerEDCUrl;
+    public ApiWrapperConfig(
+            String consumerEdcDataManagementUrl,
+            String consumerEdcControlUrl,
+            String consumerEdcApiKeyName,
+            String consumerEdcApiKeyValue,
+            Map<String, String> basicAuthUsers) {
+        this.consumerEdcDataManagementUrl = consumerEdcDataManagementUrl;
+        this.consumerEdcControlUrl = consumerEdcControlUrl;
         this.consumerEdcApiKeyName = consumerEdcApiKeyName;
         this.consumerEdcApiKeyValue = consumerEdcApiKeyValue;
         this.basicAuthUsers = basicAuthUsers;
     }
 
-    public String getConsumerEDCUrl() {
-        return consumerEDCUrl;
+    public String getConsumerEdcDataManagementUrl() {
+        return consumerEdcDataManagementUrl;
+    }
+
+    public String getConsumerEdcControlUrl() {
+        return consumerEdcControlUrl;
     }
 
     public String getConsumerEdcApiKeyName() {
@@ -34,7 +45,8 @@ public class ApiWrapperConfig {
     }
 
     public static final class Builder {
-        private String consumerEdcUrl = null;
+        private String consumerEdcDataManagementUrl = null;
+        private String consumerEdcControlUrl = null;
         private String consumerEdcApiKeyName = "X-Api-Key";
         private String consumerEdcApiKeyValue = "";
         private Map<String, String> basicAuthUsers = Collections.emptyMap();
@@ -46,8 +58,13 @@ public class ApiWrapperConfig {
             return new Builder();
         }
 
-        public Builder consumerEdcUrl(String consumerEdcUrl) {
-            this.consumerEdcUrl = consumerEdcUrl;
+        public Builder consumerEdcDataManagementUrl(String consumerEdcDataManagementUrl) {
+            this.consumerEdcDataManagementUrl = consumerEdcDataManagementUrl;
+            return this;
+        }
+
+        public Builder consumerEdcControlUrl(String consumerEdcControlUrl) {
+            this.consumerEdcControlUrl = consumerEdcControlUrl;
             return this;
         }
 
@@ -67,7 +84,13 @@ public class ApiWrapperConfig {
         }
 
         public ApiWrapperConfig build() {
-            return new ApiWrapperConfig(consumerEdcUrl, consumerEdcApiKeyName, consumerEdcApiKeyValue, basicAuthUsers);
+            return new ApiWrapperConfig(
+                    consumerEdcDataManagementUrl,
+                    consumerEdcControlUrl,
+                    consumerEdcApiKeyName,
+                    consumerEdcApiKeyValue,
+                    basicAuthUsers
+            );
         }
     }
 }

@@ -1,6 +1,8 @@
 package org.eclipse.dataspaceconnector.apiwrapper.connector.sdk.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.ws.rs.BadRequestException;
+import jakarta.ws.rs.InternalServerErrorException;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
@@ -8,7 +10,9 @@ import org.eclipse.dataspaceconnector.spi.types.TypeManager;
 import org.eclipse.dataspaceconnector.spi.types.domain.catalog.Catalog;
 import org.eclipse.dataspaceconnector.spi.types.domain.contract.offer.ContractOffer;
 
+import java.io.IOException;
 import java.util.Map;
+import java.util.Optional;
 
 import static java.lang.String.format;
 
@@ -25,23 +29,33 @@ public class ContractOfferService {
         this.httpClient = httpClient;
     }
 
-    public ContractOffer findContractOffer4AssetId(String assetId, String consumerConnectorControlPlaneBaseUrl, String providerConnectorControlPlaneIDSUrl, Map<String, String> header) {
-        var catalog = getCatalogFromProvider(consumerConnectorControlPlaneBaseUrl, providerConnectorControlPlaneIDSUrl, header);
-        var contract = catalog != null ? catalog.getContractOffers()
-                .stream()
-                .filter(it -> it.getAsset().getId().equals(assetId))
-                .findFirst() : java.util.Optional.<ContractOffer>empty();
-
-        if (contract.isEmpty()) {
-            monitor.severe("Could not find asset.");
-            return null;
+    public Optional<ContractOffer> findContractOffer4AssetId(
+            String assetId,
+            String consumerControlUrl,
+            String providerConnectorControlPlaneIDSUrl,
+            Map<String, String> header
+    ) throws IOException {
+        var catalog = getCatalogFromProvider(
+                consumerControlUrl,
+                providerConnectorControlPlaneIDSUrl,
+                header
+        );
+        if (catalog.getContractOffers().isEmpty()) {
+            throw new BadRequestException("Provider has not contract offers for us. Catalog is empty.");
         }
 
-        return contract.get();
+        return catalog.getContractOffers()
+                .stream()
+                .filter(it -> it.getAsset().getId().equals(assetId))
+                .findFirst();
     }
 
-    private Catalog getCatalogFromProvider(String consumerControlPlane, String providerConnectorControlPlaneIDSUrl, Map<String, String> headers) {
-        var url = consumerControlPlane + CATALOG_PATH + providerConnectorControlPlaneIDSUrl;
+    private Catalog getCatalogFromProvider(
+            String consumerControlUrl,
+            String providerConnectorControlPlaneIDSUrl,
+            Map<String, String> headers
+    ) throws IOException {
+        var url = consumerControlUrl + CATALOG_PATH + providerConnectorControlPlaneIDSUrl;
         var request = new Request.Builder()
                 .url(url);
         headers.forEach(request::addHeader);
@@ -50,15 +64,13 @@ public class ContractOfferService {
             var body = response.body();
 
             if (!response.isSuccessful() || body == null) {
-                monitor.warning(format("Control plane responded with error: %s %s", response.code(), body != null ? body.string() : ""));
-                return null;
+                throw new InternalServerErrorException(format("Control plane responded with: %s %s", response.code(), body != null ? body.string() : ""));
             }
 
             return objectMapper.readValue(body.string(), Catalog.class);
         } catch (Exception e) {
-            monitor.severe(format("Error in calling the Control plane at %s", url), e);
+            monitor.severe(format("Error in calling the control plane at %s", url), e);
+            throw e;
         }
-
-        return null;
     }
 }
