@@ -1,4 +1,4 @@
-package com.zf.gaia.edc.demo.provider.bds;
+package net.catenax.edc.bds;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

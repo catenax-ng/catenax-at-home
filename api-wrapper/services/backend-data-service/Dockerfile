@@ -1,5 +1,13 @@
-FROM registry.cloud.zf-world.com/zf/zf-ubi8-openjdk-11
+FROM openjdk:11-jre-slim-buster
+ARG JAR
+
+ENV JAVA_TOOL_OPTIONS -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8090
+
 WORKDIR /app
+COPY $JAR app.jar
+
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "/app/backend-data-service.jar"]
-COPY build/libs/backend-data-service.jar /app/backend-data-service.jar
+
+ENTRYPOINT java \
+    -Djava.security.edg=file:/dev/.urandom \
+    -jar app.jar

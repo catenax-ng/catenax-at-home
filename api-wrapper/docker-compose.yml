@@ -81,16 +81,12 @@ services:
 
   provider-backend-service:
     build:
-      context: services/provider-backend-service
+      context: services/backend-data-service
       args:
-        JAR: build/libs/edc.jar
+        JAR: build/libs/backend-data-service.jar
     ports:
-      - "8194:9191" # default
+      - "8194:8080" # default
       - "5010:8090"
-    environment:
-      EDC_FS_CONFIG: /config/configuration.properties
-    volumes:
-      - ./config/provider-backend-service.config:/config
 
   consumer-aas-proxy-service:
     build:
@@ -101,8 +97,8 @@ services:
       - "4245:4245" # default
       - "5014:8090"
 
-  registry-service:
-    image: ghcr.io/catenax/semantics/registry:catenax-at-home-latest
-    ports:
-      - "4243:4243" # default
-      - "5013:8090"
+#  registry-service:
+#    image: ghcr.io/catenax/semantics/registry:catenax-at-home-latest
+#    ports:
+#      - "4243:4243" # default
+#      - "5013:8090"
