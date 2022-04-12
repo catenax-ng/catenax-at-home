@@ -4,6 +4,14 @@ plugins {
 	id("java")
 }
 
+val javaVersion = 11
+
+java {
+	toolchain {
+		languageVersion.set(JavaLanguageVersion.of(javaVersion))
+	}
+}
+
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
