@@ -1,0 +1,164 @@
+{
+	"info": {
+		"_postman_id": "f0b32f6e-b28d-4884-9326-a367d81ca772",
+		"name": "EDC Sticky-Notes",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Fetch catalog",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Api-key",
+						"value": "123456",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8191/api/control/catalog?provider=http://provider-control-plane:8282/api/v1/ids/data",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8191",
+					"path": [
+						"api",
+						"control",
+						"catalog"
+					],
+					"query": [
+						{
+							"key": "provider",
+							"value": "http://provider-control-plane:8282/api/v1/ids/data"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2. Create contractnegotiations",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"connectorId\": \"provider\",\n    \"connectorAddress\": \"http://provider-control-plane:8282/api/v1/ids/data\",\n    \"protocol\": \"ids-multipart\",\n    \"offer\": {\n        \"offerId\": \"1:3f64f1e6-75f5-47fc-be81-af0addd6cc52\",\n        \"assetId\": \"asset-1\",\n        \"policy\": {\n            \"uid\": \"random-random\",\n            \"permission\": {\n                \"edctype\": \"dataspaceconnector:permission\",\n                \"target\": \"asset-1\",\n                \"action\": {\n                    \"type\": \"USE\"\n                }\n            },\n            \"@type\": {\n                \"@policytype\": \"set\"\n            }\n        }\n    }\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8195/api/v1/data/contractnegotiations",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8195",
+					"path": [
+						"api",
+						"v1",
+						"data",
+						"contractnegotiations"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3. Check contractnegotiations",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"connectorId\": \"provider\",\n    \"connectorAddress\": \"http://provider-control-plane:8282/api/v1/ids/data\",\n    \"protocol\": \"ids-multipart\",\n    \"offer\": {\n        \"offerId\": \"1:c03f166e-3af5-4ff6-b9f5-2bb1339591dd\",\n        \"assetId\": \"asset-1\",\n        \"policy\": {\n            \"uid\": \"random-random\",\n            \"permission\": {\n                \"edctype\": \"dataspaceconnector:permission\",\n                \"target\": \"asset-1\",\n                \"action\": {\n                    \"type\": \"USE\"\n                }\n            },\n            \"@type\": {\n                \"@policytype\": \"set\"\n            }\n        }\n    }\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8195/api/v1/data/contractnegotiations",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8195",
+					"path": [
+						"api",
+						"v1",
+						"data",
+						"contractnegotiations"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "4. Create transferprocess",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"contractId\": \"1:5e64a582-b447-4215-b1fc-1d2e547adeef\",\n    \"assetId\": \"asset-1\",\n    \"connectorId\": \"provider\",\n    \"connectorAddress\": \"http://provider-control-plane:8282/api/v1/ids/data\",\n    \"protocol\": \"ids-multipart\",\n    \"dataDestination\": {\n        \"properties\": {\n            \"type\": \"HttpProxy\"\n        }\n    },\n    \"managedResources\": false,\n    \"transferType\": {\n        \"contentType\": \"application/octet-stream\",\n        \"isFinite\": true\n    }\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8195/api/v1/data/transferprocess",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8195",
+					"path": [
+						"api",
+						"v1",
+						"data",
+						"transferprocess"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "5. Check transferprocess",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8195/api/v1/data/transferprocess/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8195",
+					"path": [
+						"api",
+						"v1",
+						"data",
+						"transferprocess",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

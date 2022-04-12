@@ -14,6 +14,9 @@ dependencies {
     api("$edcGroup:ids:$edcVersion")
     api("$edcGroup:http:$edcVersion")
 
+    // TODO Remove this after the catalog module is deleted
+    api("$edcGroup:control-api:$edcVersion")
+
     api("$edcGroup:data-management-api:$edcVersion")
     api("$edcGroup:iam-mock:$edcVersion")
 
