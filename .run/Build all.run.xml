@@ -4,7 +4,7 @@
     <toRun name="Build backend-data-service" type="GradleRunConfiguration" />
     <toRun name="Build control-plane" type="GradleRunConfiguration" />
     <toRun name="Build data-plane" type="GradleRunConfiguration" />
-    <toRun name="Build aasproxy" type="MavenRunConfiguration" />
+    <toRun name="Build semantics" type="MavenRunConfiguration" />
     <method v="2" />
   </configuration>
 </component>

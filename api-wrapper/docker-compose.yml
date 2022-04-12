@@ -90,15 +90,15 @@ services:
 
   consumer-aas-proxy-service:
     build:
-      context: services/aasproxy
+      context: services/semantics/aasproxy
       args:
         JAR: target/aasproxy-1.0.0-SNAPSHOT.jar
     ports:
       - "4245:4245" # default
       - "5014:8090"
 
-#  registry-service:
-#    image: ghcr.io/catenax/semantics/registry:catenax-at-home-latest
-#    ports:
-#      - "4243:4243" # default
-#      - "5013:8090"
+  registry-service:
+    image: ghcr.io/catenax/semantics/registry:catenax-at-home-latest
+    ports:
+      - "4243:4243" # default
+      - "5013:8090"
