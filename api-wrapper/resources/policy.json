@@ -1,5 +1,5 @@
 {
-  "uid": "general-policy-for-asset-2",
+  "uid": "general-policy-for-asset-1",
   "permissions": [
     {
       "target": "asset-1",

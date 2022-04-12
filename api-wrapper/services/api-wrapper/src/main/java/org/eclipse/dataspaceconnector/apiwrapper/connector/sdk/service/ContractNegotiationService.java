@@ -4,11 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
+import org.eclipse.dataspaceconnector.apiwrapper.connector.sdk.model.NegotiationInitiateRequestDto;
 import org.eclipse.dataspaceconnector.apiwrapper.connector.sdk.model.NegotiationStatusResponse;
 import org.eclipse.dataspaceconnector.apiwrapper.connector.sdk.Utility;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.eclipse.dataspaceconnector.spi.types.TypeManager;
-import org.eclipse.dataspaceconnector.spi.types.domain.contract.negotiation.ContractOfferRequest;
 
 import java.util.Map;
 
@@ -30,7 +30,7 @@ public class ContractNegotiationService {
         this.httpClient = httpClient;
     }
 
-    public String initiateNegotiation(ContractOfferRequest contractOfferRequest, String connectorControlPlaneBaseUrl, Map<String, String> headers) {
+    public String initiateNegotiation(NegotiationInitiateRequestDto contractOfferRequest, String connectorControlPlaneBaseUrl, Map<String, String> headers) {
         var url = connectorControlPlaneBaseUrl + NEGOTIATION_PATH;
         var requestBody = RequestBody.create(
                 typeManager.writeValueAsString(contractOfferRequest),

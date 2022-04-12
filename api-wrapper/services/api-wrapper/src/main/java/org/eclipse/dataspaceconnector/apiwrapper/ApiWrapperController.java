@@ -6,6 +6,8 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.UriInfo;
 import org.eclipse.dataspaceconnector.apiwrapper.config.ApiWrapperConfig;
+import org.eclipse.dataspaceconnector.apiwrapper.connector.sdk.model.ContractOfferDescription;
+import org.eclipse.dataspaceconnector.apiwrapper.connector.sdk.model.NegotiationInitiateRequestDto;
 import org.eclipse.dataspaceconnector.apiwrapper.connector.sdk.model.NegotiationStatusResponse;
 import org.eclipse.dataspaceconnector.apiwrapper.connector.sdk.service.ContractNegotiationService;
 import org.eclipse.dataspaceconnector.apiwrapper.connector.sdk.service.ContractOfferService;
@@ -14,7 +16,6 @@ import org.eclipse.dataspaceconnector.apiwrapper.connector.sdk.service.TransferP
 import org.eclipse.dataspaceconnector.apiwrapper.store.InMemoryContractAgreementStore;
 import org.eclipse.dataspaceconnector.apiwrapper.store.InMemoryEndpointDataReferenceStore;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
-import org.eclipse.dataspaceconnector.spi.types.domain.contract.negotiation.ContractOfferRequest;
 import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
 
 import java.io.IOException;
@@ -169,16 +170,22 @@ public class ApiWrapperController {
                 providerConnectorUrl + IDS_PATH,
                 header
         );
+        var contractOfferDescription = new ContractOfferDescription(
+                contractOffer.getId(),
+                contractOffer.getAsset().getId(),
+                null,
+                contractOffer.getPolicy()
+        );
 
         // Initiate negotiation
-        var contractOfferRequest = ContractOfferRequest.Builder.newInstance()
-                .contractOffer(contractOffer)
+        var contractNegotationRequest = NegotiationInitiateRequestDto.Builder.newInstance()
+                .offerId(contractOfferDescription)
                 .connectorId("provider")
                 .connectorAddress(providerConnectorUrl + IDS_PATH)
                 .protocol("ids-multipart")
                 .build();
         var negotiationId = contractNegotiationService.initiateNegotiation(
-                contractOfferRequest,
+                contractNegotationRequest,
                 consumerConnectorUrl,
                 header
         );

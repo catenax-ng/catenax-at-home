@@ -8,6 +8,7 @@ services:
         JAR: build/libs/edc.jar
     ports:
       - "8191:9191" # default
+      - "8195:9193" # data
       - "5005:8090"
     environment:
       EDC_VAULT: /config/vault.properties

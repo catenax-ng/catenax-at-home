@@ -4,10 +4,12 @@
       <settings>
         <option name="envFilePath" value="" />
         <option name="removeImagesOnComposeDown" value="ALL" />
+        <option name="removeVolumesOnComposeDown" value="true" />
         <option name="commandLineOptions" value="--build" />
         <option name="sourceFilePath" value="api-wrapper/docker-compose.yml" />
         <option name="upDetach" value="false" />
         <option name="upForceRecreate" value="true" />
+        <option name="upRemoveOrphans" value="true" />
       </settings>
     </deployment>
     <method v="2" />
