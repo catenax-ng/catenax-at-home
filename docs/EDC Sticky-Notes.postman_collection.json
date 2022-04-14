@@ -1,10 +1,185 @@
 {
 	"info": {
-		"_postman_id": "f0b32f6e-b28d-4884-9326-a367d81ca772",
+		"_postman_id": "9f921794-9b71-4d1b-a13c-44d8811e9e22",
 		"name": "EDC Sticky-Notes",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
+		{
+			"name": "0.1. BDS: Create dummy data",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "text/plain"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "test1"
+				},
+				"url": {
+					"raw": "http://localhost:8194/data/asset-1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8194",
+					"path": [
+						"data",
+						"asset-1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "0.2. ProviderControlPlane: Create asset",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"asset\": {\r\n    \"properties\": {\r\n      \"asset:prop:id\": \"asset-1\",\r\n      \"asset:prop:name\": \"asset name\",\r\n      \"asset:prop:contenttype\": \"application/json\",\r\n      \"asset:prop:policy-id\": \"use-eu\"\r\n    }\r\n  },\r\n  \"dataAddress\": {\r\n    \"properties\": {\r\n      \"endpoint\": \"http://provider-backend-service:8080/data/asset-1\",\r\n      \"type\": \"HttpData\"\r\n    }\r\n  }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8187/api/v1/data/assets",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8187",
+					"path": [
+						"api",
+						"v1",
+						"data",
+						"assets"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "0.3. ProviderControlPlane: Create policy",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"uid\": \"general-policy-for-asset-1\",\r\n  \"permissions\": [\r\n    {\r\n      \"target\": \"asset-1\",\r\n      \"action\": {\r\n        \"type\": \"USE\"\r\n      },\r\n      \"edctype\": \"dataspaceconnector:permission\"\r\n    }\r\n  ],\r\n  \"@type\": {\r\n    \"@policytype\": \"set\"\r\n  }\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8187/api/v1/data/policies",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8187",
+					"path": [
+						"api",
+						"v1",
+						"data",
+						"policies"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "0.4. ProviderControlPlane: Create ContractDefinition",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"id\": \"1\",\r\n  \"accessPolicyId\": \"general-policy-for-asset-1\",\r\n  \"contractPolicyId\": \"general-policy-for-asset-1\",\r\n  \"criteria\": []\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8187/api/v1/data/contractdefinitions",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8187",
+					"path": [
+						"api",
+						"v1",
+						"data",
+						"contractdefinitions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "0.5. API-Wrapper: Get data",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "somepassword",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "someuser",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Basic c29tZXVzZXI6c29tZXBhc3N3b3Jk"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8193/api/service/asset-1/submodel?provider-connector-url=http://provider-control-plane:8282",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8193",
+					"path": [
+						"api",
+						"service",
+						"asset-1",
+						"submodel"
+					],
+					"query": [
+						{
+							"key": "provider-connector-url",
+							"value": "http://provider-control-plane:8282"
+						}
+					]
+				}
+			},
+			"response": []
+		},
 		{
 			"name": "1. Fetch catalog",
 			"request": {
