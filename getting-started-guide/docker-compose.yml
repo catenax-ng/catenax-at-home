@@ -43,6 +43,7 @@ services:
       - "8181:9191" # default
       - "8184:9192" # validation
       - "8187:9193" # data
+      - "8282:8282" # ids port
       - "5008:8090"
     environment:
       EDC_VAULT: /config/vault.properties
@@ -81,7 +82,7 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: local
       IDP_ISSUER_URI: ""
-      SPRING_DATASOURCE_URL: "jdbc:h2:file:./semantics/persistence;CASE_INSENSITIVE_IDENTIFIERS=TRUE"
+      SPRING_DATASOURCE_URL: "jdbc:h2:mem:semanticsdb;CASE_INSENSITIVE_IDENTIFIERS=TRUE"
     ports:
       - "4243:4243" # default
       - "5013:8090"
