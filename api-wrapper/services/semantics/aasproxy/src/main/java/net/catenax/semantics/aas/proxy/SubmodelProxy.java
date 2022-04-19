@@ -43,7 +43,7 @@ public class SubmodelProxy implements AssetIdentifierApiDelegate {
     protected final Feign.Builder builder;
 
     protected final static Pattern URL_WITH_PARAMS=Pattern.compile("(?<url>[^\\?]*)(\\?(?<params>[^\\?]*))?");
-    protected final static Pattern URL_EDC=Pattern.compile("edc(?<secure>s)?://(?<provider>[^\\?/]+)/(?<idsresource>[^\\?/]+)/(?<suburl>[^\\?]*)");
+    protected final static Pattern URL_EDC=Pattern.compile("edc(?<secure>s)?://(?<provider>[^\\?/]+)/(?<idsresource>[^\\?/]+)/*(?<suburl>[^\\?]*)");
     protected final static Pattern URL_PARAM=Pattern.compile("(\\&amp;)?(?<key>[^\\=\\&]*)\\=(?<value>[^\\=\\&]*)");
 
     /**
@@ -83,14 +83,17 @@ public class SubmodelProxy implements AssetIdentifierApiDelegate {
                 params.put(key,value);
             }
         }
-        // edc://provider-controle-plane:8080/urn:uuid:365e6fbe-bb34-11ec-8422-0242ac120002-urn:uuid:61125dc3-5e6f-4f4b-838d-447432b97918/
-        String[] split = endpoint.split("/");
-        endpoint=config.getWrapperUrl()+"/";
-        endpoint=endpoint+split[3]+"/submodel";
-        //endpoint=endpoint+split[4];
-        String protocol="http";
-       // http://localhost:8193/api/service/urn:uuid:365e6fbe-bb34-11ec-8422-0242ac120002-urn:uuid:61125dc3-5e6f-4f4b-838d-447432b97918/submodel?provider-connector-url=http://provider-control-plane:8282
-        params.put("provider-connector-url",protocol+"://"+split[2]);
+        Matcher edcMatcher=URL_EDC.matcher(endpoint);
+        if(edcMatcher.matches()) {
+            endpoint=config.getWrapperUrl()+"/";
+            endpoint=endpoint+edcMatcher.group("idsresource")+"/";
+            endpoint=endpoint+edcMatcher.group("suburl");
+            String protocol="http";
+            if("s".equals(edcMatcher.group("secure"))) {
+                protocol="https";
+            }
+            params.put("provider-connector-url",protocol+"://"+edcMatcher.group("provider"));
+        }
         SubmodelInterfaceApi api=builder.target(SubmodelInterfaceApi.class,endpoint);
         return new AbstractMap.SimpleImmutableEntry<SubmodelInterfaceApi,Map<String,Object>>(api,params);
     }
