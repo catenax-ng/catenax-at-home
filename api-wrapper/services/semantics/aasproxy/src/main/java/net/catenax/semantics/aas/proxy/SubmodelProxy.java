@@ -43,7 +43,7 @@ public class SubmodelProxy implements AssetIdentifierApiDelegate {
     protected final Feign.Builder builder;
 
     protected final static Pattern URL_WITH_PARAMS=Pattern.compile("(?<url>[^\\?]*)(\\?(?<params>[^\\?]*))?");
-    protected final static Pattern URL_EDC=Pattern.compile("edc(?<secure>s)?://(?<provider>[^\\?/]+)/(?<idsresource>[^\\?/]+)/*(?<suburl>[^\\?]*)");
+    protected final static Pattern URL_EDC=Pattern.compile("http(?<secure>s)?://(?<provider>[^\\?/]+)/(?<idsresource>[^\\?/]+)/*(?<suburl>[^\\?]*)");
     protected final static Pattern URL_PARAM=Pattern.compile("(\\&amp;)?(?<key>[^\\=\\&]*)\\=(?<value>[^\\=\\&]*)");
 
     /**
