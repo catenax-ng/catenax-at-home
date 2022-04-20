@@ -8,9 +8,10 @@ services:
         JAR: build/libs/edc.jar
     platform: ${DOCKER_PLATFORM:-linux/amd64}
     ports:
-      - "8191:9191" # default
+      - "8191:9191" # default/control
       - "8195:9193" # data
-      - "5005:8090"
+#      - "8282" # ids
+      - "5005:8090" # debugging
     environment:
       EDC_VAULT: /config/vault.properties
       EDC_KEYSTORE: /cert.pfx
@@ -28,7 +29,8 @@ services:
     platform: ${DOCKER_PLATFORM:-linux/amd64}
     ports:
       - "8192:9191" # default
-      - "5006:8090"
+#      - "9192" # public
+      - "5006:8090" # debugging
     environment:
       EDC_FS_CONFIG: /config/configuration.properties
     volumes:
@@ -43,7 +45,7 @@ services:
     ports:
       - "8193:9191" # default
 #      - "9192" # callback
-      - "5007:8090"
+      - "5007:8090" # debugging
     environment:
       EDC_FS_CONFIG: /config/configuration.properties
     volumes:
@@ -56,10 +58,10 @@ services:
         JAR: build/libs/edc.jar
     platform: ${DOCKER_PLATFORM:-linux/amd64}
     ports:
-      - "8181:9191" # default
+      - "8181:9191" # default/control
       - "8184:9192" # validation
       - "8187:9193" # data
-      - "5008:8090"
+      - "5008:8090" # debugging
     environment:
       EDC_VAULT: /config/vault.properties
       EDC_KEYSTORE: /cert.pfx
@@ -78,7 +80,7 @@ services:
     ports:
       - "8182:9191" # default
       - "8183:9192" # public
-      - "5009:8090"
+      - "5009:8090" # debugging
     environment:
       EDC_FS_CONFIG: /config/configuration.properties
     volumes:
@@ -92,7 +94,7 @@ services:
     platform: ${DOCKER_PLATFORM:-linux/amd64}
     ports:
       - "8194:8080" # default
-      - "5010:8090"
+      - "5010:8090" # debugging
 
   consumer-aas-proxy-service:
     build:
@@ -102,11 +104,15 @@ services:
     platform: ${DOCKER_PLATFORM:-linux/amd64}
     ports:
       - "4245:4245" # default
-      - "5014:8090"
+      - "5014:8090" # debugging
 
   registry-service:
-    image: ghcr.io/catenax/semantics/registry:catenax-at-home-latest
+    image: ghcr.io/catenax-ng/catenax-at-home/registry:0.0.1
     platform: ${DOCKER_PLATFORM:-linux/amd64}
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+      IDP_ISSUER_URI: ""
+      SPRING_DATASOURCE_URL: "jdbc:h2:mem:semanticsdb;CASE_INSENSITIVE_IDENTIFIERS=TRUE"
     ports:
       - "4243:4243" # default
-      - "5013:8090"
+      - "5013:8090" # debugging
