@@ -3,6 +3,7 @@ package org.eclipse.dataspaceconnector.apiwrapper;
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.InternalServerErrorException;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
@@ -103,11 +104,7 @@ public class ApiWrapperController {
                 header
         );
 
-        EndpointDataReference dataReference = null;
-        while (dataReference == null) {
-            Thread.sleep(1000);
-            dataReference = endpointDataReferenceStore.get(agreementId);
-        }
+        EndpointDataReference dataReference = getDataReference(agreementId);
 
         // Get data through data plane
         String data = "";
@@ -149,11 +146,7 @@ public class ApiWrapperController {
                 header
         );
 
-        EndpointDataReference dataReference = null;
-        while (dataReference == null) {
-            Thread.sleep(1000);
-            dataReference = endpointDataReferenceStore.get(agreementId);
-        }
+        EndpointDataReference dataReference = getDataReference(agreementId);
 
         // Get data through data plane
         String data = "";
@@ -239,5 +232,22 @@ public class ApiWrapperController {
         contractAgreementStore.put(assetId, agreementId);
 
         return agreementId;
+    }
+
+    private EndpointDataReference getDataReference(String agreementId) throws InterruptedException {
+        EndpointDataReference dataReference = null;
+        var waitTimeout = 10;
+
+        while (dataReference == null && waitTimeout > 0) {
+            Thread.sleep(1000);
+            dataReference = endpointDataReferenceStore.get(agreementId);
+            waitTimeout--;
+        }
+
+        if (dataReference == null) {
+            throw new InternalServerErrorException("Did not receive callback within 10 seconds from consumer edc.");
+        }
+
+        return dataReference;
     }
 }
