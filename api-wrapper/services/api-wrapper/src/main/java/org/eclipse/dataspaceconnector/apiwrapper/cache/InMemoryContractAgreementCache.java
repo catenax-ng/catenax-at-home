@@ -1,9 +1,9 @@
-package org.eclipse.dataspaceconnector.apiwrapper.store;
+package org.eclipse.dataspaceconnector.apiwrapper.cache;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class InMemoryContractAgreementStore {
+public class InMemoryContractAgreementCache {
     private final Map<String, String> store = new HashMap<>();
 
     public void put(String assetId, String contractAgreementId) {

@@ -1,11 +1,11 @@
-package org.eclipse.dataspaceconnector.apiwrapper.store;
+package org.eclipse.dataspaceconnector.apiwrapper.cache;
 
 import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class InMemoryEndpointDataReferenceStore {
+public class InMemoryEndpointDataReferenceCache {
     private final Map<String, EndpointDataReference> store = new HashMap<>();
 
     public void put(String agreementId, EndpointDataReference endpointDataReference) {

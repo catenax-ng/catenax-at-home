@@ -2,6 +2,8 @@ package org.eclipse.dataspaceconnector.apiwrapper;
 
 import okhttp3.OkHttpClient;
 import org.eclipse.dataspaceconnector.api.auth.AuthenticationRequestFilter;
+import org.eclipse.dataspaceconnector.apiwrapper.cache.InMemoryContractAgreementCache;
+import org.eclipse.dataspaceconnector.apiwrapper.cache.InMemoryEndpointDataReferenceCache;
 import org.eclipse.dataspaceconnector.apiwrapper.config.ApiWrapperConfig;
 import org.eclipse.dataspaceconnector.apiwrapper.config.ApiWrapperConfigKeys;
 import org.eclipse.dataspaceconnector.apiwrapper.connector.sdk.service.ContractNegotiationService;
@@ -9,8 +11,6 @@ import org.eclipse.dataspaceconnector.apiwrapper.connector.sdk.service.ContractO
 import org.eclipse.dataspaceconnector.apiwrapper.connector.sdk.service.HttpProxyService;
 import org.eclipse.dataspaceconnector.apiwrapper.connector.sdk.service.TransferProcessService;
 import org.eclipse.dataspaceconnector.apiwrapper.security.BasicAuthenticationService;
-import org.eclipse.dataspaceconnector.apiwrapper.store.InMemoryContractAgreementStore;
-import org.eclipse.dataspaceconnector.apiwrapper.store.InMemoryEndpointDataReferenceStore;
 import org.eclipse.dataspaceconnector.spi.WebService;
 import org.eclipse.dataspaceconnector.spi.system.Inject;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtension;
@@ -46,8 +46,8 @@ public class ApiWrapperExtension implements ServiceExtension {
         }
 
         // In-memory stores
-        var endpointDataReferenceStore = new InMemoryEndpointDataReferenceStore();
-        var contractAgreementStore = new InMemoryContractAgreementStore();
+        var endpointDataReferenceCache = new InMemoryEndpointDataReferenceCache();
+        var contractAgreementCache = new InMemoryContractAgreementCache();
 
         // Setup controller
         var contractOfferService = new ContractOfferService(monitor, typeManager, httpClient);
@@ -61,11 +61,11 @@ public class ApiWrapperExtension implements ServiceExtension {
                 contractOfferRequestService,
                 transferProcessService,
                 httpProxyService,
-                endpointDataReferenceStore,
-                contractAgreementStore,
+                endpointDataReferenceCache,
+                contractAgreementCache,
                 config
         ));
-        webService.registerResource(CALLBACK_CONTEXT_ALIAS, new EdcCallbackController(monitor, endpointDataReferenceStore));
+        webService.registerResource(CALLBACK_CONTEXT_ALIAS, new EdcCallbackController(monitor, endpointDataReferenceCache));
     }
 
     private ApiWrapperConfig createApiWrapperConfig(Config config) {

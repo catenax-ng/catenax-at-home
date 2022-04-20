@@ -13,6 +13,8 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.UriInfo;
+import org.eclipse.dataspaceconnector.apiwrapper.cache.InMemoryContractAgreementCache;
+import org.eclipse.dataspaceconnector.apiwrapper.cache.InMemoryEndpointDataReferenceCache;
 import org.eclipse.dataspaceconnector.apiwrapper.config.ApiWrapperConfig;
 import org.eclipse.dataspaceconnector.apiwrapper.connector.sdk.model.ContractNegotiationDto;
 import org.eclipse.dataspaceconnector.apiwrapper.connector.sdk.model.ContractOfferDescription;
@@ -21,8 +23,6 @@ import org.eclipse.dataspaceconnector.apiwrapper.connector.sdk.service.ContractN
 import org.eclipse.dataspaceconnector.apiwrapper.connector.sdk.service.ContractOfferService;
 import org.eclipse.dataspaceconnector.apiwrapper.connector.sdk.service.HttpProxyService;
 import org.eclipse.dataspaceconnector.apiwrapper.connector.sdk.service.TransferProcessService;
-import org.eclipse.dataspaceconnector.apiwrapper.store.InMemoryContractAgreementStore;
-import org.eclipse.dataspaceconnector.apiwrapper.store.InMemoryEndpointDataReferenceStore;
 import org.eclipse.dataspaceconnector.policy.model.Action;
 import org.eclipse.dataspaceconnector.policy.model.Permission;
 import org.eclipse.dataspaceconnector.policy.model.Policy;
@@ -53,8 +53,8 @@ public class ApiWrapperController {
     private final HttpProxyService httpProxyService;
 
     // In-memory stores
-    private final InMemoryEndpointDataReferenceStore endpointDataReferenceStore;
-    private final InMemoryContractAgreementStore contractAgreementStore;
+    private final InMemoryEndpointDataReferenceCache endpointDataReferenceCache;
+    private final InMemoryContractAgreementCache contractAgreementCache;
 
     private final ApiWrapperConfig config;
 
@@ -65,16 +65,16 @@ public class ApiWrapperController {
                                 ContractNegotiationService contractNegotiationService,
                                 TransferProcessService transferProcessService,
                                 HttpProxyService httpProxyService,
-                                InMemoryEndpointDataReferenceStore endpointDataReferenceStore,
-                                InMemoryContractAgreementStore contractAgreementStore,
+                                InMemoryEndpointDataReferenceCache endpointDataReferenceCache,
+                                InMemoryContractAgreementCache contractAgreementCache,
                                 ApiWrapperConfig config) {
         this.monitor = monitor;
         this.contractOfferService = contractOfferService;
         this.contractNegotiationService = contractNegotiationService;
         this.transferProcessService = transferProcessService;
         this.httpProxyService = httpProxyService;
-        this.endpointDataReferenceStore = endpointDataReferenceStore;
-        this.contractAgreementStore = contractAgreementStore;
+        this.endpointDataReferenceCache = endpointDataReferenceCache;
+        this.contractAgreementCache = contractAgreementCache;
         this.config = config;
 
         if (config.getConsumerEdcApiKeyValue() != null) {
@@ -171,7 +171,7 @@ public class ApiWrapperController {
     }
 
     private String initializeContractNegotiation(String providerConnectorUrl, String assetId) throws InterruptedException, IOException {
-        String agreementId = contractAgreementStore.get(assetId);
+        String agreementId = contractAgreementCache.get(assetId);
 
         if (agreementId != null) {
             monitor.debug("Found already existing contract agreement in cache");
@@ -229,7 +229,7 @@ public class ApiWrapperController {
         }
 
         agreementId = negotiation.getContractAgreementId();
-        contractAgreementStore.put(assetId, agreementId);
+        contractAgreementCache.put(assetId, agreementId);
 
         return agreementId;
     }
@@ -240,7 +240,7 @@ public class ApiWrapperController {
 
         while (dataReference == null && waitTimeout > 0) {
             Thread.sleep(1000);
-            dataReference = endpointDataReferenceStore.get(agreementId);
+            dataReference = endpointDataReferenceCache.get(agreementId);
             waitTimeout--;
         }
 
