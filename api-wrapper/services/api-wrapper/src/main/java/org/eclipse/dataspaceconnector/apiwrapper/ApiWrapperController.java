@@ -98,7 +98,7 @@ public class ApiWrapperController {
         transferProcessService.initiateHttpProxyTransferProcess(
                 agreementId,
                 assetId,
-                config.getConsumerEdcDataManagementUrl(),
+                config.getConsumerEdcControlUrl(),
                 providerConnectorUrl + IDS_PATH,
                 header
         );
@@ -144,7 +144,7 @@ public class ApiWrapperController {
         transferProcessService.initiateHttpProxyTransferProcess(
                 agreementId,
                 assetId,
-                config.getConsumerEdcDataManagementUrl(),
+                config.getConsumerEdcControlUrl(),
                 providerConnectorUrl + IDS_PATH,
                 header
         );

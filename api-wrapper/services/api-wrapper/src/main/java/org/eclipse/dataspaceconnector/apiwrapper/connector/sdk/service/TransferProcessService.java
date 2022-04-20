@@ -5,19 +5,21 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import org.eclipse.dataspaceconnector.apiwrapper.connector.sdk.Utility;
-import org.eclipse.dataspaceconnector.apiwrapper.connector.sdk.model.TransferRequestDto;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.eclipse.dataspaceconnector.spi.types.TypeManager;
 import org.eclipse.dataspaceconnector.spi.types.domain.DataAddress;
+import org.eclipse.dataspaceconnector.spi.types.domain.transfer.DataRequest;
 import org.eclipse.dataspaceconnector.spi.types.domain.transfer.TransferType;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.UUID;
 
 import static java.lang.String.format;
 
 public class TransferProcessService {
-    private static final String TRANSFER_PATH = "/transferprocess";
+//    private static final String TRANSFER_PATH = "/transferprocess";
+    private static final String TRANSFER_PATH = "/control/transfer";
     private final Monitor monitor;
     private final TypeManager typeManager;
     private final OkHttpClient httpClient;
@@ -28,18 +30,41 @@ public class TransferProcessService {
         this.httpClient = httpClient;
     }
 
-    public String initiateHttpProxyTransferProcess(String agreementId, String assetId, String consumerEdcDataManagementUrl, String providerConnectorControlPlaneIDSUrl, Map<String, String> headers) throws IOException {
-        var url = consumerEdcDataManagementUrl + TRANSFER_PATH;
+    public String initiateHttpProxyTransferProcess(String agreementId, String assetId, String consumerEdcControlUrl, String providerConnectorControlPlaneIDSUrl, Map<String, String> headers) throws IOException {
+        var url = consumerEdcControlUrl + TRANSFER_PATH;
 
-        DataAddress dataDestination = DataAddress.Builder.newInstance().type("HttpProxy").build();
+        DataAddress dataDestination = DataAddress.Builder.newInstance()
+                .type("HttpProxy")
+                .build();
 
-        TransferType transferType = TransferType.Builder.transferType().contentType("application/octet-stream").isFinite(true).build();
+        TransferType transferType = TransferType.Builder.
+                transferType()
+                .contentType("application/octet-stream")
+                .isFinite(true)
+                .build();
 
-        TransferRequestDto transferRequest = TransferRequestDto.Builder.newInstance().assetId(assetId).contractId(agreementId).connectorId("provider").connectorAddress(providerConnectorControlPlaneIDSUrl).protocol("ids-multipart").dataDestination(dataDestination).managedResources(false).transferType(transferType).build();
+        // TODO Fix this after TransferProcess ID works
+        // TransferRequestDto transferRequest = TransferRequestDto.Builder.newInstance()
+        DataRequest dataRequest = DataRequest.Builder.newInstance()
+                .id(UUID.randomUUID().toString())
+                .assetId(assetId)
+                .contractId(agreementId)
+                .connectorId("provider")
+                .connectorAddress(providerConnectorControlPlaneIDSUrl)
+                .protocol("ids-multipart")
+                .dataDestination(dataDestination)
+                .managedResources(false)
+                .transferType(transferType)
+                .build();
 
-        var requestBody = RequestBody.create(typeManager.writeValueAsString(transferRequest), Utility.JSON);
+        var requestBody = RequestBody.create(
+                typeManager.writeValueAsString(dataRequest),
+                Utility.JSON
+        );
 
-        var request = new Request.Builder().url(url).post(requestBody);
+        var request = new Request.Builder()
+                .url(url)
+                .post(requestBody);
         headers.forEach(request::addHeader);
 
         try (var response = httpClient.newCall(request.build()).execute()) {
