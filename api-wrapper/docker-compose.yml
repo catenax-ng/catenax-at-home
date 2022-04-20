@@ -99,6 +99,7 @@ services:
 
   registry-service:
     image: ghcr.io/catenax/semantics/registry:catenax-at-home-latest
+    platform: ${DOCKER_PLATFORM:-linux/amd64}
     ports:
       - "4243:4243" # default
       - "5013:8090"
