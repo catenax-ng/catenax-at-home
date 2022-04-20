@@ -6,6 +6,7 @@ services:
       context: services/control-plane
       args:
         JAR: build/libs/edc.jar
+    platform: ${DOCKER_PLATFORM:-linux/amd64}
     ports:
       - "8191:9191" # default
       - "8195:9193" # data
@@ -24,6 +25,7 @@ services:
       context: services/data-plane
       args:
         JAR: build/libs/edc.jar
+    platform: ${DOCKER_PLATFORM:-linux/amd64}
     ports:
       - "8192:9191" # default
       - "5006:8090"
@@ -37,6 +39,7 @@ services:
       context: services/api-wrapper
       args:
         JAR: build/libs/edc.jar
+    platform: ${DOCKER_PLATFORM:-linux/amd64}
     ports:
       - "8193:9191" # default
 #      - "9192" # callback
@@ -51,6 +54,7 @@ services:
       context: services/control-plane
       args:
         JAR: build/libs/edc.jar
+    platform: ${DOCKER_PLATFORM:-linux/amd64}
     ports:
       - "8181:9191" # default
       - "8184:9192" # validation
@@ -70,6 +74,7 @@ services:
       context: services/data-plane
       args:
         JAR: build/libs/edc.jar
+    platform: ${DOCKER_PLATFORM:-linux/amd64}
     ports:
       - "8182:9191" # default
       - "8183:9192" # public
@@ -84,6 +89,7 @@ services:
       context: services/backend-data-service
       args:
         JAR: build/libs/backend-data-service.jar
+    platform: ${DOCKER_PLATFORM:-linux/amd64}
     ports:
       - "8194:8080" # default
       - "5010:8090"
@@ -93,6 +99,7 @@ services:
       context: services/semantics/aasproxy
       args:
         JAR: target/aasproxy-1.0.0-SNAPSHOT.jar
+    platform: ${DOCKER_PLATFORM:-linux/amd64}
     ports:
       - "4245:4245" # default
       - "5014:8090"
