@@ -3,6 +3,7 @@ version: "3.9"
 services:
   consumer-control-plane:
     image: ghcr.io/catenax-ng/catenax-at-home/consumer-control-plane:0.0.1
+    platform: ${DOCKER_PLATFORM:-linux/amd64}
     ports:
       - "8191:9191" # default
       - "8195:9193" # data
@@ -18,6 +19,7 @@ services:
 
   consumer-data-plane:
     image: ghcr.io/catenax-ng/catenax-at-home/consumer-data-plane:0.0.1
+    platform: ${DOCKER_PLATFORM:-linux/amd64}
     ports:
       - "8192:9191" # default
       - "5006:8090"
@@ -28,6 +30,7 @@ services:
 
   api-wrapper:
     image: ghcr.io/catenax-ng/catenax-at-home/api-wrapper:0.0.1
+    platform: ${DOCKER_PLATFORM:-linux/amd64}
     ports:
       - "8193:9191" # default
 #      - "9192" # callback
@@ -39,6 +42,7 @@ services:
 
   provider-control-plane:
     image: ghcr.io/catenax-ng/catenax-at-home/provider-control-plane:0.0.1
+    platform: ${DOCKER_PLATFORM:-linux/amd64}
     ports:
       - "8181:9191" # default
       - "8184:9192" # validation
@@ -56,6 +60,7 @@ services:
 
   provider-data-plane:
     image: ghcr.io/catenax-ng/catenax-at-home/provider-data-plane:0.0.1
+    platform: ${DOCKER_PLATFORM:-linux/amd64}
     ports:
       - "8182:9191" # default
       - "8183:9192" # public
@@ -67,18 +72,21 @@ services:
 
   provider-backend-service:
     image: ghcr.io/catenax-ng/catenax-at-home/provider-backend-service:0.0.1
+    platform: ${DOCKER_PLATFORM:-linux/amd64}
     ports:
       - "8194:8080" # default
       - "5010:8090"
 
   consumer-aas-proxy-service:
     image: ghcr.io/catenax-ng/catenax-at-home/consumer-aas-proxy-service:0.0.1
+    platform: ${DOCKER_PLATFORM:-linux/amd64}
     ports:
       - "4245:4245" # default
       - "5014:8090"
 
   registry-service:
     image: ghcr.io/catenax-ng/catenax-at-home/registry:0.0.1
+    platform: ${DOCKER_PLATFORM:-linux/amd64}
     environment:
       SPRING_PROFILES_ACTIVE: local
       IDP_ISSUER_URI: ""
