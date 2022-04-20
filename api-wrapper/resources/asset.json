@@ -1,0 +1,16 @@
+{
+  "asset": {
+    "properties": {
+      "asset:prop:id": "asset-1",
+      "asset:prop:name": "asset name",
+      "asset:prop:contenttype": "application/json",
+      "asset:prop:policy-id": "use-eu"
+    }
+  },
+  "dataAddress": {
+    "properties": {
+      "endpoint": "http://provider-backend-service:8080/data/asset-1",
+      "type": "HttpData"
+    }
+  }
+}

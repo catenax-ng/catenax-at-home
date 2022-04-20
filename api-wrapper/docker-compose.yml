@@ -1,0 +1,105 @@
+version: "3.9"
+
+services:
+  consumer-control-plane:
+    build:
+      context: services/control-plane
+      args:
+        JAR: build/libs/edc.jar
+    ports:
+      - "8191:9191" # default
+      - "8195:9193" # data
+      - "5005:8090"
+    environment:
+      EDC_VAULT: /config/vault.properties
+      EDC_KEYSTORE: /cert.pfx
+      EDC_KEYSTORE_PASSWORD: 123456
+      EDC_FS_CONFIG: /config/configuration.properties
+    volumes:
+      - ./config/consumer-control-plane.config:/config
+      - ./certs/cert.pfx:/cert.pfx
+
+  consumer-data-plane:
+    build:
+      context: services/data-plane
+      args:
+        JAR: build/libs/edc.jar
+    ports:
+      - "8192:9191" # default
+      - "5006:8090"
+    environment:
+      EDC_FS_CONFIG: /config/configuration.properties
+    volumes:
+     - ./config/consumer-data-plane.config:/config
+
+  api-wrapper:
+    build:
+      context: services/api-wrapper
+      args:
+        JAR: build/libs/edc.jar
+    ports:
+      - "8193:9191" # default
+#      - "9192" # callback
+      - "5007:8090"
+    environment:
+      EDC_FS_CONFIG: /config/configuration.properties
+    volumes:
+      - ./config/api-wrapper.config:/config
+
+  provider-control-plane:
+    build:
+      context: services/control-plane
+      args:
+        JAR: build/libs/edc.jar
+    ports:
+      - "8181:9191" # default
+      - "8184:9192" # validation
+      - "8187:9193" # data
+      - "5008:8090"
+    environment:
+      EDC_VAULT: /config/vault.properties
+      EDC_KEYSTORE: /cert.pfx
+      EDC_KEYSTORE_PASSWORD: 123456
+      EDC_FS_CONFIG: /config/configuration.properties
+    volumes:
+      - ./config/provider-control-plane.config:/config
+      - ./certs/cert.pfx:/cert.pfx
+
+  provider-data-plane:
+    build:
+      context: services/data-plane
+      args:
+        JAR: build/libs/edc.jar
+    ports:
+      - "8182:9191" # default
+      - "8183:9192" # public
+      - "5009:8090"
+    environment:
+      EDC_FS_CONFIG: /config/configuration.properties
+    volumes:
+      - ./config/provider-data-plane.config:/config
+
+  provider-backend-service:
+    build:
+      context: services/backend-data-service
+      args:
+        JAR: build/libs/backend-data-service.jar
+    ports:
+      - "8194:8080" # default
+      - "5010:8090"
+
+  consumer-aas-proxy-service:
+    build:
+      context: services/semantics/aasproxy
+      args:
+        JAR: target/aasproxy-1.0.0-SNAPSHOT.jar
+    ports:
+      - "4245:4245" # default
+      - "5014:8090"
+
+  registry-service:
+    image: ghcr.io/catenax/semantics/registry:catenax-at-home-latest
+    platform: ${DOCKER_PLATFORM:-linux/amd64}
+    ports:
+      - "4243:4243" # default
+      - "5013:8090"

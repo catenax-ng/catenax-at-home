@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Build all" type="CompoundRunConfigurationType">
+    <toRun name="Build api-wrapper" type="GradleRunConfiguration" />
+    <toRun name="Build backend-data-service" type="GradleRunConfiguration" />
+    <toRun name="Build control-plane" type="GradleRunConfiguration" />
+    <toRun name="Build data-plane" type="GradleRunConfiguration" />
+    <toRun name="Build semantics" type="MavenRunConfiguration" />
+    <method v="2" />
+  </configuration>
+</component>
