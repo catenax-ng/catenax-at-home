@@ -16,14 +16,13 @@ updates:
     directory: "/api-wrapper/services/semantics"
     schedule:
       interval: "daily"
-
-  #- package-ecosystem: "gradle"
-  #    directory: "/api-wrapper/services/data-plane"
-  #    schedule:
-  #      interval: "daily"
-  #- package-ecosystem: "gradle"
-  #    directory: "/api-wrapper/services/backend-data-service"
-  #    schedule:
-  #      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/api-wrapper/services/backend-data-service"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/api-wrapper/services/data-plane"
+    schedule:
+      interval: "daily"
 
 
