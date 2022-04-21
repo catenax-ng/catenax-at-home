@@ -33,7 +33,7 @@
         <jackson-databind-nullable-version>0.2.2</jackson-databind-nullable-version>
         <jackson-databind-version>2.13.2.1</jackson-databind-version>
         <jackson-threetenbp-version>2.9.10</jackson-threetenbp-version>
-        <jakarta-annotation-version>1.3.5</jakarta-annotation-version>
+        <jakarta-annotation-version>2.1.0</jakarta-annotation-version>
         <scribejava-version>8.0.0</scribejava-version>
         <feign-version>11.7</feign-version>
         <feign-form-version>3.8.0</feign-form-version>
