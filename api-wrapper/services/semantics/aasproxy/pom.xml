@@ -35,7 +35,7 @@
         <jackson-threetenbp-version>2.9.10</jackson-threetenbp-version>
         <jakarta-annotation-version>1.3.5</jakarta-annotation-version>
         <scribejava-version>8.0.0</scribejava-version>
-        <feign-version>11.7</feign-version>
+        <feign-version>11.8</feign-version>
         <feign-form-version>3.8.0</feign-form-version>
         <spring.feign.version>3.1.1</spring.feign.version>
         <semantics-version>1.3.0-SNAPSHOT</semantics-version>
