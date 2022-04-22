@@ -1,26 +1,22 @@
 version: 2
 updates:
-  - package-ecosystem: "github-actions"
-    directory: "/"
-    schedule:
-      interval: "daily"
-  - package-ecosystem: "gradle"
+  - package-ecosystem: gradle
     directory: "/api-wrapper/services/api-wrapper"
     schedule:
       interval: "daily"
-  - package-ecosystem: "gradle"
+  - package-ecosystem: gradle
     directory: "/api-wrapper/services/control-plane"
     schedule:
       interval: "daily"
-  - package-ecosystem: "maven"
+  - package-ecosystem: maven
     directory: "/api-wrapper/services/semantics"
     schedule:
-      interval: "daily"
+      interval: daily
   - package-ecosystem: "gradle"
     directory: "/api-wrapper/services/backend-data-service"
     schedule:
       interval: "daily"
-  - package-ecosystem: "gradle"
+  - package-ecosystem: gradle
     directory: "/api-wrapper/services/data-plane"
     schedule:
       interval: "daily"
