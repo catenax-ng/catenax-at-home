@@ -20,7 +20,7 @@ dependencies {
     api("$edcGroup:transfer-spi:$edcVersion")
     api("$edcGroup:auth-spi:$edcVersion")
 
-    api("jakarta.ws.rs:jakarta.ws.rs-api:3.0.0")
+    api("jakarta.ws.rs:jakarta.ws.rs-api:3.1.0")
 }
 
 java {
