@@ -84,7 +84,7 @@
 
 		<!-- json, xml, formats, ... -->
 		<jackson.version>2.13.2</jackson.version>
-		<json.version>20211205</json.version>
+		<json.version>20220320</json.version>
 		<!-- authentication -->
 		<oltu-version>1.0.2</oltu-version>
 
