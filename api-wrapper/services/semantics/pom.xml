@@ -83,7 +83,7 @@
 		<javax.servlet>4.0.1</javax.servlet>
 
 		<!-- json, xml, formats, ... -->
-		<jackson.version>2.13.1</jackson.version>
+		<jackson.version>2.13.2</jackson.version>
 		<json.version>20211205</json.version>
 		<!-- authentication -->
 		<oltu-version>1.0.2</oltu-version>
