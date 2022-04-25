@@ -22,33 +22,66 @@
 #   
 #
 
-export MAVEN_OPTS=(${GRADLE_PROPS[*]})
+#############################
+# Clone OOS EDC and build sources
+# |-> Milestone 3.1
+# https://github.com/eclipse-dataspaceconnector/DataSpaceConnector/tree/milestone-3.1
+#############################
+echo "01: --> CLONE AND BUILD EDC SOURCES"
+DIR="DataSpaceConnector"
+if [ -d "$DIR" ]; then
+  rm -rf $DIR
+  echo "Folder ${DIR} already exists: Deleting ${DIR}"
+fi
+git clone --branch milestone-3.1 --single-branch https://github.com/eclipse-dataspaceconnector/DataSpaceConnector.git
+cd $DIR
+./gradlew clean build publishToMavenLocal -x test
+cd ..
 
-# build semantics
+#############################
+# Build Semantics
+#############################
+echo "02: --> BUILD SEMANTICS SOURCES"
 cd services/semantics
-mvn clean install -DskipTests
-# build api-wrapper
+./mvnw clean install -DskipTests
+
+#############################
+# Build api-wrapper
+#############################
+echo "03: --> BUILD API-WRAPPER SOURCES"
 cd ../api-wrapper
 chmod +x gradlew
-./gradlew ${MAVEN_OPTS} clean build
-# build backend-data-service
+./gradlew clean build
+
+#############################
+# Build backend-data-service
+#############################
+echo "04: --> BUILD BACKEND-DATA-SERVICE SOURCES"
 cd ../backend-data-service
 chmod +x gradlew
-./gradlew ${MAVEN_OPTS} clean build
-# build control-plane
+./gradlew clean build
+
+#############################
+# Build control-plane
+#############################
+echo "05: --> BUILD CONTROL-PLANE SOURCES"
 cd ../control-plane
 chmod +x gradlew
-./gradlew ${MAVEN_OPTS} clean build
-# build data-plane
+./gradlew clean build
+
+#############################
+# Build data-plane
+#############################
+echo "06: --> BUILD DATA-PLANE SOURCES"
 cd ../data-plane
 chmod +x gradlew
 ./gradlew ${MAVEN_OPTS} clean build
+
+##############################
+# Docker Compose Build and Run
+##############################
 # change directory to root 
 cd ../..
-
-# 
-export DOCKER_PLATFORM=${DOCKER_PLATFORM:-linux/amd64}
-
-# build docker 
+echo "07: --> DOCKER COMPOSE BUILD AND RUN LOCAL CONTEXT"
 docker-compose --file docker-compose.yml --project-name catenax_at_home --verbose build
 docker-compose --file docker-compose.yml --project-name catenax_at_home --verbose up
