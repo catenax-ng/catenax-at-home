@@ -89,7 +89,7 @@
 		<oltu-version>1.0.2</oltu-version>
 
 		<!-- semantics -->
-		<bamm.version>1.0.1</bamm.version>
+		<bamm.version>1.0.2</bamm.version>
 		<bamm.sdk.version>1.0.0</bamm.sdk.version>
 		<jena.version>4.4.0</jena.version>
 		<shacl.version>1.4.2</shacl.version>
