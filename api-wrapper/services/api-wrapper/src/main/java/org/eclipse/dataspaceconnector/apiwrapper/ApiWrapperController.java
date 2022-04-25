@@ -19,7 +19,6 @@ import org.eclipse.dataspaceconnector.apiwrapper.config.ApiWrapperConfig;
 import org.eclipse.dataspaceconnector.apiwrapper.connector.sdk.model.ContractNegotiationDto;
 import org.eclipse.dataspaceconnector.apiwrapper.connector.sdk.model.ContractOfferDescription;
 import org.eclipse.dataspaceconnector.apiwrapper.connector.sdk.model.NegotiationInitiateRequestDto;
-import org.eclipse.dataspaceconnector.apiwrapper.connector.sdk.service.ApiWrapperService;
 import org.eclipse.dataspaceconnector.apiwrapper.connector.sdk.service.ContractNegotiationService;
 import org.eclipse.dataspaceconnector.apiwrapper.connector.sdk.service.ContractOfferService;
 import org.eclipse.dataspaceconnector.apiwrapper.connector.sdk.service.HttpProxyService;
@@ -52,7 +51,6 @@ public class ApiWrapperController {
     private final ContractNegotiationService contractNegotiationService;
     private final TransferProcessService transferProcessService;
     private final HttpProxyService httpProxyService;
-    private final ApiWrapperService apiWrapperService;
 
     // In-memory stores
     private final InMemoryEndpointDataReferenceCache endpointDataReferenceCache;
@@ -78,7 +76,6 @@ public class ApiWrapperController {
         this.endpointDataReferenceCache = endpointDataReferenceCache;
         this.contractAgreementCache = contractAgreementCache;
         this.config = config;
-        this.apiWrapperService = new ApiWrapperService(monitor);
 
         if (config.getConsumerEdcApiKeyValue() != null) {
             this.header = Collections.singletonMap(config.getConsumerEdcApiKeyName(), config.getConsumerEdcApiKeyValue());
@@ -101,7 +98,7 @@ public class ApiWrapperController {
             agreementId = initializeContractNegotiation(providerConnectorUrl, assetId);
         }
 
-        // // Initiate transfer process
+        // Initiate transfer process
         transferProcessService.initiateHttpProxyTransferProcess(
                 agreementId,
                 assetId,
@@ -111,8 +108,9 @@ public class ApiWrapperController {
         );
 
         EndpointDataReference dataReference = getDataReference(agreementId);
-        boolean validDataReference = apiWrapperService.endpointDataRefTokenExpired(dataReference);
+        boolean validDataReference = InMemoryEndpointDataReferenceCache.endpointDataRefTokenExpired(dataReference);
         if (!validDataReference) {
+            monitor.debug("Token for EndpointDataReference is expired.");
             endpointDataReferenceCache.remove(agreementId);
             // Contract negotiation needs to reinitialized because token for DataReference is no more valid.
             initializeContractNegotiation(providerConnectorUrl, assetId);
