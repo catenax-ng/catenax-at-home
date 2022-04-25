@@ -50,7 +50,6 @@ cd services/semantics
 #############################
 echo "03: --> BUILD API-WRAPPER SOURCES"
 cd ../api-wrapper
-chmod +x gradlew
 ./gradlew clean build
 
 #############################
@@ -58,7 +57,6 @@ chmod +x gradlew
 #############################
 echo "04: --> BUILD BACKEND-DATA-SERVICE SOURCES"
 cd ../backend-data-service
-chmod +x gradlew
 ./gradlew clean build
 
 #############################
@@ -66,7 +64,6 @@ chmod +x gradlew
 #############################
 echo "05: --> BUILD CONTROL-PLANE SOURCES"
 cd ../control-plane
-chmod +x gradlew
 ./gradlew clean build
 
 #############################
@@ -74,7 +71,6 @@ chmod +x gradlew
 #############################
 echo "06: --> BUILD DATA-PLANE SOURCES"
 cd ../data-plane
-chmod +x gradlew
 ./gradlew ${MAVEN_OPTS} clean build
 
 ##############################
