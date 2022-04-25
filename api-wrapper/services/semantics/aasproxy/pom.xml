@@ -29,7 +29,7 @@
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
-        <jackson-version>2.13.1</jackson-version>
+        <jackson-version>2.13.2</jackson-version>
         <jackson-databind-nullable-version>0.2.2</jackson-databind-nullable-version>
         <jackson-databind-version>2.13.2.2</jackson-databind-version>
         <jackson-threetenbp-version>2.12.5</jackson-threetenbp-version>
