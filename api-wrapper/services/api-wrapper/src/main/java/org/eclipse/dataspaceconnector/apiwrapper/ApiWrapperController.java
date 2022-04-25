@@ -98,22 +98,21 @@ public class ApiWrapperController {
             agreementId = initializeContractNegotiation(providerConnectorUrl, assetId);
         }
 
-        // Initiate transfer process
-        transferProcessService.initiateHttpProxyTransferProcess(
-                agreementId,
-                assetId,
-                config.getConsumerEdcControlUrl(),
-                providerConnectorUrl + IDS_PATH,
-                header
-        );
-
-        EndpointDataReference dataReference = getDataReference(agreementId);
-        boolean validDataReference = InMemoryEndpointDataReferenceCache.endpointDataRefTokenExpired(dataReference);
+        EndpointDataReference dataReference = endpointDataReferenceCache.get(agreementId);
+        boolean validDataReference = dataReference != null && InMemoryEndpointDataReferenceCache.endpointDataRefTokenExpired(dataReference);
         if (!validDataReference) {
-            monitor.debug("Token for EndpointDataReference is expired.");
+            monitor.debug("EndpointDataReference does not exists or token is expired.");
             endpointDataReferenceCache.remove(agreementId);
-            // Contract negotiation needs to reinitialized because token for DataReference is no more valid.
-            initializeContractNegotiation(providerConnectorUrl, assetId);
+
+            // Initiate transfer process
+            transferProcessService.initiateHttpProxyTransferProcess(
+                    agreementId,
+                    assetId,
+                    config.getConsumerEdcControlUrl(),
+                    providerConnectorUrl + IDS_PATH,
+                    header
+            );
+
             dataReference = getDataReference(agreementId);
         }
 
@@ -151,20 +150,29 @@ public class ApiWrapperController {
             agreementId = initializeContractNegotiation(providerConnectorUrl, assetId);
         }
 
-        // Initiate transfer process
-        transferProcessService.initiateHttpProxyTransferProcess(
-                agreementId,
-                assetId,
-                config.getConsumerEdcControlUrl(),
-                providerConnectorUrl + IDS_PATH,
-                header
-        );
+        EndpointDataReference dataReference = endpointDataReferenceCache.get(agreementId);
+        boolean validDataReference = dataReference != null && InMemoryEndpointDataReferenceCache.endpointDataRefTokenExpired(dataReference);
+        if (!validDataReference) {
+            monitor.debug("EndpointDataReference does not exists or token is expired.");
+            endpointDataReferenceCache.remove(agreementId);
+
+            // Initiate transfer process
+            transferProcessService.initiateHttpProxyTransferProcess(
+                    agreementId,
+                    assetId,
+                    config.getConsumerEdcControlUrl(),
+                    providerConnectorUrl + IDS_PATH,
+                    header
+            );
+
+            dataReference = getDataReference(agreementId);
+        }
 
         // Get data through data plane
         String data = "";
         try {
             data = httpProxyService.sendPOSTRequest(
-                    getDataReference(agreementId),
+                    dataReference,
                     subUrl,
                     queryParams,
                     body,
@@ -255,6 +263,4 @@ public class ApiWrapperController {
 
         return dataReference;
     }
-
-
 }

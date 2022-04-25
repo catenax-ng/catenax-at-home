@@ -25,11 +25,12 @@ public class InMemoryEndpointDataReferenceCache {
 
     public static boolean endpointDataRefTokenExpired(EndpointDataReference dataReference) {
         String token = dataReference.getAuthCode();
-        DecodedJWT jwt = JWT.decode(token);
-        if (jwt.getExpiresAt().before(new Date())) {
-            return false;
-        } else {
+
+        if (token == null) {
             return true;
         }
+
+        DecodedJWT jwt = JWT.decode(token);
+        return !jwt.getExpiresAt().before(new Date(System.currentTimeMillis() + 30 * 1000));
     }
 }
