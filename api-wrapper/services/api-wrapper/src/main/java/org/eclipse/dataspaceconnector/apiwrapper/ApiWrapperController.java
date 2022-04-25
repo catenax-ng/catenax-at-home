@@ -92,19 +92,29 @@ public class ApiWrapperController {
     ) throws InterruptedException, IOException {
         MultivaluedMap<String, String> queryParams = uriInfo.getQueryParameters();
 
-        // Initialize and negotiate everything
-        var agreementId = initializeContractNegotiation(providerConnectorUrl, assetId);
+        String agreementId = contractAgreementCache.get(assetId);
+        if (agreementId == null) {
+            // Initialize and negotiate everything
+            agreementId = initializeContractNegotiation(providerConnectorUrl, assetId);
+        }
 
-        // Initiate transfer process
-        transferProcessService.initiateHttpProxyTransferProcess(
-                agreementId,
-                assetId,
-                config.getConsumerEdcControlUrl(),
-                providerConnectorUrl + IDS_PATH,
-                header
-        );
+        EndpointDataReference dataReference = endpointDataReferenceCache.get(agreementId);
+        boolean validDataReference = dataReference != null && InMemoryEndpointDataReferenceCache.endpointDataRefTokenExpired(dataReference);
+        if (!validDataReference) {
+            monitor.debug("EndpointDataReference does not exists or token is expired.");
+            endpointDataReferenceCache.remove(agreementId);
 
-        EndpointDataReference dataReference = getDataReference(agreementId);
+            // Initiate transfer process
+            transferProcessService.initiateHttpProxyTransferProcess(
+                    agreementId,
+                    assetId,
+                    config.getConsumerEdcControlUrl(),
+                    providerConnectorUrl + IDS_PATH,
+                    header
+            );
+
+            dataReference = getDataReference(agreementId);
+        }
 
         // Get data through data plane
         String data = "";
@@ -134,19 +144,29 @@ public class ApiWrapperController {
     ) throws InterruptedException, IOException {
         MultivaluedMap<String, String> queryParams = uriInfo.getQueryParameters();
 
-        // Initialize and negotiate everything
-        var agreementId = initializeContractNegotiation(providerConnectorUrl, assetId);
+        String agreementId = contractAgreementCache.get(assetId);
+        if (agreementId == null) {
+            // Initialize and negotiate everything
+            agreementId = initializeContractNegotiation(providerConnectorUrl, assetId);
+        }
 
-        // Initiate transfer process
-        transferProcessService.initiateHttpProxyTransferProcess(
-                agreementId,
-                assetId,
-                config.getConsumerEdcControlUrl(),
-                providerConnectorUrl + IDS_PATH,
-                header
-        );
+        EndpointDataReference dataReference = endpointDataReferenceCache.get(agreementId);
+        boolean validDataReference = dataReference != null && InMemoryEndpointDataReferenceCache.endpointDataRefTokenExpired(dataReference);
+        if (!validDataReference) {
+            monitor.debug("EndpointDataReference does not exists or token is expired.");
+            endpointDataReferenceCache.remove(agreementId);
 
-        EndpointDataReference dataReference = getDataReference(agreementId);
+            // Initiate transfer process
+            transferProcessService.initiateHttpProxyTransferProcess(
+                    agreementId,
+                    assetId,
+                    config.getConsumerEdcControlUrl(),
+                    providerConnectorUrl + IDS_PATH,
+                    header
+            );
+
+            dataReference = getDataReference(agreementId);
+        }
 
         // Get data through data plane
         String data = "";
@@ -171,13 +191,6 @@ public class ApiWrapperController {
     }
 
     private String initializeContractNegotiation(String providerConnectorUrl, String assetId) throws InterruptedException, IOException {
-        String agreementId = contractAgreementCache.get(assetId);
-
-        if (agreementId != null) {
-            monitor.debug("Found already existing contract agreement in cache");
-            return agreementId;
-        }
-
         monitor.info("Initialize contract negotiation");
         var contractOffer = contractOfferService.findContractOffer4AssetId(
                 assetId,
@@ -228,7 +241,7 @@ public class ApiWrapperController {
             );
         }
 
-        agreementId = negotiation.getContractAgreementId();
+        String agreementId = negotiation.getContractAgreementId();
         contractAgreementCache.put(assetId, agreementId);
 
         return agreementId;

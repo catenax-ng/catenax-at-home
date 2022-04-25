@@ -21,6 +21,8 @@ dependencies {
     api("$edcGroup:auth-spi:$edcVersion")
 
     api("jakarta.ws.rs:jakarta.ws.rs-api:3.0.0")
+
+    implementation("com.auth0:java-jwt:3.19.1")
 }
 
 java {
