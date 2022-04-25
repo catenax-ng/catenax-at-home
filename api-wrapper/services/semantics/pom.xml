@@ -102,7 +102,7 @@
 		<liquibase.version>4.9.1</liquibase.version>
 		<!-- test libs -->
 		<assertj.version>3.22.0</assertj.version>
-		<junit.version>5.6.3</junit.version>
+		<junit.version>5.8.2</junit.version>
 
 		<!-- build -->
 		<maven.compiler.version>3.8.1</maven.compiler.version>
