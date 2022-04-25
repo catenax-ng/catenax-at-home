@@ -1,0 +1,50 @@
+version: "3.9"
+
+services:
+  consumer-control-plane:
+    image: catenax_at_home_consumer-control-plane:latest    
+    platform: ${DOCKER_PLATFORM:-linux/amd64}
+    ports:
+      - "8191:9191" # default/control
+      - "8195:9193" # data
+#      - "8282" # ids
+      - "5005:8090" # debugging
+    environment:
+      EDC_VAULT: /config/vault.properties
+      EDC_KEYSTORE: /cert.pfx
+      EDC_KEYSTORE_PASSWORD: 123456
+      EDC_FS_CONFIG: /config/configuration.properties
+    volumes:
+      - ./config/consumer-control-plane.config:/config
+      - ./certs/cert.pfx:/cert.pfx
+
+  consumer-data-plane:
+    image: catenax_at_home_consumer-data-plane:latest    
+    platform: ${DOCKER_PLATFORM:-linux/amd64}
+    ports:
+      - "8192:9191" # default
+#      - "9192" # public
+      - "5006:8090" # debugging
+    environment:
+      EDC_FS_CONFIG: /config/configuration.properties
+    volumes:
+     - ./config/consumer-data-plane.config:/config
+
+  api-wrapper:
+    image: catenax_at_home_api-wrapper:latest
+    platform: ${DOCKER_PLATFORM:-linux/amd64}
+    ports:
+      - "8193:9191" # default
+#      - "9192" # callback
+      - "5007:8090" # debugging
+    environment:
+      EDC_FS_CONFIG: /config/configuration.properties
+    volumes:
+      - ./config/api-wrapper.config:/config
+
+  consumer-aas-proxy-service:
+    image: catenax_at_home_consumer-aas-proxy-service:latest
+    platform: ${DOCKER_PLATFORM:-linux/amd64}
+    ports:
+      - "4245:4245" # default
+      - "5014:8090" # debugging
