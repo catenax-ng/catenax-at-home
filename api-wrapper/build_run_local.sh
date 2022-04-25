@@ -80,4 +80,9 @@ cd ../data-plane
 cd ../..
 echo "07: --> DOCKER COMPOSE BUILD AND RUN LOCAL CONTEXT"
 docker-compose --file docker-compose.yml --project-name catenax_at_home --verbose build
-docker-compose --file docker-compose.yml --project-name catenax_at_home --verbose up
+
+docker-compose --file docker-compose-consumer.yml --project-name consumer_catenax_at_home up &
+docker-compose --file docker-compose-provider.yml --project-name provider_catenax_at_home up &
+docker-compose --file docker-compose-centralservices.yml --project-name centralservices_catenax_at_home up &
+
+#docker-compose --file docker-compose.yml --project-name catenax_at_home --verbose up
