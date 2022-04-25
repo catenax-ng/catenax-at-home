@@ -15,4 +15,8 @@ public class InMemoryEndpointDataReferenceCache {
     public EndpointDataReference get(String agreementId) {
         return store.get(agreementId);
     }
+
+    public void remove(String agreementId) {
+        store.remove(agreementId);
+    }
 }

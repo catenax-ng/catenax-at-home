@@ -11,8 +11,6 @@ public class InMemoryContractAgreementCache {
     }
 
     public String get(String assetId) {
-//        TODO: Remove this until the access token for the data plane is not only 5 min valid
-//        return store.get(assetId);
-        return null;
+        return store.get(assetId);
     }
 }

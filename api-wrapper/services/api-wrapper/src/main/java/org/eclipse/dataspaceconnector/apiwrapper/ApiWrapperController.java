@@ -19,6 +19,7 @@ import org.eclipse.dataspaceconnector.apiwrapper.config.ApiWrapperConfig;
 import org.eclipse.dataspaceconnector.apiwrapper.connector.sdk.model.ContractNegotiationDto;
 import org.eclipse.dataspaceconnector.apiwrapper.connector.sdk.model.ContractOfferDescription;
 import org.eclipse.dataspaceconnector.apiwrapper.connector.sdk.model.NegotiationInitiateRequestDto;
+import org.eclipse.dataspaceconnector.apiwrapper.connector.sdk.service.ApiWrapperService;
 import org.eclipse.dataspaceconnector.apiwrapper.connector.sdk.service.ContractNegotiationService;
 import org.eclipse.dataspaceconnector.apiwrapper.connector.sdk.service.ContractOfferService;
 import org.eclipse.dataspaceconnector.apiwrapper.connector.sdk.service.HttpProxyService;
@@ -51,6 +52,7 @@ public class ApiWrapperController {
     private final ContractNegotiationService contractNegotiationService;
     private final TransferProcessService transferProcessService;
     private final HttpProxyService httpProxyService;
+    private final ApiWrapperService apiWrapperService;
 
     // In-memory stores
     private final InMemoryEndpointDataReferenceCache endpointDataReferenceCache;
@@ -76,6 +78,7 @@ public class ApiWrapperController {
         this.endpointDataReferenceCache = endpointDataReferenceCache;
         this.contractAgreementCache = contractAgreementCache;
         this.config = config;
+        this.apiWrapperService = new ApiWrapperService(monitor);
 
         if (config.getConsumerEdcApiKeyValue() != null) {
             this.header = Collections.singletonMap(config.getConsumerEdcApiKeyName(), config.getConsumerEdcApiKeyValue());
@@ -92,10 +95,13 @@ public class ApiWrapperController {
     ) throws InterruptedException, IOException {
         MultivaluedMap<String, String> queryParams = uriInfo.getQueryParameters();
 
-        // Initialize and negotiate everything
-        var agreementId = initializeContractNegotiation(providerConnectorUrl, assetId);
+        String agreementId = contractAgreementCache.get(assetId);
+        if (agreementId == null) {
+            // Initialize and negotiate everything
+            agreementId = initializeContractNegotiation(providerConnectorUrl, assetId);
+        }
 
-        // Initiate transfer process
+        // // Initiate transfer process
         transferProcessService.initiateHttpProxyTransferProcess(
                 agreementId,
                 assetId,
@@ -105,6 +111,13 @@ public class ApiWrapperController {
         );
 
         EndpointDataReference dataReference = getDataReference(agreementId);
+        boolean validDataReference = apiWrapperService.endpointDataRefTokenExpired(dataReference);
+        if (!validDataReference) {
+            endpointDataReferenceCache.remove(agreementId);
+            // Contract negotiation needs to reinitialized because token for DataReference is no more valid.
+            initializeContractNegotiation(providerConnectorUrl, assetId);
+            dataReference = getDataReference(agreementId);
+        }
 
         // Get data through data plane
         String data = "";
@@ -134,8 +147,11 @@ public class ApiWrapperController {
     ) throws InterruptedException, IOException {
         MultivaluedMap<String, String> queryParams = uriInfo.getQueryParameters();
 
-        // Initialize and negotiate everything
-        var agreementId = initializeContractNegotiation(providerConnectorUrl, assetId);
+        String agreementId = contractAgreementCache.get(assetId);
+        if (agreementId == null) {
+            // Initialize and negotiate everything
+            agreementId = initializeContractNegotiation(providerConnectorUrl, assetId);
+        }
 
         // Initiate transfer process
         transferProcessService.initiateHttpProxyTransferProcess(
@@ -146,13 +162,11 @@ public class ApiWrapperController {
                 header
         );
 
-        EndpointDataReference dataReference = getDataReference(agreementId);
-
         // Get data through data plane
         String data = "";
         try {
             data = httpProxyService.sendPOSTRequest(
-                    dataReference,
+                    getDataReference(agreementId),
                     subUrl,
                     queryParams,
                     body,
@@ -171,13 +185,6 @@ public class ApiWrapperController {
     }
 
     private String initializeContractNegotiation(String providerConnectorUrl, String assetId) throws InterruptedException, IOException {
-        String agreementId = contractAgreementCache.get(assetId);
-
-        if (agreementId != null) {
-            monitor.debug("Found already existing contract agreement in cache");
-            return agreementId;
-        }
-
         monitor.info("Initialize contract negotiation");
         var contractOffer = contractOfferService.findContractOffer4AssetId(
                 assetId,
@@ -228,7 +235,7 @@ public class ApiWrapperController {
             );
         }
 
-        agreementId = negotiation.getContractAgreementId();
+        String agreementId = negotiation.getContractAgreementId();
         contractAgreementCache.put(assetId, agreementId);
 
         return agreementId;
@@ -250,4 +257,6 @@ public class ApiWrapperController {
 
         return dataReference;
     }
+
+
 }
