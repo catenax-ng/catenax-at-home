@@ -1,0 +1,38 @@
+version: "3.9"
+
+services: 
+  provider-control-plane:
+    image: catenax_at_home_provider-control-plane:latest
+    platform: ${DOCKER_PLATFORM:-linux/amd64}
+    ports:
+      - "8181:9191" # default/control
+      - "8184:9192" # validation
+      - "8187:9193" # data
+      - "5008:8090" # debugging
+    environment:
+      EDC_VAULT: /config/vault.properties
+      EDC_KEYSTORE: /cert.pfx
+      EDC_KEYSTORE_PASSWORD: 123456
+      EDC_FS_CONFIG: /config/configuration.properties
+    volumes:
+      - ./config/provider-control-plane.config:/config
+      - ./certs/cert.pfx:/cert.pfx
+
+  provider-data-plane:
+    image: catenax_at_home_provider-data-plane:latest
+    platform: ${DOCKER_PLATFORM:-linux/amd64}
+    ports:
+      - "8182:9191" # default
+      - "8183:9192" # public
+      - "5009:8090" # debugging
+    environment:
+      EDC_FS_CONFIG: /config/configuration.properties
+    volumes:
+      - ./config/provider-data-plane.config:/config
+
+  provider-backend-service:
+    image: catenax_at_home_provider-backend-service:latest
+    platform: ${DOCKER_PLATFORM:-linux/amd64}
+    ports:
+      - "8194:8080" # default
+      - "5010:8090" # debugging
