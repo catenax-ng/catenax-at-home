@@ -64,7 +64,7 @@ cd ../backend-data-service
 #############################
 echo "05: --> BUILD CONTROL-PLANE SOURCES"
 cd ../control-plane
-./gradlew clean build
+./gradlew clean build -x test
 
 #############################
 # Build data-plane
