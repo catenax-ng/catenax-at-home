@@ -50,7 +50,7 @@ cd services/semantics
 #############################
 echo "03: --> BUILD API-WRAPPER SOURCES"
 cd ../api-wrapper
-./gradlew clean build
+./gradlew clean build -x test
 
 #############################
 # Build backend-data-service
