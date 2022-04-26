@@ -57,7 +57,7 @@ cd ../api-wrapper
 #############################
 echo "04: --> BUILD BACKEND-DATA-SERVICE SOURCES"
 cd ../backend-data-service
-./gradlew clean build
+./gradlew clean build -x test
 
 #############################
 # Build control-plane
