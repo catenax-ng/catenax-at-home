@@ -30,8 +30,8 @@
 echo "01: --> CLONE AND BUILD EDC SOURCES"
 DIR="DataSpaceConnector"
 if [ -d "$DIR" ]; then
-  rm -rf $DIR
   echo "Folder ${DIR} already exists: Deleting ${DIR}"
+  rm -rf $DIR
 fi
 git clone --branch milestone-3.1 --single-branch https://github.com/eclipse-dataspaceconnector/DataSpaceConnector.git
 cd $DIR
