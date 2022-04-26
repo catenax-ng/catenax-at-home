@@ -71,7 +71,7 @@ cd ../control-plane
 #############################
 echo "06: --> BUILD DATA-PLANE SOURCES"
 cd ../data-plane
-./gradlew ${MAVEN_OPTS} clean build
+./gradlew clean build -x test
 
 ##############################
 # Docker Compose Build and Run
