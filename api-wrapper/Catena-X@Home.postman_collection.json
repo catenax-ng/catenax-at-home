@@ -1,0 +1,655 @@
+{
+	"info": {
+		"_postman_id": "bb19742e-eb16-4719-8520-882cf75c7d10",
+		"name": "Catena-X@Home",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Data Provider",
+			"item": [
+				{
+					"name": "1. /product-description/submodel - Create sample data",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"performanceIndicator\": {\n        \"electricCapacityMin\": 1.7976931348623155E308,\n        \"electricCapacityMax\": 1.7976931348623155E308\n    },\n    \"minimalStateOfHealth\": {\n        \"minimalStateOfHealthValue\": 1.7976931348623155E308,\n        \"specificatorId\": \"eOMtThyhVNLWUZNRcBaQKxI\",\n        \"minimalStateOfHealthPhase\": \"as specified by OEM\"\n    },\n    \"type\": \"HVB\",\n    \"currentStateOfHealth\": [\n        {\n            \"currentStateOfHealthPhase\": \"as specified by OEM\",\n            \"currentStateOfHealthTimestamp\": \"2022-04-07T11:55:16.809Z\",\n            \"currentStateOfHealthValue\": 1.7976931348623155E308\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{submodelServerUrl}}/data/{{digitalTwinSubmodelId}}",
+							"host": [
+								"{{submodelServerUrl}}"
+							],
+							"path": [
+								"data",
+								"{{digitalTwinSubmodelId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "1.1 /product-description/submodel - Create sample data Copy",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"performanceIndicator\": {\n        \"electricCapacityMin\": 1.7976931348623155E308,\n        \"electricCapacityMax\": 1.7976931348623155E308\n    },\n    \"minimalStateOfHealth\": {\n        \"minimalStateOfHealthValue\": 1.7976931348623155E308,\n        \"specificatorId\": \"eOMtThyhVNLWUZNRcBaQKxI\",\n        \"minimalStateOfHealthPhase\": \"as specified by OEM\"\n    },\n    \"type\": \"HVB\",\n    \"currentStateOfHealth\": [\n        {\n            \"currentStateOfHealthPhase\": \"as specified by OEM\",\n            \"currentStateOfHealthTimestamp\": \"2022-04-07T11:55:16.809Z\",\n            \"currentStateOfHealthValue\": 1.7976931348623155E308\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{submodelServerUrl}}/data/{{digitalTwinSubmodelId}}",
+							"host": [
+								"{{submodelServerUrl}}"
+							],
+							"path": [
+								"data",
+								"{{digitalTwinSubmodelId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2. /api/v1/data/assets - Create an EDC Asset",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Api-Key",
+								"value": "123456",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"asset\": {\n    \"properties\": {\n      \"asset:prop:id\": \"{{digitalTwinId}}-{{digitalTwinSubmodelId}}\",\n      \"asset:prop:name\": \"product description\",\n      \"asset:prop:contenttype\": \"application/json\",\n      \"asset:prop:policy-id\": \"use-eu\"\n    }\n  },\n  \"dataAddress\": {\n    \"properties\": {\n      \"endpoint\": \"{{submodelServerUrlInternal}}/data/{{digitalTwinSubmodelId}}\",\n      \"type\": \"HttpData\"\n    }\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{providerControlPlane}}/api/v1/data/assets",
+							"host": [
+								"{{providerControlPlane}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"data",
+								"assets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2.1 /api/v1/data/assets - Get an EDC Asset",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Api-Key",
+								"value": "123456",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{providerControlPlane}}/api/v1/data/assets",
+							"host": [
+								"{{providerControlPlane}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"data",
+								"assets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "3. /api/v1/data/policies - Create an EDC Policy",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Api-Key",
+								"value": "123456",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"uid\": \"{{edcPolicyId}}\",\n  \"permissions\": [\n    {\n      \"target\": \"{{digitalTwinId}}-{{digitalTwinSubmodelId}}\",\n      \"action\": {\n        \"type\": \"USE\"\n      },\n      \"edctype\": \"dataspaceconnector:permission\"\n    }\n  ],\n  \"@type\": {\n    \"@policytype\": \"set\"\n  }\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{providerControlPlane}}/api/v1/data/policies",
+							"host": [
+								"{{providerControlPlane}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"data",
+								"policies"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "3.1 /api/v1/data/policies - Get EDC Policy",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Api-Key",
+								"value": "123456",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{providerControlPlane}}/api/v1/data/policies",
+							"host": [
+								"{{providerControlPlane}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"data",
+								"policies"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "4. /api/v1/data/contractdefinitions - Create an EDC contract definition",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Api-Key",
+								"value": "123456",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"1\",\n  \"accessPolicyId\": \"{{edcPolicyId}}\",\n  \"contractPolicyId\": \"{{edcPolicyId}}\",\n  \"criteria\": []\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{providerControlPlane}}/api/v1/data/contractdefinitions",
+							"host": [
+								"{{providerControlPlane}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"data",
+								"contractdefinitions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "4.1 /api/v1/data/contractdefinitions - Get EDC contract definition",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Api-Key",
+								"value": "123456",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{providerControlPlane}}/api/v1/data/contractdefinitions",
+							"host": [
+								"{{providerControlPlane}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"data",
+								"contractdefinitions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "5. /registry/shell-descriptors - Create a Digital Twin",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"description\": [\n        {\n            \"language\": \"en\",\n            \"text\": \"BMW 520e Plugin-Hybrid\"\n        }\n    ],\n    \"globalAssetId\": {\n        \"value\": [\n            \"{{digitalTwinId}}\"\n        ]\n    },\n    \"idShort\": \"BMW 520e Plugin-Hybrid\",\n    \"identification\": \"{{digitalTwinId}}\",\n    \"specificAssetIds\": [\n        {\n            \"key\": \"PartNumber\",\n            \"value\": \"31BK\"\n        },\n        {\n            \"key\": \"VAN\",\n            \"value\": \"7e97f714-0785-3f9d-ac37-b31989097be3\"\n        }\n    ],\n    \"submodelDescriptors\": [\n        {\n            \"description\": [\n                {\n                    \"language\": \"en\",\n                    \"text\": \"Traceability Submodel\"\n                }\n            ],\n            \"idShort\": \"traceability\",\n            \"identification\": \"{{digitalTwinSubmodelId}}\",\n            \"semanticId\": {\n                \"value\": [\n                    \"urn:bamm:com.catenax.battery.product_description:1.0.1#ProductDescription\"\n                ]\n            },\n            \"endpoints\": [\n                {\n                    \"interface\": \"SUBMODEL-1.0RC02\",\n                    \"protocolInformation\": {\n                        \"endpointAddress\": \"{{providerControlPlaneInternal}}/{{providerBpn}}/{{digitalTwinId}}-{{digitalTwinSubmodelId}}/submodel?content=value&extent=withBlobValue\",\n                        \"endpointProtocol\": \"IDS/ECLIPSE DATASPACE CONNECTOR\",\n                        \"endpointProtocolVersion\": \"0.0.1-SNAPSHOT\"\n                    }\n                }\n            ]\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{twinRegistryUrl}}/registry/shell-descriptors",
+							"host": [
+								"{{twinRegistryUrl}}"
+							],
+							"path": [
+								"registry",
+								"shell-descriptors"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "5.1 /registry/shell-descriptors - Get Digital Twin",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{twinRegistryUrl}}/registry/shell-descriptors",
+							"host": [
+								"{{twinRegistryUrl}}"
+							],
+							"path": [
+								"registry",
+								"shell-descriptors"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Data Consumer",
+			"item": [
+				{
+					"name": "1. /lookup/shells - Query Digital Twin",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{aasProxyUrl}}/lookup/shells?assetIds=%5B%7B%0A%09%22key%22%3A%20%22PartNumber%22%2C%0A%09%22value%22%3A%20%2231BK%22%0A%7D%5D",
+							"host": [
+								"{{aasProxyUrl}}"
+							],
+							"path": [
+								"lookup",
+								"shells"
+							],
+							"query": [
+								{
+									"key": "assetIds",
+									"value": "%5B%7B%0A%09%22key%22%3A%20%22PartNumber%22%2C%0A%09%22value%22%3A%20%2231BK%22%0A%7D%5D"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "1.1 /registry/shell-descriptors/{id} - Get Digital Twin By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{aasProxyUrl}}/registry/shell-descriptors/:aasIdentifier",
+							"host": [
+								"{{aasProxyUrl}}"
+							],
+							"path": [
+								"registry",
+								"shell-descriptors",
+								":aasIdentifier"
+							],
+							"variable": [
+								{
+									"key": "aasIdentifier",
+									"value": "{{digitalTwinId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "1.2 /registry/shell-descriptors/{id} - NON-PROXY Get Digital Twin By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{twinRegistryUrl}}/registry/shell-descriptors/:aasIdentifier",
+							"host": [
+								"{{twinRegistryUrl}}"
+							],
+							"path": [
+								"registry",
+								"shell-descriptors",
+								":aasIdentifier"
+							],
+							"variable": [
+								{
+									"key": "aasIdentifier",
+									"value": "{{digitalTwinId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2. /submodel - Get submodel data",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"//var encodedTwinId = encodeURIComponent(pm.environment.get(\"digitalTwinId\"));",
+									"",
+									"//var encodedSubmodelId = encodeURIComponent(pm.environment.get(\"digitalTwinSubmodelId\"));",
+									"",
+									"//pm.environment.set(\"encoded_assetId\", encodedTwinId+\"-\"+encodedSubmodelId);",
+									"//pm.environment.set(\"encoded_submodelId\", encodedSubmodelId);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "somepassword",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "someuser",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{aasProxyUrl}}/shells/:assetId/aas/:submodelId/submodel?content=value&extent=withBlobValue",
+							"host": [
+								"{{aasProxyUrl}}"
+							],
+							"path": [
+								"shells",
+								":assetId",
+								"aas",
+								":submodelId",
+								"submodel"
+							],
+							"query": [
+								{
+									"key": "level",
+									"value": "deep",
+									"disabled": true
+								},
+								{
+									"key": "content",
+									"value": "value"
+								},
+								{
+									"key": "extent",
+									"value": "withBlobValue"
+								}
+							],
+							"variable": [
+								{
+									"key": "assetId",
+									"value": "{{digitalTwinId}}"
+								},
+								{
+									"key": "submodelId",
+									"value": "{{digitalTwinSubmodelId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2.1 /submodel - WITHOUT-AAS-PROXY",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var encodedTwinId = encodeURIComponent(pm.environment.get(\"digitalTwinId\"));",
+									"",
+									"var encodedSubmodelId = encodeURIComponent(pm.environment.get(\"digitalTwinSubmodelId\"));",
+									"",
+									"var encodedProviderControlPlaneInternal = encodeURIComponent(pm.environment.get(\"providerControlPlaneInternal\"));",
+									"",
+									"pm.environment.set(\"encoded_assetId\", encodedTwinId+\"-\"+encodedSubmodelId);",
+									"pm.environment.set(\"encoded_submodelId\", encodedSubmodelId);",
+									"pm.environment.set(\"encoded_pcpi\", encodedProviderControlPlaneInternal);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "somepassword",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "someuser",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{edcApiWrapperUrl}}/api/service/:assetId/submodel?provider-connector-url={{providerControlPlaneInternal}}",
+							"host": [
+								"{{edcApiWrapperUrl}}"
+							],
+							"path": [
+								"api",
+								"service",
+								":assetId",
+								"submodel"
+							],
+							"query": [
+								{
+									"key": "provider-connector-url",
+									"value": "{{providerControlPlaneInternal}}"
+								}
+							],
+							"variable": [
+								{
+									"key": "assetId",
+									"value": "{{digitalTwinId}}-{{digitalTwinSubmodelId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
