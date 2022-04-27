@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "bb19742e-eb16-4719-8520-882cf75c7d10",
-		"name": "Catena-X@Home_New",
+		"_postman_id": "aa479f00-47e5-4ba4-9820-feed0d64d596",
+		"name": "Catena-X@Home_Getting_Started_Guide",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -89,56 +89,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"asset\": {\n    \"properties\": {\n      \"asset:prop:id\": \"{{digitalTwinId}}-{{digitalTwinSubmodelId}}\",\n      \"asset:prop:name\": \"product description\",\n      \"asset:prop:contenttype\": \"application/json\",\n      \"asset:prop:policy-id\": \"use-eu\"\n    }\n  },\n  \"dataAddress\": {\n    \"properties\": {\n      \"endpoint\": \"{{submodelServerUrl}}/data/{{digitalTwinSubmodelId}}\",\n      \"type\": \"HttpData\"\n    }\n  }\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{providerControlPlane}}/api/v1/data/assets",
-							"host": [
-								"{{providerControlPlane}}"
-							],
-							"path": [
-								"api",
-								"v1",
-								"data",
-								"assets"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "2.1 /api/v1/data/assets - Get an EDC Asset",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "X-Api-Key",
-								"value": "123456",
-								"type": "text"
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							},
-							{
-								"key": "",
-								"value": "",
-								"type": "text",
-								"disabled": true
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "",
+							"raw": "{\n  \"asset\": {\n    \"properties\": {\n      \"asset:prop:id\": \"{{digitalTwinId}}-{{digitalTwinSubmodelId}}\",\n      \"asset:prop:name\": \"product description\",\n      \"asset:prop:contenttype\": \"application/json\",\n      \"asset:prop:policy-id\": \"use-eu\"\n    }\n  },\n  \"dataAddress\": {\n    \"properties\": {\n      \"endpoint\": \"http://provider-backend-service:8080/data/{{digitalTwinSubmodelId}}\",\n      \"type\": \"HttpData\"\n    }\n  }\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -164,55 +115,6 @@
 					"name": "3. /api/v1/data/policies - Create an EDC Policy",
 					"request": {
 						"method": "POST",
-						"header": [
-							{
-								"key": "X-Api-Key",
-								"value": "123456",
-								"type": "text"
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							},
-							{
-								"key": "",
-								"value": "",
-								"type": "text",
-								"disabled": true
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"uid\": \"{{edcPolicyId}}\",\n  \"permissions\": [\n    {\n      \"target\": \"{{digitalTwinId}}-{{digitalTwinSubmodelId}}\",\n      \"action\": {\n        \"type\": \"USE\"\n      },\n      \"edctype\": \"dataspaceconnector:permission\"\n    }\n  ],\n  \"@type\": {\n    \"@policytype\": \"set\"\n  }\n}\n",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{providerControlPlane}}/api/v1/data/policies",
-							"host": [
-								"{{providerControlPlane}}"
-							],
-							"path": [
-								"api",
-								"v1",
-								"data",
-								"policies"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "3.1 /api/v1/data/policies - Get EDC Policy",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
 						"header": [
 							{
 								"key": "X-Api-Key",
@@ -302,92 +204,13 @@
 					"response": []
 				},
 				{
-					"name": "4.1 /api/v1/data/contractdefinitions - Get EDC contract definition",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "X-Api-Key",
-								"value": "123456",
-								"type": "text"
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							},
-							{
-								"key": "",
-								"value": "",
-								"type": "text",
-								"disabled": true
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"id\": \"1\",\n  \"accessPolicyId\": \"{{edcPolicyId}}\",\n  \"contractPolicyId\": \"{{edcPolicyId}}\",\n  \"criteria\": []\n}\n",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{providerControlPlane}}/api/v1/data/contractdefinitions",
-							"host": [
-								"{{providerControlPlane}}"
-							],
-							"path": [
-								"api",
-								"v1",
-								"data",
-								"contractdefinitions"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "5. /registry/shell-descriptors - Create a Digital Twin",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"description\": [\n        {\n            \"language\": \"en\",\n            \"text\": \"BMW 520e Plugin-Hybrid\"\n        }\n    ],\n    \"globalAssetId\": {\n        \"value\": [\n            \"{{digitalTwinId}}\"\n        ]\n    },\n    \"idShort\": \"BMW 520e Plugin-Hybrid\",\n    \"identification\": \"{{digitalTwinId}}\",\n    \"specificAssetIds\": [\n        {\n            \"key\": \"PartNumber\",\n            \"value\": \"31BK\"\n        },\n        {\n            \"key\": \"VAN\",\n            \"value\": \"7e97f714-0785-3f9d-ac37-b31989097be3\"\n        }\n    ],\n    \"submodelDescriptors\": [\n        {\n            \"description\": [\n                {\n                    \"language\": \"en\",\n                    \"text\": \"Traceability Submodel\"\n                }\n            ],\n            \"idShort\": \"traceability\",\n            \"identification\": \"{{digitalTwinSubmodelId}}\",\n            \"semanticId\": {\n                \"value\": [\n                    \"urn:bamm:com.catenax.battery.product_description:1.0.1#ProductDescription\"\n                ]\n            },\n            \"endpoints\": [\n                {\n                    \"interface\": \"SUBMODEL-1.0RC02\",\n                    \"protocolInformation\": {\n                        \"endpointAddress\": \"{{providerControlPlaneInternal}}/{{providerBpn}}/{{digitalTwinId}}-{{digitalTwinSubmodelId}}/submodel?content=value&extent=withBlobValue\",\n                        \"endpointProtocol\": \"IDS/ECLIPSE DATASPACE CONNECTOR\",\n                        \"endpointProtocolVersion\": \"0.0.1-SNAPSHOT\"\n                    }\n                }\n            ]\n        }\n    ]\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{twinRegistryUrl}}/registry/shell-descriptors",
-							"host": [
-								"{{twinRegistryUrl}}"
-							],
-							"path": [
-								"registry",
-								"shell-descriptors"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "5.1 /registry/shell-descriptors - Get Digital Twin",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"description\": [\n        {\n            \"language\": \"en\",\n            \"text\": \"BMW 520e Plugin-Hybrid\"\n        }\n    ],\n    \"globalAssetId\": {\n        \"value\": [\n            \"{{digitalTwinId}}\"\n        ]\n    },\n    \"idShort\": \"BMW 520e Plugin-Hybrid\",\n    \"identification\": \"{{digitalTwinId}}\",\n    \"specificAssetIds\": [\n        {\n            \"key\": \"PartNumber\",\n            \"value\": \"31BK\"\n        },\n        {\n            \"key\": \"VAN\",\n            \"value\": \"7e97f714-0785-3f9d-ac37-b31989097be3\"\n        }\n    ],\n    \"submodelDescriptors\": [\n        {\n            \"description\": [\n                {\n                    \"language\": \"en\",\n                    \"text\": \"Traceability Submodel\"\n                }\n            ],\n            \"idShort\": \"traceability\",\n            \"identification\": \"{{digitalTwinSubmodelId}}\",\n            \"semanticId\": {\n                \"value\": [\n                    \"urn:bamm:com.catenax.battery.product_description:1.0.1#ProductDescription\"\n                ]\n            },\n            \"endpoints\": [\n                {\n                    \"interface\": \"SUBMODEL-1.0RC02\",\n                    \"protocolInformation\": {\n                        \"endpointAddress\": \"{{providerControlPlaneInternal}}/{{providerBpn}}/{{digitalTwinId}}-{{digitalTwinSubmodelId}}/submodel?content=value&extent=withBlobValue\",\n                        \"endpointProtocol\": \"IDS/ECLIPSE DATASPACE CONNECTOR\",\n                        \"endpointProtocolVersion\": \"0.0.1-SNAPSHOT\"\n                    }\n                }\n            ]\n        }\n    ]\n}",
+							"raw": "{\n    \"description\": [\n        {\n            \"language\": \"en\",\n            \"text\": \"BMW 520e Plugin-Hybrid\"\n        }\n    ],\n    \"globalAssetId\": {\n        \"value\": [\n            \"{{digitalTwinId}}\"\n        ]\n    },\n    \"idShort\": \"BMW 520e Plugin-Hybrid\",\n    \"identification\": \"{{digitalTwinId}}\",\n    \"specificAssetIds\": [\n        {\n            \"key\": \"PartNumber\",\n            \"value\": \"31BK\"\n        },\n        {\n            \"key\": \"VAN\",\n            \"value\": \"7e97f714-0785-3f9d-ac37-b31989097be3\"\n        }\n    ],\n    \"submodelDescriptors\": [\n        {\n            \"description\": [\n                {\n                    \"language\": \"en\",\n                    \"text\": \"Traceability Submodel\"\n                }\n            ],\n            \"idShort\": \"traceability\",\n            \"identification\": \"{{digitalTwinSubmodelId}}\",\n            \"semanticId\": {\n                \"value\": [\n                    \"urn:bamm:com.catenax.battery.product_description:1.0.1#ProductDescription\"\n                ]\n            },\n            \"endpoints\": [\n                {\n                    \"interface\": \"SUBMODEL-1.0RC02\",\n                    \"protocolInformation\": {\n                        \"endpointAddress\": \"http://{{providerControlPlaneDockerInternal}}/{{providerBpn}}/{{digitalTwinId}}-{{digitalTwinSubmodelId}}/submodel?content=value&extent=withBlobValue\",\n                        \"endpointProtocol\": \"IDS/ECLIPSE DATASPACE CONNECTOR\",\n                        \"endpointProtocolVersion\": \"0.0.1-SNAPSHOT\"\n                    }\n                }\n            ]\n        }\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -442,20 +265,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{aasProxyUrl}}/registry/shell-descriptors/:aasIdentifier",
+							"raw": "{{aasProxyUrl}}/registry/shell-descriptors/{{digitalTwinId}}",
 							"host": [
 								"{{aasProxyUrl}}"
 							],
 							"path": [
 								"registry",
 								"shell-descriptors",
-								":aasIdentifier"
-							],
-							"variable": [
-								{
-									"key": "aasIdentifier",
-									"value": "{{digitalTwinId}}"
-								}
+								"{{digitalTwinId}}"
 							]
 						}
 					},
@@ -467,20 +284,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{twinRegistryUrl}}/registry/shell-descriptors/:aasIdentifier",
+							"raw": "{{twinRegistryUrl}}/registry/shell-descriptors/{{digitalTwinId}}",
 							"host": [
 								"{{twinRegistryUrl}}"
 							],
 							"path": [
 								"registry",
 								"shell-descriptors",
-								":aasIdentifier"
-							],
-							"variable": [
-								{
-									"key": "aasIdentifier",
-									"value": "{{digitalTwinId}}"
-								}
+								"{{digitalTwinId}}"
 							]
 						}
 					},
@@ -507,22 +318,20 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{aasProxyUrl}}/shells/:assetId/aas/:submodelId/submodel?level=deep&content=value&extent=withBlobValue",
+							"raw": "http://localhost:4245/shells/urn:uuid:365e6fbe-bb34-11ec-8422-0242ac120002/aas/urn:uuid:61125dc3-5e6f-4f4b-838d-447432b97918/submodel?content=value&extent=withBlobValue",
+							"protocol": "http",
 							"host": [
-								"{{aasProxyUrl}}"
+								"localhost"
 							],
+							"port": "4245",
 							"path": [
 								"shells",
-								":assetId",
+								"urn:uuid:365e6fbe-bb34-11ec-8422-0242ac120002",
 								"aas",
-								":submodelId",
+								"urn:uuid:61125dc3-5e6f-4f4b-838d-447432b97918",
 								"submodel"
 							],
 							"query": [
-								{
-									"key": "level",
-									"value": "deep"
-								},
 								{
 									"key": "content",
 									"value": "value"
@@ -530,16 +339,6 @@
 								{
 									"key": "extent",
 									"value": "withBlobValue"
-								}
-							],
-							"variable": [
-								{
-									"key": "assetId",
-									"value": "{{digitalTwinId}}"
-								},
-								{
-									"key": "submodelId",
-									"value": "{{digitalTwinSubmodelId}}"
 								}
 							]
 						}
@@ -567,26 +366,22 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{edcApiWrapperUrl}}/api/service/:aasIdentifier/submodel?provider-connector-url={{providerControlPlaneInternal}}",
+							"raw": "http://localhost:8193/api/service/urn:uuid:365e6fbe-bb34-11ec-8422-0242ac120002-urn:uuid:61125dc3-5e6f-4f4b-838d-447432b97918/submodel?provider-connector-url=http://provider-control-plane:8282",
+							"protocol": "http",
 							"host": [
-								"{{edcApiWrapperUrl}}"
+								"localhost"
 							],
+							"port": "8193",
 							"path": [
 								"api",
 								"service",
-								":aasIdentifier",
+								"urn:uuid:365e6fbe-bb34-11ec-8422-0242ac120002-urn:uuid:61125dc3-5e6f-4f4b-838d-447432b97918",
 								"submodel"
 							],
 							"query": [
 								{
 									"key": "provider-connector-url",
-									"value": "{{providerControlPlaneInternal}}"
-								}
-							],
-							"variable": [
-								{
-									"key": "aasIdentifier",
-									"value": null
+									"value": "http://provider-control-plane:8282"
 								}
 							]
 						}
@@ -614,6 +409,58 @@
 					""
 				]
 			}
+		}
+	],
+	"variable": [
+		{
+			"key": "twinRegistryUrl",
+			"value": "http://localhost:4243",
+			"type": "string"
+		},
+		{
+			"key": "aasProxyUrl",
+			"value": "http://localhost:4245",
+			"type": "string"
+		},
+		{
+			"key": "edcApiWrapperUrl",
+			"value": "http://localhost:8193/api/service",
+			"type": "string"
+		},
+		{
+			"key": "providerControlPlane",
+			"value": "http://localhost:8187",
+			"type": "string"
+		},
+		{
+			"key": "providerControlPlaneDockerInternal",
+			"value": "provider-control-plane:8282",
+			"type": "string"
+		},
+		{
+			"key": "submodelServerUrl",
+			"value": "http://localhost:8194",
+			"type": "string"
+		},
+		{
+			"key": "providerBpn",
+			"value": "some-bpn",
+			"type": "default"
+		},
+		{
+			"key": "digitalTwinId",
+			"value": "urn:uuid:365e6fbe-bb34-11ec-8422-0242ac120002",
+			"type": "string"
+		},
+		{
+			"key": "digitalTwinSubmodelId",
+			"value": "urn:uuid:61125dc3-5e6f-4f4b-838d-447432b97918",
+			"type": "string"
+		},
+		{
+			"key": "edcPolicyId",
+			"value": "231802-bb34-11ec-8422-0242ac120002",
+			"type": "string"
 		}
 	]
 }
