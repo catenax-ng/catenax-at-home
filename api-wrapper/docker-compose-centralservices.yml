@@ -11,7 +11,7 @@ services:
       - "4243:4243" # default
       - "5013:8090" # debugging
     networks:
-      - centralservices_catenax_at_home_dataspace
+      - centralservices_catenax_at_home
 
 networks:
   centralservices_catenax_at_home:
