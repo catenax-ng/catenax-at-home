@@ -39,9 +39,9 @@ services:
      - ./config/consumer-data-plane.config:/config
 
   api-wrapper:
-    image: catenax_at_home_api-wrapper:latest    
+    image: catenax_at_home_api-wrapper:latest
     ports:
-      - "8091:9191" # default (/api)      
+      - "8091:9191" # default (/api)
       - "5005:8090" # debugging
     expose:
       - "9192"      # callback (/callback)
