@@ -2,10 +2,10 @@ version: "3.9"
 
 services:
   consumer-control-plane:
-    image: catenax_at_home_consumer-control-plane:latest        
+    image: catenax_at_home_consumer-control-plane:latest
     ports:
-      - "8191:9191" # default/control (/api)      
-      - "8193:9193" # data (/api/v1/data)      
+      - "8191:9191" # default/control (/api)
+      - "8193:9193" # data (/api/v1/data)
       - "5007:8090" # debugging
     expose:
       - "9192"      # validation (/validation)
@@ -23,9 +23,9 @@ services:
       - ./certs/cert.pfx:/cert.pfx
 
   consumer-data-plane:
-    image: catenax_at_home_consumer-data-plane:latest        
+    image: catenax_at_home_consumer-data-plane:latest
     ports:
-      - "8291:9191" # default (/api)      
+      - "8291:9191" # default (/api)
       - "5008:8090" # debugging
     expose:
       - "9192"      # public (/public)
@@ -39,9 +39,9 @@ services:
      - ./config/consumer-data-plane.config:/config
 
   api-wrapper:
-    image: catenax_at_home_api-wrapper:latest    
+    image: catenax_at_home_api-wrapper:latest
     ports:
-      - "8091:9191" # default (/api)      
+      - "8091:9191" # default (/api)
       - "5005:8090" # debugging
     expose:
       - "9192"      # callback (/callback)
