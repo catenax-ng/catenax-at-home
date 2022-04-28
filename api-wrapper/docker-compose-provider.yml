@@ -26,7 +26,7 @@ services:
     image: catenax_at_home_provider-data-plane:latest    
     ports:
       - "8491:9191" # default (/api)
-      - "8492:9192" # public (/public)      
+      - "8492:9192" # public (/public)
       - "5010:8090" # debugging
     expose:
       - "9193"      # control (/control)
