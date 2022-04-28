@@ -14,6 +14,7 @@ services:
       - "9192"      # callback (/callback)
     environment:
       EDC_FS_CONFIG: /config/configuration.properties
+      JAVA_TOOL_OPTIONS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8090"
     volumes:
       - ./config/api-wrapper.config:/config
 
@@ -78,8 +79,8 @@ services:
     ports:
       - "8391:9191" # default/control (/api)
       - "8392:9192" # validation (/validation)
-      - "8393:9193" # data (/api/v1/data)      
-      - "5009:8090" # debugging
+      - "8393:9193" # data (/api/v1/data)            
+      - "5009:8090" # debugging      
     expose:
       - "8282"      # ids (/api/v1/ids)  
     environment:
