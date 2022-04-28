@@ -5,6 +5,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import org.eclipse.dataspaceconnector.apiwrapper.connector.sdk.Utility;
+import org.eclipse.dataspaceconnector.apiwrapper.connector.sdk.model.TransferRequestDto;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.eclipse.dataspaceconnector.spi.types.TypeManager;
 import org.eclipse.dataspaceconnector.spi.types.domain.DataAddress;
@@ -18,8 +19,7 @@ import java.util.UUID;
 import static java.lang.String.format;
 
 public class TransferProcessService {
-//    private static final String TRANSFER_PATH = "/transferprocess";
-    private static final String TRANSFER_PATH = "/control/transfer";
+   private static final String TRANSFER_PATH = "/transferprocess";
     private final Monitor monitor;
     private final TypeManager typeManager;
     private final OkHttpClient httpClient;
@@ -30,8 +30,8 @@ public class TransferProcessService {
         this.httpClient = httpClient;
     }
 
-    public String initiateHttpProxyTransferProcess(String agreementId, String assetId, String consumerEdcControlUrl, String providerConnectorControlPlaneIDSUrl, Map<String, String> headers) throws IOException {
-        var url = consumerEdcControlUrl + TRANSFER_PATH;
+    public String initiateHttpProxyTransferProcess(String agreementId, String assetId, String consumerEdcDataManagementUrl, String providerConnectorControlPlaneIDSUrl, Map<String, String> headers) throws IOException {
+        var url = consumerEdcDataManagementUrl + TRANSFER_PATH;
 
         DataAddress dataDestination = DataAddress.Builder.newInstance()
                 .type("HttpProxy")
@@ -43,10 +43,7 @@ public class TransferProcessService {
                 .isFinite(true)
                 .build();
 
-        // TODO Fix this after TransferProcess ID works
-        // TransferRequestDto transferRequest = TransferRequestDto.Builder.newInstance()
-        DataRequest dataRequest = DataRequest.Builder.newInstance()
-                .id(UUID.randomUUID().toString())
+        TransferRequestDto transferRequest = TransferRequestDto.Builder.newInstance()
                 .assetId(assetId)
                 .contractId(agreementId)
                 .connectorId("provider")
@@ -58,7 +55,7 @@ public class TransferProcessService {
                 .build();
 
         var requestBody = RequestBody.create(
-                typeManager.writeValueAsString(dataRequest),
+                typeManager.writeValueAsString(transferRequest),
                 Utility.JSON
         );
 
