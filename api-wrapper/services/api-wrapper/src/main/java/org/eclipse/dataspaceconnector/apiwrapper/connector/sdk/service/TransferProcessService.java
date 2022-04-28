@@ -9,12 +9,10 @@ import org.eclipse.dataspaceconnector.apiwrapper.connector.sdk.model.TransferReq
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.eclipse.dataspaceconnector.spi.types.TypeManager;
 import org.eclipse.dataspaceconnector.spi.types.domain.DataAddress;
-import org.eclipse.dataspaceconnector.spi.types.domain.transfer.DataRequest;
 import org.eclipse.dataspaceconnector.spi.types.domain.transfer.TransferType;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.UUID;
 
 import static java.lang.String.format;
 
