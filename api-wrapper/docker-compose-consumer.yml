@@ -23,9 +23,9 @@ services:
       - ./certs/cert.pfx:/cert.pfx
 
   consumer-data-plane:
-    image: catenax_at_home_consumer-data-plane:latest        
+    image: catenax_at_home_consumer-data-plane:latest
     ports:
-      - "8291:9191" # default (/api)      
+      - "8291:9191" # default (/api)
       - "5008:8090" # debugging
     expose:
       - "9192"      # public (/public)
