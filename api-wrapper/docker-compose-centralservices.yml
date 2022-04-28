@@ -2,7 +2,7 @@ version: "3.9"
 
 services:  
   registry-service:
-    image: ghcr.io/catenax-ng/catenax-at-home/registry:0.0.1    
+    image: ghcr.io/catenax-ng/catenax-at-home/registry:0.0.1
     environment:
       SPRING_PROFILES_ACTIVE: local
       IDP_ISSUER_URI: ""
