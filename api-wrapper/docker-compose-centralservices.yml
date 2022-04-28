@@ -2,8 +2,7 @@ version: "3.9"
 
 services:  
   registry-service:
-    image: ghcr.io/catenax-ng/catenax-at-home/registry:0.0.1
-    platform: ${DOCKER_PLATFORM:-linux/amd64}
+    image: ghcr.io/catenax-ng/catenax-at-home/registry:0.0.1    
     environment:
       SPRING_PROFILES_ACTIVE: local
       IDP_ISSUER_URI: ""
@@ -11,3 +10,10 @@ services:
     ports:
       - "4243:4243" # default
       - "5013:8090" # debugging
+    networks:
+      - centralservices_catenax_at_home
+
+networks:
+  centralservices_catenax_at_home:
+    external:
+      name: catenax_at_home_dataspace
