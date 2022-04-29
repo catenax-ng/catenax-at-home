@@ -1,7 +1,7 @@
 version: "3.9"
 
 services:
-  api-wrapper:
+  consumer-api-wrapper:
     build:
       context: services/api-wrapper
       args:
@@ -18,7 +18,7 @@ services:
     volumes:
       - ./config/api-wrapper.config:/config
 
-  consumer-aas-proxy-service:
+  consumer-aas-proxy:
     build:
       context: services/semantics/aasproxy
       args:

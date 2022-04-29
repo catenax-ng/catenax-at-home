@@ -38,8 +38,8 @@ services:
     volumes:
      - ./config/consumer-data-plane.config:/config
 
-  api-wrapper:
-    image: catenax_at_home_api-wrapper:latest
+  consumer-api-wrapper:
+    image: catenax_at_home_consumer-api-wrapper:latest
     ports:
       - "8091:9191" # default (/api)
       - "5005:8090" # debugging
@@ -52,8 +52,8 @@ services:
     volumes:
       - ./config/api-wrapper.config:/config
 
-  consumer-aas-proxy-service:
-    image: catenax_at_home_consumer-aas-proxy-service:latest    
+  consumer-aas-proxy:
+    image: catenax_at_home_consumer-aas-proxy:latest    
     ports:
       - "4245:4245" # default
       - "5014:8090" # debugging
