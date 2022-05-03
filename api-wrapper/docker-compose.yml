@@ -6,7 +6,6 @@ services:
       context: services/api-wrapper
       args:
         JAR: build/libs/edc.jar
-    platform: ${DOCKER_PLATFORM:-linux/amd64}
     ports:
       - "8091:9191" # default (/api)      
       - "5005:8090" # debugging
@@ -122,7 +121,7 @@ services:
       JAVA_TOOL_OPTIONS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8090"
 
   registry-service:
-    image: ghcr.io/catenax-ng/catenax-at-home/registry:0.0.1    
+    image: ghcr.io/catenax-ng/catenax-at-home/registry:0.0.1
     environment:
       SPRING_PROFILES_ACTIVE: local
       IDP_ISSUER_URI: ""

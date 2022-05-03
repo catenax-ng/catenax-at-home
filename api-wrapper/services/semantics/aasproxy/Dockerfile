@@ -1,4 +1,4 @@
-FROM openjdk:17-slim-buster
+FROM --platform=$BUILDPLATFORM openjdk:17-slim-buster
 ARG JAR
 
 ENV JAVA_TOOL_OPTIONS -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8090
