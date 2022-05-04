@@ -30,7 +30,7 @@ jobs:
         id: checkov
         uses: bridgecrewio/checkov-action@master
         with:
-          directory: .
+          directory: ./api-wrapper
           quiet: true # optional: display only failed checks
           soft_fail: false # optional: do not return an error code if there are failed checks
           framework: all # optional: run only on a specific infrastructure {cloudformation,terraform,kubernetes,all}
