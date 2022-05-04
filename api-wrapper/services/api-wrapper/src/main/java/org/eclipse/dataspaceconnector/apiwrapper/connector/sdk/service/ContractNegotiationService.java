@@ -5,9 +5,10 @@ import jakarta.ws.rs.InternalServerErrorException;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
-import org.eclipse.dataspaceconnector.apiwrapper.connector.sdk.model.ContractNegotiationDto;
-import org.eclipse.dataspaceconnector.apiwrapper.connector.sdk.model.NegotiationInitiateRequestDto;
 import org.eclipse.dataspaceconnector.apiwrapper.connector.sdk.Utility;
+import org.eclipse.dataspaceconnector.apiwrapper.connector.sdk.model.ContractNegotiationDto;
+import org.eclipse.dataspaceconnector.apiwrapper.connector.sdk.model.NegotiationId;
+import org.eclipse.dataspaceconnector.apiwrapper.connector.sdk.model.NegotiationInitiateRequestDto;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.eclipse.dataspaceconnector.spi.types.TypeManager;
 
@@ -31,7 +32,7 @@ public class ContractNegotiationService {
         this.httpClient = httpClient;
     }
 
-    public String initiateNegotiation(
+    public NegotiationId initiateNegotiation(
             NegotiationInitiateRequestDto contractOfferRequest,
             String consumerEdcDataManagementUrl,
             Map<String, String> headers
@@ -54,18 +55,18 @@ public class ContractNegotiationService {
                 throw new InternalServerErrorException(format("Control plane responded with: %s %s", response.code(), body != null ? body.string() : ""));
             }
 
-            var uuid = body.string();
-            monitor.info("Started negotiation with ID: " + uuid);
+            var negotiationId = objectMapper.readValue(body.string(), NegotiationId.class);
+            monitor.info("Started negotiation with ID: " + negotiationId.getId());
 
-            return uuid;
+            return negotiationId;
         } catch (Exception e) {
             monitor.severe(format("Error in calling the control plane at %s", url), e);
             throw e;
         }
     }
 
-    public ContractNegotiationDto getNegotiation(String negotiationId, String connectorEdcDataManagementUrl, Map<String, String> headers) throws IOException {
-        var url = format("%s/%s", connectorEdcDataManagementUrl + NEGOTIATION_PATH, negotiationId);
+    public ContractNegotiationDto getNegotiation(NegotiationId negotiationId, String connectorEdcDataManagementUrl, Map<String, String> headers) throws IOException {
+        var url = format("%s/%s", connectorEdcDataManagementUrl + NEGOTIATION_PATH, negotiationId.getId());
         var request = new Request.Builder()
                 .url(url);
         headers.forEach(request::addHeader);
@@ -78,7 +79,7 @@ public class ContractNegotiationService {
             }
 
             var negotiation = objectMapper.readValue(body.string(), ContractNegotiationDto.class);
-            monitor.info(format("Negotiation %s is in state '%s' (agreementId: %s)", negotiationId, negotiation.getState(), negotiation.getContractAgreementId()));
+            monitor.info(format("Negotiation %s is in state '%s' (agreementId: %s)", negotiationId.getId(), negotiation.getState(), negotiation.getContractAgreementId()));
 
             return negotiation;
         } catch (Exception e) {
