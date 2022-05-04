@@ -1,0 +1,109 @@
+openapi: 3.0.1
+info:
+  title: API-Wrapper REST API
+  description: All files merged by open api merger
+  license:
+    name: Apache License v2.0
+    url: http://apache.org/v2
+  version: 1.0.0-SNAPSHOT
+servers:
+- url: /
+paths:
+  /service/{assetId}/{subUrl}:
+    get:
+      operationId: getWrapper
+      parameters:
+      - name: provider-connector-url
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: assetId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: subUrl
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        default:
+          description: default response
+          content:
+            application/json:
+              schema:
+                type: string
+    post:
+      operationId: postWrapper
+      parameters:
+      - name: provider-connector-url
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: assetId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: subUrl
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: string
+      responses:
+        default:
+          description: default response
+          content:
+            application/json:
+              schema:
+                type: string
+  /endpoint-data-reference:
+    post:
+      operationId: receiveEdcCallback
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EndpointDataReference'
+      responses:
+        default:
+          description: default response
+          content:
+            '*/*': {}
+components:
+  schemas:
+    EndpointDataReference:
+      type: object
+      properties:
+        id:
+          type: string
+        endpoint:
+          type: string
+        authKey:
+          type: string
+        authCode:
+          type: string
+        properties:
+          type: object
+          additionalProperties:
+            type: string
