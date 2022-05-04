@@ -1,0 +1,54 @@
+version: "3.9"
+
+services: 
+  provider-control-plane:
+    image: catenax_at_home_provider-control-plane:latest    
+    ports:
+      - "8391:9191" # default/control (/api)
+      - "8392:9192" # validation (/validation)
+      - "8393:9193" # data (/api/v1/data)      
+      - "5009:8090" # debugging
+    expose:
+      - "8282"      # ids (/api/v1/ids)  
+    networks:
+      - catenax_at_home_provider
+    environment:
+      EDC_VAULT: /config/vault.properties
+      EDC_KEYSTORE: /cert.pfx
+      EDC_KEYSTORE_PASSWORD: 123456
+      EDC_FS_CONFIG: /config/configuration.properties
+      JAVA_TOOL_OPTIONS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8090"
+    volumes:
+      - ./config/provider-control-plane.config:/config
+      - ./certs/cert.pfx:/cert.pfx
+
+  provider-data-plane:
+    image: catenax_at_home_provider-data-plane:latest    
+    ports:
+      - "8491:9191" # default (/api)
+      - "8492:9192" # public (/public)
+      - "5010:8090" # debugging
+    expose:
+      - "9193"      # control (/control)
+    networks:
+      - catenax_at_home_provider
+    environment:
+      EDC_FS_CONFIG: /config/configuration.properties
+      JAVA_TOOL_OPTIONS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8090"
+    volumes:
+      - ./config/provider-data-plane.config:/config
+
+  provider-backend-service:
+    image: catenax_at_home_provider-backend-service:latest    
+    ports:
+      - "8580:8080" # default
+      - "5011:8090" # debugging
+    networks:
+      - catenax_at_home_provider
+    environment:
+      JAVA_TOOL_OPTIONS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8090"  
+
+networks:
+  catenax_at_home_provider:
+    external:
+      name: catenax_at_home_dataspace
