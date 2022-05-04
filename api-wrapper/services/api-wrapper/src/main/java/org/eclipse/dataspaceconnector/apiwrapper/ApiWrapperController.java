@@ -117,19 +117,19 @@ public class ApiWrapperController {
         }
 
         // Get data through data plane
-        String data = "";
         try {
-            data = httpProxyService.sendGETRequest(dataReference, subUrl, queryParams);
+            String data = httpProxyService.sendGETRequest(dataReference, subUrl, queryParams);
             Matcher dataMatcher = RESPONSE_PATTERN.matcher(data);
             while (dataMatcher.matches()) {
                 data = dataMatcher.group("embeddedData");
                 data = data.replace("\\\"", "\"").replace("\\\\", "\\");
                 dataMatcher = RESPONSE_PATTERN.matcher(data);
             }
+            return data;
         } catch (IOException e) {
             monitor.severe("Call against consumer data plane failed!", e);
+            throw e;
         }
-        return data;
     }
 
     @POST
@@ -169,9 +169,8 @@ public class ApiWrapperController {
         }
 
         // Get data through data plane
-        String data = "";
         try {
-            data = httpProxyService.sendPOSTRequest(
+            String data = httpProxyService.sendPOSTRequest(
                     dataReference,
                     subUrl,
                     queryParams,
@@ -184,10 +183,11 @@ public class ApiWrapperController {
                 data = data.replace("\\\"", "\"").replace("\\\\", "\\");
                 dataMatcher = RESPONSE_PATTERN.matcher(data);
             }
+            return data;
         } catch (IOException e) {
             monitor.severe("Call against consumer data plane failed!", e);
+            throw e;
         }
-        return data;
     }
 
     private String initializeContractNegotiation(String providerConnectorUrl, String assetId) throws InterruptedException, IOException {

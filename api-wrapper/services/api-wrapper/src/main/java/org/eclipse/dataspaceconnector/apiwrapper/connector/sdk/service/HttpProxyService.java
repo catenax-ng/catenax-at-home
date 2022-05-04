@@ -1,5 +1,6 @@
 package org.eclipse.dataspaceconnector.apiwrapper.connector.sdk.service;
 
+import jakarta.ws.rs.InternalServerErrorException;
 import jakarta.ws.rs.core.MultivaluedMap;
 import okhttp3.HttpUrl;
 import okhttp3.MediaType;
@@ -71,8 +72,8 @@ public class HttpProxyService {
         var body = response.body();
 
         if (!response.isSuccessful() || body == null) {
-            monitor.warning(format("Data plane responded with error: %s %s", response.code(), body != null ? body.string() : ""));
-            return null;
+            monitor.severe(format("Data plane responded with error: %s %s", response.code(), body != null ? body.string() : ""));
+            throw new InternalServerErrorException(format("Data plane responded with error status code %s", response.code()));
         }
 
         var bodyString = body.string();

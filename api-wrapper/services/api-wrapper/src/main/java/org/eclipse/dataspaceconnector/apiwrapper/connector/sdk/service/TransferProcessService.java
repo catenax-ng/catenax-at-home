@@ -1,10 +1,12 @@
 package org.eclipse.dataspaceconnector.apiwrapper.connector.sdk.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.ws.rs.InternalServerErrorException;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import org.eclipse.dataspaceconnector.apiwrapper.connector.sdk.Utility;
+import org.eclipse.dataspaceconnector.apiwrapper.connector.sdk.model.TransferId;
 import org.eclipse.dataspaceconnector.apiwrapper.connector.sdk.model.TransferRequestDto;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.eclipse.dataspaceconnector.spi.types.TypeManager;
@@ -21,14 +23,16 @@ public class TransferProcessService {
     private final Monitor monitor;
     private final TypeManager typeManager;
     private final OkHttpClient httpClient;
+    private final ObjectMapper objectMapper;
 
     public TransferProcessService(Monitor monitor, TypeManager typeManager, OkHttpClient httpClient) {
         this.monitor = monitor;
         this.typeManager = typeManager;
+        this.objectMapper = typeManager.getMapper();
         this.httpClient = httpClient;
     }
 
-    public String initiateHttpProxyTransferProcess(String agreementId, String assetId, String consumerEdcDataManagementUrl, String providerConnectorControlPlaneIDSUrl, Map<String, String> headers) throws IOException {
+    public TransferId initiateHttpProxyTransferProcess(String agreementId, String assetId, String consumerEdcDataManagementUrl, String providerConnectorControlPlaneIDSUrl, Map<String, String> headers) throws IOException {
         var url = consumerEdcDataManagementUrl + TRANSFER_PATH;
 
         DataAddress dataDestination = DataAddress.Builder.newInstance()
@@ -69,7 +73,7 @@ public class TransferProcessService {
                 throw new InternalServerErrorException(format("Control plane responded with: %s %s", response.code(), body != null ? body.string() : ""));
             }
 
-            var transferProcessId = body.string();
+            var transferProcessId = objectMapper.readValue(body.string(), TransferId.class);
             monitor.info(format("Transfer process (%s) initiated", transferProcessId));
 
             return transferProcessId;
