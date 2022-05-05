@@ -14,16 +14,19 @@ package net.catenax.semantics.framework.aas.model;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 /**
 * OneOfReference
 */
 @JsonTypeInfo(
-  use = JsonTypeInfo.Id.NAME,
-  include = JsonTypeInfo.As.PROPERTY,
+  use = JsonTypeInfo.Id.NONE,
+  defaultImpl = GlobalReference.class,
   property = "type")
 @JsonSubTypes({
   @JsonSubTypes.Type(value = GlobalReference.class, name = "GlobalReference")
 })
+@JsonDeserialize(as=GlobalReference.class)
 public interface OneOfReference {
 
 }
