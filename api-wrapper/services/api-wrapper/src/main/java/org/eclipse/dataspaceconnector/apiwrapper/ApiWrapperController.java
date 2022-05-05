@@ -258,7 +258,9 @@ public class ApiWrapperController {
         }
 
         if (dataReference == null) {
-            throw new InternalServerErrorException("Did not receive callback within 10 seconds from consumer edc.");
+            String errorMsg = "Did not receive callback within 10 seconds from consumer edc.";
+            monitor.severe(errorMsg);
+            throw new InternalServerErrorException(errorMsg);
         }
 
         return dataReference;
