@@ -6,7 +6,7 @@ tasks.
 
 ## Generate `*.yaml` files
 
-Every module (=subproject) that contains REST endpoints is scanned for Jakarta Annotations which are then
+Every module that contains REST endpoints is scanned for Jakarta Annotations which are then
 used to generate a `*.yaml` specification for that particular module. 
 This means that there is one `*.yaml`file _per module_, resulting in several `*.yaml` files.
 
@@ -18,27 +18,10 @@ To re-generate those files, simply invoke
 ```
 This will generate all `*.yaml` files in the `resources/openapi/yaml` directory.
 
-### Merge the files
-Unfortunately those files are not yet usable, because they need to be **merged together**. For that we need
-another Gradle task:
-
-```shell
-./gradlew mergeOpenApiFiles
-```
-which takes all `*.yaml` files located in `resources/openapi/yaml`, combines them into a single
-file and puts that into `resources/openapi/openapi.yaml`
-
-
-The resulting `openapi.yaml` can then be used to generate client code, expose static web content,
-etc.
-
-> **IMPORTANT: these two Gradle tasks must be executed separately! `./gradlew resolve mergeOpenApiFiles` will NOT work!**
-
 ## Gradle Plugins
 
 We use two different Gradle plugins:
 - `"io.swagger.core.v3.swagger-gradle-plugin"`: used to generate a `*.yaml` file per module
-- `"com.rameshkp.openapi-merger-gradle-plugin"`: used to merge all the `*.yaml` files together
 
 So in order for a module to be picked up by the Swagger Gradle plugin, simply add it to the `build.gradle.kts`:
 
@@ -65,8 +48,6 @@ However, if you leave it out, the Swagger Gradle Plugin will report an error.
 
 This feature does **neither** expose the generated files through a REST endpoint, nor does it serve static
 web content with the ever-so-popular Swagger UI.
-The EDC is a framework rather than an application, and in our point of view it is the application that is 
-responsible for serving web content.
 
 Furthermore, **no** client code is auto-generated, as this will be highly dependent on the frameworks used 
 on the client side. 

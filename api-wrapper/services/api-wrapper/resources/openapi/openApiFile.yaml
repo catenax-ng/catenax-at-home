@@ -1,0 +1,4 @@
+openapi: "3.0.2"
+info:
+  title: API-Wrapper REST API
+  version: "1.0"

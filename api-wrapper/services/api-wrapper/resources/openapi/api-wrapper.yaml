@@ -1,13 +1,7 @@
-openapi: 3.0.1
+openapi: 3.0.2
 info:
   title: API-Wrapper REST API
-  description: All files merged by open api merger
-  license:
-    name: Apache License v2.0
-    url: http://apache.org/v2
-  version: 1.0.0-SNAPSHOT
-servers:
-- url: /
+  version: "1.0"
 paths:
   /service/{assetId}/{subUrl}:
     get:
@@ -15,23 +9,16 @@ paths:
       parameters:
       - name: provider-connector-url
         in: query
-        required: false
-        style: form
-        explode: true
         schema:
           type: string
       - name: assetId
         in: path
         required: true
-        style: simple
-        explode: false
         schema:
           type: string
       - name: subUrl
         in: path
         required: true
-        style: simple
-        explode: false
         schema:
           type: string
       responses:
@@ -46,23 +33,16 @@ paths:
       parameters:
       - name: provider-connector-url
         in: query
-        required: false
-        style: form
-        explode: true
         schema:
           type: string
       - name: assetId
         in: path
         required: true
-        style: simple
-        explode: false
         schema:
           type: string
       - name: subUrl
         in: path
         required: true
-        style: simple
-        explode: false
         schema:
           type: string
       requestBody:
