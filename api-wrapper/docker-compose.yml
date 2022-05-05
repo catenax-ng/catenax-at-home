@@ -1,22 +1,55 @@
 version: "3.9"
 
 services:
-  consumer-control-plane:
+  api-wrapper:
     build:
-      context: services/control-plane
+      context: services/api-wrapper
       args:
         JAR: build/libs/edc.jar
     platform: ${DOCKER_PLATFORM:-linux/amd64}
     ports:
-      - "8191:9191" # default/control
-      - "8195:9193" # data
-#      - "8282" # ids
+      - "8091:9191" # default (/api)      
       - "5005:8090" # debugging
+    expose:
+      - "9192"      # callback (/callback)
+    environment:
+      EDC_FS_CONFIG: /config/configuration.properties
+      JAVA_TOOL_OPTIONS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8090"
+    volumes:
+      - ./config/api-wrapper.config:/config
+
+  consumer-aas-proxy-service:
+    build:
+      context: services/semantics/aasproxy
+      args:
+        JAR: target/aasproxy-1.0.0-SNAPSHOT.jar   
+    ports:
+      - "4245:4245" # default
+      - "5006:8090" # debugging
+    environment:
+      AASPROXY_REGISTRYURL: http://registry-service:4243
+      AASPROXY_WRAPPERURL: http://api-wrapper:9191/api/service
+      SPRING_PROFILES_ACTIVE: local,basic
+      JAVA_TOOL_OPTIONS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8090"
+
+  consumer-control-plane:
+    build:
+      context: services/control-plane
+      args:
+        JAR: build/libs/edc.jar    
+    ports:
+      - "8191:9191" # default/control (/api)      
+      - "8193:9193" # data (/api/v1/data)      
+      - "5007:8090" # debugging
+    expose:
+      - "9192"      # validation (/validation)
+      - "8282"      # ids (/api/v1/ids) 
     environment:
       EDC_VAULT: /config/vault.properties
       EDC_KEYSTORE: /cert.pfx
       EDC_KEYSTORE_PASSWORD: 123456
       EDC_FS_CONFIG: /config/configuration.properties
+      JAVA_TOOL_OPTIONS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8090"
     volumes:
       - ./config/consumer-control-plane.config:/config
       - ./certs/cert.pfx:/cert.pfx
@@ -25,48 +58,37 @@ services:
     build:
       context: services/data-plane
       args:
-        JAR: build/libs/edc.jar
-    platform: ${DOCKER_PLATFORM:-linux/amd64}
+        JAR: build/libs/edc.jar    
     ports:
-      - "8192:9191" # default
-#      - "9192" # public
-      - "5006:8090" # debugging
+      - "8291:9191" # default (/api)      
+      - "5008:8090" # debugging
+    expose:
+      - "9192"      # public (/public)
+      - "9193"      # control (/control) maybe expose
     environment:
       EDC_FS_CONFIG: /config/configuration.properties
+      JAVA_TOOL_OPTIONS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8090"
     volumes:
      - ./config/consumer-data-plane.config:/config
-
-  api-wrapper:
-    build:
-      context: services/api-wrapper
-      args:
-        JAR: build/libs/edc.jar
-    platform: ${DOCKER_PLATFORM:-linux/amd64}
-    ports:
-      - "8193:9191" # default
-#      - "9192" # callback
-      - "5007:8090" # debugging
-    environment:
-      EDC_FS_CONFIG: /config/configuration.properties
-    volumes:
-      - ./config/api-wrapper.config:/config
 
   provider-control-plane:
     build:
       context: services/control-plane
       args:
-        JAR: build/libs/edc.jar
-    platform: ${DOCKER_PLATFORM:-linux/amd64}
+        JAR: build/libs/edc.jar    
     ports:
-      - "8181:9191" # default/control
-      - "8184:9192" # validation
-      - "8187:9193" # data
-      - "5008:8090" # debugging
+      - "8391:9191" # default/control (/api)
+      - "8392:9192" # validation (/validation)
+      - "8393:9193" # data (/api/v1/data)            
+      - "5009:8090" # debugging      
+    expose:
+      - "8282"      # ids (/api/v1/ids)  
     environment:
       EDC_VAULT: /config/vault.properties
       EDC_KEYSTORE: /cert.pfx
       EDC_KEYSTORE_PASSWORD: 123456
       EDC_FS_CONFIG: /config/configuration.properties
+      JAVA_TOOL_OPTIONS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8090"
     volumes:
       - ./config/provider-control-plane.config:/config
       - ./certs/cert.pfx:/cert.pfx
@@ -75,14 +97,16 @@ services:
     build:
       context: services/data-plane
       args:
-        JAR: build/libs/edc.jar
-    platform: ${DOCKER_PLATFORM:-linux/amd64}
+        JAR: build/libs/edc.jar    
     ports:
-      - "8182:9191" # default
-      - "8183:9192" # public
-      - "5009:8090" # debugging
+      - "8491:9191" # default (/api)
+      - "8492:9192" # public (/public)      
+      - "5010:8090" # debugging
+    expose:
+      - "9193"      # control (/control)
     environment:
       EDC_FS_CONFIG: /config/configuration.properties
+      JAVA_TOOL_OPTIONS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8090"
     volumes:
       - ./config/provider-data-plane.config:/config
 
@@ -90,29 +114,19 @@ services:
     build:
       context: services/backend-data-service
       args:
-        JAR: build/libs/backend-data-service.jar
-    platform: ${DOCKER_PLATFORM:-linux/amd64}
+        JAR: build/libs/backend-data-service.jar    
     ports:
-      - "8194:8080" # default
-      - "5010:8090" # debugging
-
-  consumer-aas-proxy-service:
-    build:
-      context: services/semantics/aasproxy
-      args:
-        JAR: target/aasproxy-1.0.0-SNAPSHOT.jar
-    platform: ${DOCKER_PLATFORM:-linux/amd64}
-    ports:
-      - "4245:4245" # default
-      - "5014:8090" # debugging
+      - "8580:8080" # default
+      - "5011:8090" # debugging
+    environment:
+      JAVA_TOOL_OPTIONS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8090"
 
   registry-service:
-    image: ghcr.io/catenax-ng/catenax-at-home/registry:0.0.1
-    platform: ${DOCKER_PLATFORM:-linux/amd64}
+    image: ghcr.io/catenax-ng/catenax-at-home/registry:0.0.1    
     environment:
       SPRING_PROFILES_ACTIVE: local
       IDP_ISSUER_URI: ""
       SPRING_DATASOURCE_URL: "jdbc:h2:mem:semanticsdb;CASE_INSENSITIVE_IDENTIFIERS=TRUE"
     ports:
       - "4243:4243" # default
-      - "5013:8090" # debugging
+      - "5012:8090" # debugging
