@@ -67,14 +67,14 @@ pluginManager.withPlugin("io.swagger.core.v3.swagger-gradle-plugin") {
 
     tasks.withType<io.swagger.v3.plugins.gradle.tasks.ResolveTask> {
         // this is used to scan the classpath and generate an openapi yaml file
-        outputFileName = project.name
+        outputFileName = "openApi"
         outputFormat = io.swagger.v3.plugins.gradle.tasks.ResolveTask.Format.YAML
         prettyPrint = true
         classpath = java.sourceSets["main"].runtimeClasspath
         buildClasspath = classpath
         resourcePackages = setOf("org.eclipse.dataspaceconnector")
-        outputDir = file("${rootProject.projectDir.path}/resources/openapi")
-        openApiFile = file("${rootProject.projectDir.path}/resources/openapi/openApiFile.yaml")
+        outputDir = file("${rootProject.projectDir.path}/openapi")
+        openApiFile = file("${rootProject.projectDir.path}/openapi/openApiInfo.yaml")
     }
 
     configurations {

@@ -1,48 +1,15 @@
 # Generating the OpenApi Spec (*.yaml)
 
-It is possible to generate an OpenApi spec in the form of a `*.yaml` file by invoking two simple Gradle
-tasks.
 
+We use the Gradle plugins `io.swagger.core.v3.swagger-gradle-plugin` to generate the `openapi/openApi.yaml` file.
+This plugin scans all our REST endpoints for Jakarta Annotations which are then used to generate the
+`openapi/openApi.yaml` specification.
 
-## Generate `*.yaml` files
+To re-generate this file, simply invoke
 
-Every module that contains REST endpoints is scanned for Jakarta Annotations which are then
-used to generate a `*.yaml` specification for that particular module. 
-This means that there is one `*.yaml`file _per module_, resulting in several `*.yaml` files.
-
-Those files are named `MODULENAME.yaml`, e.g. `observability.yaml` or `control.yaml`. 
-
-To re-generate those files, simply invoke 
 ```shell
 ./gradlew clean resolve
 ```
-This will generate all `*.yaml` files in the `resources/openapi/yaml` directory.
-
-## Gradle Plugins
-
-We use two different Gradle plugins:
-- `"io.swagger.core.v3.swagger-gradle-plugin"`: used to generate a `*.yaml` file per module
-
-So in order for a module to be picked up by the Swagger Gradle plugin, simply add it to the `build.gradle.kts`:
-
-```kotlin
-// in yourModule/build.gradle.kts
-
-val rsApi: String by project
-
-plugins {
-    `java-library`
-    id("io.swagger.core.v3.swagger-gradle-plugin") //<-- add this
-}
-
-dependencies {
-    implementation("jakarta.ws.rs:jakarta.ws.rs-api:${rsApi}") //<-- you'll probably already have this
-    // other dependencies
-}
-```
-
-If you developed a REST endpoint, you very likely already have the `jakarta.ws.rs:....` part in your build file.
-However, if you leave it out, the Swagger Gradle Plugin will report an error.
 
 ## Note of omission
 
@@ -52,11 +19,12 @@ web content with the ever-so-popular Swagger UI.
 Furthermore, **no** client code is auto-generated, as this will be highly dependent on the frameworks used 
 on the client side. 
 
-A pointer on how to expose the YAML file and the Swagger UI using Jetty can be found [here](https://anirtek.github.io/java/jetty/swagger/openapi/2021/06/12/Hooking-up-OpenAPI-with-Jetty.html).
+A pointer on how to expose the YAML file and the Swagger UI using Jetty can be found
+[here](https://anirtek.github.io/java/jetty/swagger/openapi/2021/06/12/Hooking-up-OpenAPI-with-Jetty.html).
 
-To just take a quick look at the generated API documentation with Swagger UI, you can run it in a Docker container:
+To just take a quick look at the generated API documentation with Swagger UI, you can run it in a Docker container or by
+manually copy it into the online Swagger Editor (<https://editor.swagger.io/>).
 
 ```shell
 docker run -p 80:8080 -e SWAGGER_JSON=/openapi.yaml -v $(pwd)resources/openapi/openapi.yaml:/openapi.yaml swaggerapi/swagger-ui
 ```
-
