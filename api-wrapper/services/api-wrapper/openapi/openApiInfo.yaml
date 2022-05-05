@@ -1,0 +1,7 @@
+openapi: "3.0.2"
+info:
+  title: API-Wrapper REST API
+  version: "1.0"
+  license:
+    name: Apache License v2.0
+    url: http://apache.org/v2
