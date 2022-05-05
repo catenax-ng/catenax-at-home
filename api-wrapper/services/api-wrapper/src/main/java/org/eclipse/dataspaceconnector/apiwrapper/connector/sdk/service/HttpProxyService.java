@@ -11,6 +11,8 @@ import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -77,7 +79,7 @@ public class HttpProxyService {
         }
 
         var bodyString = body.string();
-        monitor.info("Data plane responded correctly: " + bodyString);
+        monitor.info("Data plane responded correctly: " + URLEncoder.encode(bodyString, StandardCharsets.UTF_8.toString()));
         return bodyString;
     }
 }
