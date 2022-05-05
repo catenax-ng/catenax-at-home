@@ -89,6 +89,38 @@ public class ApiWrapperControllerTest {
     }
 
     @Test
+    void postWrapperFromParameters_agreementIdShouldExistAndDataReferenceShouldBeValid() throws IOException, InterruptedException {
+
+        String providerConnectorUrl = "http://localhost:8081";
+        String assetId = "anAsset";
+        String subUrl = "aSubUrl";
+        UriInfo uriInfo = mock(UriInfo.class);
+
+        Map<String,String> map = new HashMap<>();
+        map.put("cid","reference");
+
+        EndpointDataReference endpointDataReferenceTest = EndpointDataReference.Builder.newInstance()
+                .id("idRef")
+                .endpoint("anEndpoint")
+                .authKey("myKey")
+                .authCode("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkJhZWxkdW5nIFVzZXIiLCJpYXQiOjE1MTYyMzkwMjJ9.qH7Zj_m3kY69kxhaQXTa-ivIpytKXXjZc1ZSmapZnGE")
+                .properties(map)
+                .build();
+
+        when(contractAgreementCache.get(any())).thenReturn("thisisanagreementid");
+        when(endpointDataReferenceCache.get(any())).thenReturn(endpointDataReferenceTest);
+        when(httpProxyService.sendPOSTRequest(any(),any(),any(),any(),any())).thenReturn("theDataResult");
+
+        try(MockedStatic<InMemoryEndpointDataReferenceCache> mockedStatic = mockStatic(InMemoryEndpointDataReferenceCache.class)){
+
+            when(InMemoryEndpointDataReferenceCache.endpointDataRefTokenExpired(any())).thenReturn(Boolean.TRUE);
+
+            String data = apiWrapperController.postWrapper(providerConnectorUrl,assetId,subUrl,"body",uriInfo);
+            assertThat(data).isEqualTo("theDataResult");
+        }
+    }
+
+    @Test
     void getWrapperFromParameters_ContractOfferIsEmpty() throws IOException {
 
         String providerConnectorUrl = "http://localhost:8081";
@@ -100,6 +132,20 @@ public class ApiWrapperControllerTest {
         when(contractOfferService.findContractOffer4AssetId(any(),any(),any(),any())).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> apiWrapperController.getWrapper(providerConnectorUrl,assetId,subUrl,uriInfo)).isInstanceOf(BadRequestException.class);
+    }
+
+    @Test
+    void postWrapperFromParameters_ContractOfferIsEmpty() throws IOException {
+
+        String providerConnectorUrl = "http://localhost:8081";
+        String assetId = "anAsset";
+        String subUrl = "aSubUrl";
+        UriInfo uriInfo = mock(UriInfo.class);
+
+        when(contractAgreementCache.get(any())).thenReturn(null);
+        when(contractOfferService.findContractOffer4AssetId(any(),any(),any(),any())).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> apiWrapperController.postWrapper(providerConnectorUrl,assetId,subUrl,"body",uriInfo)).isInstanceOf(BadRequestException.class);
     }
 
     @Test
@@ -137,6 +183,40 @@ public class ApiWrapperControllerTest {
     }
 
     @Test
+    void postWrapperFromParameters_ContractOfferIsNotEmptyAndDataReferenceShouldNotBeValid() throws IOException, InterruptedException {
+
+        String providerConnectorUrl = "http://localhost:8081";
+        String assetId = "anAsset";
+        String subUrl = "aSubUrl";
+        UriInfo uriInfo = mock(UriInfo.class);
+
+        Map<String,String> map = new HashMap<>();
+        map.put("cid","reference");
+
+        EndpointDataReference endpointDataReferenceTest = EndpointDataReference.Builder.newInstance()
+                .id("idRef")
+                .endpoint("anEndpoint")
+                .authKey("myKey")
+                .authCode("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkJhZWxkdW5nIFVzZXIiLCJpYXQiOjE1MTYyMzkwMjJ9.qH7Zj_m3kY69kxhaQXTa-ivIpytKXXjZc1ZSmapZnGE")
+                .properties(map)
+                .build();
+
+        when(contractAgreementCache.get(any())).thenReturn(null);
+        when(contractOfferService.findContractOffer4AssetId(any(),any(),any(),any())).thenReturn(Optional.of(getDummyContractOffer()));
+        when(contractNegotiationService.getNegotiation(any(),any(),any())).thenReturn(getDummyContractNegotiaionDto());
+        when(httpProxyService.sendPOSTRequest(any(),any(),any(),any(),any())).thenReturn("theDataResult");
+        when(endpointDataReferenceCache.get(any())).thenReturn(endpointDataReferenceTest);
+
+        try(MockedStatic<InMemoryEndpointDataReferenceCache> mockedStatic = mockStatic(InMemoryEndpointDataReferenceCache.class)){
+
+            when(InMemoryEndpointDataReferenceCache.endpointDataRefTokenExpired(any())).thenReturn(Boolean.TRUE);
+
+            String data = apiWrapperController.postWrapper(providerConnectorUrl,assetId,subUrl,"body",uriInfo);
+            assertThat(data).isEqualTo("theDataResult");
+        }
+    }
+
+    @Test
     void getWrapperFromParameters_shouldNotExistAgreementAndIsNotValidDataReference() throws IOException {
 
         String providerConnectorUrl = "http://localhost:8081";
@@ -161,6 +241,32 @@ public class ApiWrapperControllerTest {
 
         assertThatThrownBy(() -> apiWrapperController.getWrapper(providerConnectorUrl,assetId,subUrl,uriInfo)).isInstanceOf(InternalServerErrorException.class);
 
+    }
+
+    @Test
+    void postWrapperFromParameters_shouldNotExistAgreementAndIsNotValidDataReference() throws IOException {
+
+        String providerConnectorUrl = "http://localhost:8081";
+        String assetId = "anAsset";
+        String subUrl = "aSubUrl";
+        UriInfo uriInfo = mock(UriInfo.class);
+
+        Map<String,String> map = new HashMap<>();
+        map.put("cid","reference");
+
+        EndpointDataReference endpointDataReferenceTest = EndpointDataReference.Builder.newInstance()
+                .id("idRef")
+                .endpoint("anEndpoint")
+                .authKey("myKey")
+                .authCode("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkJhZWxkdW5nIFVzZXIiLCJpYXQiOjE1MTYyMzkwMjJ9.qH7Zj_m3kY69kxhaQXTa-ivIpytKXXjZc1ZSmapZnGE")
+                .properties(map)
+                .build();
+
+        when(contractAgreementCache.get(any())).thenReturn(null);
+        when(contractOfferService.findContractOffer4AssetId(any(),any(),any(),any())).thenReturn(Optional.of(getDummyContractOffer()));
+        when(contractNegotiationService.getNegotiation(any(),any(),any())).thenReturn(getDummyContractNegotiaionDto());
+
+        assertThatThrownBy(() -> apiWrapperController.postWrapper(providerConnectorUrl,assetId,subUrl,"body",uriInfo)).isInstanceOf(InternalServerErrorException.class);
 
     }
 
