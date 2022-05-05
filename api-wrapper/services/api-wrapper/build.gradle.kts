@@ -21,6 +21,9 @@ dependencies {
     api("$edcGroup:auth-spi:$edcVersion")
 
     api("jakarta.ws.rs:jakarta.ws.rs-api:3.0.0")
+    api("org.junit.jupiter:junit-jupiter-api:5.8.1")
+    api("org.assertj:assertj-core:3.21.0")
+    api("org.mockito:mockito-core:3.+")
 
     implementation("com.auth0:java-jwt:3.19.1")
 }
