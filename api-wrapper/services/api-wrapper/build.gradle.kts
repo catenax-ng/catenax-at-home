@@ -1,7 +1,7 @@
 plugins {
     `java-library`
     id("application")
-    id("com.github.johnrengelman.shadow") version "7.0.0"
+    id("com.github.johnrengelman.shadow") version "7.1.2"
     id("io.swagger.core.v3.swagger-gradle-plugin") version "2.2.0"
 }
 
@@ -23,8 +23,8 @@ dependencies {
     implementation("$edcGroup:transfer-spi:$edcVersion")
     implementation("$edcGroup:auth-spi:$edcVersion")
 
-    implementation("jakarta.ws.rs:jakarta.ws.rs-api:3.0.0")
-    implementation("com.auth0:java-jwt:3.19.1")
+    implementation("jakarta.ws.rs:jakarta.ws.rs-api:3.1.0")
+    implementation("com.auth0:java-jwt:3.19.2")
 }
 
 java {
