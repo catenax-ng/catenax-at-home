@@ -34,6 +34,8 @@ services:
     ports:
       - "4245:4245" # default
       - "5014:8090"
+    environment:
+      AASPROXY_WRAPPERURL: http://consumer-api-wrapper:9191/api/service
 
   consumer-api-wrapper:
     image: ghcr.io/catenax-ng/catenax-at-home/api-wrapper:0.0.1
