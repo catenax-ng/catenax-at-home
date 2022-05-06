@@ -1,0 +1,29 @@
+version: 2
+updates:
+  - package-ecosystem: gradle
+    directory: "/api-wrapper/services/api-wrapper"
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 20
+  - package-ecosystem: gradle
+    directory: "/api-wrapper/services/control-plane"
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 20
+  - package-ecosystem: maven
+    directory: "/api-wrapper/services/semantics"
+    schedule:
+      interval: daily
+    open-pull-requests-limit: 20
+  - package-ecosystem: "gradle"
+    directory: "/api-wrapper/services/backend-data-service"
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 20
+  - package-ecosystem: gradle
+    directory: "/api-wrapper/services/data-plane"
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 20
+
+

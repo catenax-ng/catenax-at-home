@@ -1,31 +1,35 @@
 plugins {
     `java-library`
     id("application")
-    id("com.github.johnrengelman.shadow") version "7.0.0"
+    id("com.github.johnrengelman.shadow") version "7.1.2"
+    id("io.swagger.core.v3.swagger-gradle-plugin") version "2.2.0"
 }
 
 val javaVersion = 11
 val edcGroup = "org.eclipse.dataspaceconnector"
 val edcVersion = "0.0.1-SNAPSHOT"
+val rsApi = "3.0.0"
+val swaggerJaxrs2Version = "2.1.11"
 
 dependencies {
-    api("$edcGroup:core-boot:$edcVersion")
-    api("$edcGroup:core-base:$edcVersion")
-    api("$edcGroup:http:$edcVersion")
+    implementation("$edcGroup:core-boot:$edcVersion")
+    implementation("$edcGroup:core-base:$edcVersion")
+    implementation("$edcGroup:http:$edcVersion")
 
-    api("$edcGroup:filesystem-configuration:$edcVersion")
+    implementation("$edcGroup:filesystem-configuration:$edcVersion")
 
-    api("$edcGroup:catalog-spi:$edcVersion")
-    api("$edcGroup:contract-spi:$edcVersion")
-    api("$edcGroup:transfer-spi:$edcVersion")
-    api("$edcGroup:auth-spi:$edcVersion")
+    implementation("$edcGroup:catalog-spi:$edcVersion")
+    implementation("$edcGroup:contract-spi:$edcVersion")
+    implementation("$edcGroup:transfer-spi:$edcVersion")
+    implementation("$edcGroup:auth-spi:$edcVersion")
 
-    api("jakarta.ws.rs:jakarta.ws.rs-api:3.0.0")
     api("org.junit.jupiter:junit-jupiter-api:5.8.1")
     api("org.assertj:assertj-core:3.21.0")
-    api("org.mockito:mockito-core:3.+")
+    api("org.mockito:mockito-inline:3.6.28")
 
-    implementation("com.auth0:java-jwt:3.19.1")
+    implementation("com.auth0:java-jwt:3.19.2")
+    implementation("jakarta.ws.rs:jakarta.ws.rs-api:3.1.0")
+
 }
 
 java {
@@ -51,3 +55,36 @@ repositories {
         url = uri("https://maven.iais.fraunhofer.de/artifactory/eis-ids-public/")
     }
 }
+
+buildscript {
+    dependencies {
+        classpath("io.swagger.core.v3:swagger-gradle-plugin:2.1.12")
+    }
+}
+
+pluginManager.withPlugin("io.swagger.core.v3.swagger-gradle-plugin") {
+
+    dependencies {
+        implementation("io.swagger.core.v3:swagger-jaxrs2-jakarta:${swaggerJaxrs2Version}")
+        implementation("jakarta.ws.rs:jakarta.ws.rs-api:${rsApi}")
+    }
+
+    tasks.withType<io.swagger.v3.plugins.gradle.tasks.ResolveTask> {
+        // this is used to scan the classpath and generate an openapi yaml file
+        outputFileName = "openApi"
+        outputFormat = io.swagger.v3.plugins.gradle.tasks.ResolveTask.Format.YAML
+        prettyPrint = true
+        classpath = java.sourceSets["main"].runtimeClasspath
+        buildClasspath = classpath
+        resourcePackages = setOf("org.eclipse.dataspaceconnector")
+        outputDir = file("${rootProject.projectDir.path}/openapi")
+        openApiFile = file("${rootProject.projectDir.path}/openapi/openApiInfo.yaml")
+    }
+
+    configurations {
+        all {
+            exclude(group = "com.fasterxml.jackson.jaxrs", module = "jackson-jaxrs-json-provider")
+        }
+    }
+}
+

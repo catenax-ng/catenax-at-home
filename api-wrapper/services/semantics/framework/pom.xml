@@ -49,7 +49,7 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-text</artifactId>
-            <version>1.6</version>
+            <version>1.9</version>
         </dependency>
 
         <!-- Annotations -->
@@ -154,7 +154,7 @@
             <plugin>
                 <groupId>io.swagger.codegen.v3</groupId>
                 <artifactId>swagger-codegen-maven-plugin</artifactId>
-                <version>3.0.33</version>
+                <version>3.0.34</version>
                 <executions>
                     <!--<execution>
                         <id>generate-shell-skeletons</id>
@@ -195,7 +195,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
+                <version>3.10.1</version>
             </plugin>
         </plugins>
     </build>

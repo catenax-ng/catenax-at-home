@@ -36,7 +36,19 @@ services:
     volumes:
      - ./config/consumer-data-plane.config:/config
 
-  api-wrapper:
+  consumer-aas-proxy:
+    build:
+      context: services/semantics/aasproxy
+      args:
+        JAR: target/aasproxy-1.0.0-SNAPSHOT.jar
+    platform: ${DOCKER_PLATFORM:-linux/amd64}
+    ports:
+      - "4245:4245" # default
+      - "5014:8090" # debugging
+    environment:
+      AASPROXY_WRAPPERURL: http://consumer-api-wrapper:9191/api/service
+
+  consumer-api-wrapper:
     build:
       context: services/api-wrapper
       args:
@@ -49,7 +61,7 @@ services:
     environment:
       EDC_FS_CONFIG: /config/configuration.properties
     volumes:
-      - ./config/api-wrapper.config:/config
+      - ./config/consumer-api-wrapper.config:/config
 
   provider-control-plane:
     build:
@@ -95,16 +107,6 @@ services:
     ports:
       - "8194:8080" # default
       - "5010:8090" # debugging
-
-  consumer-aas-proxy-service:
-    build:
-      context: services/semantics/aasproxy
-      args:
-        JAR: target/aasproxy-1.0.0-SNAPSHOT.jar
-    platform: ${DOCKER_PLATFORM:-linux/amd64}
-    ports:
-      - "4245:4245" # default
-      - "5014:8090" # debugging
 
   registry-service:
     image: ghcr.io/catenax-ng/catenax-at-home/registry:0.0.1
