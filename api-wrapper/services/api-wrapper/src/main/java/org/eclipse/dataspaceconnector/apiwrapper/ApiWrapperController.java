@@ -92,34 +92,44 @@ public class ApiWrapperController {
     ) throws InterruptedException, IOException {
         MultivaluedMap<String, String> queryParams = uriInfo.getQueryParameters();
 
-        // Initialize and negotiate everything
-        var agreementId = initializeContractNegotiation(providerConnectorUrl, assetId);
+        String agreementId = contractAgreementCache.get(assetId);
+        if (agreementId == null) {
+            // Initialize and negotiate everything
+            agreementId = initializeContractNegotiation(providerConnectorUrl, assetId);
+        }
 
-        // Initiate transfer process
-        transferProcessService.initiateHttpProxyTransferProcess(
-                agreementId,
-                assetId,
-                config.getConsumerEdcControlUrl(),
-                providerConnectorUrl + IDS_PATH,
-                header
-        );
+        EndpointDataReference dataReference = endpointDataReferenceCache.get(agreementId);
+        boolean validDataReference = dataReference != null && InMemoryEndpointDataReferenceCache.endpointDataRefTokenExpired(dataReference);
+        if (!validDataReference) {
+            monitor.debug("EndpointDataReference does not exists or token is expired.");
+            endpointDataReferenceCache.remove(agreementId);
 
-        EndpointDataReference dataReference = getDataReference(agreementId);
+            // Initiate transfer process
+            transferProcessService.initiateHttpProxyTransferProcess(
+                    agreementId,
+                    assetId,
+                    config.getConsumerEdcDataManagementUrl(),
+                    providerConnectorUrl + IDS_PATH,
+                    header
+            );
+
+            dataReference = getDataReference(agreementId);
+        }
 
         // Get data through data plane
-        String data = "";
         try {
-            data = httpProxyService.sendGETRequest(dataReference, subUrl, queryParams);
+            String data = httpProxyService.sendGETRequest(dataReference, subUrl, queryParams);
             Matcher dataMatcher = RESPONSE_PATTERN.matcher(data);
             while (dataMatcher.matches()) {
                 data = dataMatcher.group("embeddedData");
                 data = data.replace("\\\"", "\"").replace("\\\\", "\\");
                 dataMatcher = RESPONSE_PATTERN.matcher(data);
             }
+            return data;
         } catch (IOException e) {
             monitor.severe("Call against consumer data plane failed!", e);
+            throw e;
         }
-        return data;
     }
 
     @POST
@@ -134,24 +144,33 @@ public class ApiWrapperController {
     ) throws InterruptedException, IOException {
         MultivaluedMap<String, String> queryParams = uriInfo.getQueryParameters();
 
-        // Initialize and negotiate everything
-        var agreementId = initializeContractNegotiation(providerConnectorUrl, assetId);
+        String agreementId = contractAgreementCache.get(assetId);
+        if (agreementId == null) {
+            // Initialize and negotiate everything
+            agreementId = initializeContractNegotiation(providerConnectorUrl, assetId);
+        }
 
-        // Initiate transfer process
-        transferProcessService.initiateHttpProxyTransferProcess(
-                agreementId,
-                assetId,
-                config.getConsumerEdcControlUrl(),
-                providerConnectorUrl + IDS_PATH,
-                header
-        );
+        EndpointDataReference dataReference = endpointDataReferenceCache.get(agreementId);
+        boolean validDataReference = dataReference != null && InMemoryEndpointDataReferenceCache.endpointDataRefTokenExpired(dataReference);
+        if (!validDataReference) {
+            monitor.debug("EndpointDataReference does not exists or token is expired.");
+            endpointDataReferenceCache.remove(agreementId);
 
-        EndpointDataReference dataReference = getDataReference(agreementId);
+            // Initiate transfer process
+            transferProcessService.initiateHttpProxyTransferProcess(
+                    agreementId,
+                    assetId,
+                    config.getConsumerEdcControlUrl(),
+                    providerConnectorUrl + IDS_PATH,
+                    header
+            );
+
+            dataReference = getDataReference(agreementId);
+        }
 
         // Get data through data plane
-        String data = "";
         try {
-            data = httpProxyService.sendPOSTRequest(
+            String data = httpProxyService.sendPOSTRequest(
                     dataReference,
                     subUrl,
                     queryParams,
@@ -164,20 +183,14 @@ public class ApiWrapperController {
                 data = data.replace("\\\"", "\"").replace("\\\\", "\\");
                 dataMatcher = RESPONSE_PATTERN.matcher(data);
             }
+            return data;
         } catch (IOException e) {
             monitor.severe("Call against consumer data plane failed!", e);
+            throw e;
         }
-        return data;
     }
 
     private String initializeContractNegotiation(String providerConnectorUrl, String assetId) throws InterruptedException, IOException {
-        String agreementId = contractAgreementCache.get(assetId);
-
-        if (agreementId != null) {
-            monitor.debug("Found already existing contract agreement in cache");
-            return agreementId;
-        }
-
         monitor.info("Initialize contract negotiation");
         var contractOffer = contractOfferService.findContractOffer4AssetId(
                 assetId,
@@ -228,7 +241,7 @@ public class ApiWrapperController {
             );
         }
 
-        agreementId = negotiation.getContractAgreementId();
+        String agreementId = negotiation.getContractAgreementId();
         contractAgreementCache.put(assetId, agreementId);
 
         return agreementId;
@@ -245,7 +258,9 @@ public class ApiWrapperController {
         }
 
         if (dataReference == null) {
-            throw new InternalServerErrorException("Did not receive callback within 10 seconds from consumer edc.");
+            String errorMsg = "Did not receive callback within 10 seconds from consumer edc.";
+            monitor.severe(errorMsg);
+            throw new InternalServerErrorException(errorMsg);
         }
 
         return dataReference;

@@ -1,5 +1,6 @@
 package org.eclipse.dataspaceconnector.apiwrapper.connector.sdk.service;
 
+import jakarta.ws.rs.InternalServerErrorException;
 import jakarta.ws.rs.core.MultivaluedMap;
 import okhttp3.HttpUrl;
 import okhttp3.MediaType;
@@ -10,6 +11,8 @@ import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -71,12 +74,12 @@ public class HttpProxyService {
         var body = response.body();
 
         if (!response.isSuccessful() || body == null) {
-            monitor.warning(format("Data plane responded with error: %s %s", response.code(), body != null ? body.string() : ""));
-            return null;
+            monitor.severe(format("Data plane responded with error: %s %s", response.code(), body != null ? body.string() : ""));
+            throw new InternalServerErrorException(format("Data plane responded with error status code %s", response.code()));
         }
 
         var bodyString = body.string();
-        monitor.info("Data plane responded correctly: " + bodyString);
+        monitor.info("Data plane responded correctly: " + URLEncoder.encode(bodyString, StandardCharsets.UTF_8.toString()));
         return bodyString;
     }
 }
