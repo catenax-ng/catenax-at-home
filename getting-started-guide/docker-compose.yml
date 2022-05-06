@@ -28,7 +28,14 @@ services:
     volumes:
      - ./config/consumer-data-plane.config:/config
 
-  api-wrapper:
+  consumer-aas-proxy:
+    image: ghcr.io/catenax-ng/catenax-at-home/consumer-aas-proxy-service:0.0.1
+    platform: ${DOCKER_PLATFORM:-linux/amd64}
+    ports:
+      - "4245:4245" # default
+      - "5014:8090"
+
+  consumer-api-wrapper:
     image: ghcr.io/catenax-ng/catenax-at-home/api-wrapper:0.0.1
     platform: ${DOCKER_PLATFORM:-linux/amd64}
     ports:
@@ -38,7 +45,7 @@ services:
     environment:
       EDC_FS_CONFIG: /config/configuration.properties
     volumes:
-      - ./config/api-wrapper.config:/config
+      - ./config/consumer-api-wrapper.config:/config
 
   provider-control-plane:
     image: ghcr.io/catenax-ng/catenax-at-home/provider-control-plane:0.0.1
@@ -76,13 +83,6 @@ services:
     ports:
       - "8194:8080" # default
       - "5010:8090"
-
-  consumer-aas-proxy-service:
-    image: ghcr.io/catenax-ng/catenax-at-home/consumer-aas-proxy-service:0.0.1
-    platform: ${DOCKER_PLATFORM:-linux/amd64}
-    ports:
-      - "4245:4245" # default
-      - "5014:8090"
 
   registry-service:
     image: ghcr.io/catenax-ng/catenax-at-home/registry:0.0.1
