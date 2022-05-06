@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 edcVersion="0.0.1"
-proxyVersion="0.0.1"
-wrapperVersion="0.0.1"
+proxyVersion="0.0.2"
+wrapperVersion="0.0.2"
 backendVersion="0.0.1"
 registryVersion="0.0.1"
 
