@@ -45,6 +45,8 @@ services:
     ports:
       - "4245:4245" # default
       - "5014:8090" # debugging
+    environment:
+      AASPROXY_WRAPPERURL: http://consumer-api-wrapper:9191/api/service
 
   consumer-api-wrapper:
     build:
