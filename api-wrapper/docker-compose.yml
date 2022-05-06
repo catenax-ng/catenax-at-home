@@ -2,10 +2,11 @@ version: "3.9"
 
 services:
   consumer-control-plane:
-    build:
-      context: services/control-plane
-      args:
-        JAR: build/libs/edc.jar
+#    build:
+#      context: services/control-plane
+#      args:
+#        JAR: build/libs/edc.jar
+    image: ghcr.io/catenax-ng/catenax-at-home/consumer-control-plane:0.0.1
     platform: ${DOCKER_PLATFORM:-linux/amd64}
     ports:
       - "8191:9191" # default/control
@@ -22,10 +23,11 @@ services:
       - ./certs/cert.pfx:/cert.pfx
 
   consumer-data-plane:
-    build:
-      context: services/data-plane
-      args:
-        JAR: build/libs/edc.jar
+#    build:
+#      context: services/data-plane
+#      args:
+#        JAR: build/libs/edc.jar
+    image: ghcr.io/catenax-ng/catenax-at-home/consumer-data-plane:0.0.1
     platform: ${DOCKER_PLATFORM:-linux/amd64}
     ports:
       - "8192:9191" # default
@@ -64,10 +66,11 @@ services:
       - ./config/consumer-api-wrapper.config:/config
 
   provider-control-plane:
-    build:
-      context: services/control-plane
-      args:
-        JAR: build/libs/edc.jar
+#    build:
+#      context: services/control-plane
+#      args:
+#        JAR: build/libs/edc.jar
+    image: ghcr.io/catenax-ng/catenax-at-home/provider-control-plane:0.0.1
     platform: ${DOCKER_PLATFORM:-linux/amd64}
     ports:
       - "8181:9191" # default/control
@@ -84,10 +87,11 @@ services:
       - ./certs/cert.pfx:/cert.pfx
 
   provider-data-plane:
-    build:
-      context: services/data-plane
-      args:
-        JAR: build/libs/edc.jar
+#    build:
+#      context: services/data-plane
+#      args:
+#        JAR: build/libs/edc.jar
+    image: ghcr.io/catenax-ng/catenax-at-home/provider-data-plane:0.0.1
     platform: ${DOCKER_PLATFORM:-linux/amd64}
     ports:
       - "8182:9191" # default
