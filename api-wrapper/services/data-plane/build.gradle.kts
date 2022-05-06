@@ -10,19 +10,22 @@ dependencies {
     val edcGroup = "org.eclipse.dataspaceconnector"
     val edcVersion = "0.0.1-SNAPSHOT"
 
-    api("$edcGroup:web-spi:$edcVersion")
-    api("$edcGroup:core-base:$edcVersion")
-    api("$edcGroup:core-boot:$edcVersion")
-    api("$edcGroup:http:$edcVersion")
+    // Config
+    implementation("$edcGroup:filesystem-configuration:$edcVersion")
+    implementation("$edcGroup:filesystem-vault:$edcVersion")
 
-    api("$edcGroup:data-plane-spi:$edcVersion")
-    api("$edcGroup:data-plane-framework:$edcVersion")
-    api("$edcGroup:data-plane-http:$edcVersion")
-    api("$edcGroup:data-plane-api:$edcVersion")
+    // APIs
+    implementation("$edcGroup:data-plane-framework:$edcVersion")
+    implementation("$edcGroup:data-plane-http:$edcVersion")
+    implementation("$edcGroup:data-plane-api:$edcVersion")
+    implementation("$edcGroup:observability-api:$edcVersion")
 
-    api("$edcGroup:observability-api:$edcVersion")
+    // Core
+    implementation("$edcGroup:core-base:$edcVersion")
+    implementation("$edcGroup:core-boot:$edcVersion")
 
-    api("$edcGroup:filesystem-configuration:$edcVersion")
+    // Supportive
+    implementation("$edcGroup:http:$edcVersion")
 }
 
 java {
