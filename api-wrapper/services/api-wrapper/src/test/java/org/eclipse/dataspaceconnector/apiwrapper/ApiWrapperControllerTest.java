@@ -71,7 +71,7 @@ public class ApiWrapperControllerTest {
                 .id("idRef")
                 .endpoint("anEndpoint")
                 .authKey("myKey")
-                .authCode("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkJhZWxkdW5nIFVzZXIiLCJpYXQiOjE1MTYyMzkwMjJ9.qH7Zj_m3kY69kxhaQXTa-ivIpytKXXjZc1ZSmapZnGE")
+                .authCode("aes.hj65_klhz/trlupok76")
                 .properties(map)
                 .build();
 
@@ -103,7 +103,7 @@ public class ApiWrapperControllerTest {
                 .id("idRef")
                 .endpoint("anEndpoint")
                 .authKey("myKey")
-                .authCode("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkJhZWxkdW5nIFVzZXIiLCJpYXQiOjE1MTYyMzkwMjJ9.qH7Zj_m3kY69kxhaQXTa-ivIpytKXXjZc1ZSmapZnGE")
+                .authCode("aes.hj65_klhz/trlupok76")
                 .properties(map)
                 .build();
 
@@ -197,7 +197,7 @@ public class ApiWrapperControllerTest {
                 .id("idRef")
                 .endpoint("anEndpoint")
                 .authKey("myKey")
-                .authCode("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkJhZWxkdW5nIFVzZXIiLCJpYXQiOjE1MTYyMzkwMjJ9.qH7Zj_m3kY69kxhaQXTa-ivIpytKXXjZc1ZSmapZnGE")
+                .authCode("aes.hj65_klhz/trlupok76")
                 .properties(map)
                 .build();
 
@@ -231,7 +231,7 @@ public class ApiWrapperControllerTest {
                 .id("idRef")
                 .endpoint("anEndpoint")
                 .authKey("myKey")
-                .authCode("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkJhZWxkdW5nIFVzZXIiLCJpYXQiOjE1MTYyMzkwMjJ9.qH7Zj_m3kY69kxhaQXTa-ivIpytKXXjZc1ZSmapZnGE")
+                .authCode("aes.hj65_klhz/trlupok76")
                 .properties(map)
                 .build();
 
@@ -258,7 +258,7 @@ public class ApiWrapperControllerTest {
                 .id("idRef")
                 .endpoint("anEndpoint")
                 .authKey("myKey")
-                .authCode("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkJhZWxkdW5nIFVzZXIiLCJpYXQiOjE1MTYyMzkwMjJ9.qH7Zj_m3kY69kxhaQXTa-ivIpytKXXjZc1ZSmapZnGE")
+                .authCode("aes.hj65_klhz/trlupok76")
                 .properties(map)
                 .build();
 
