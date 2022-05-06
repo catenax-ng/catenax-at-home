@@ -21,14 +21,8 @@ Get the application URLs by running these commands:
   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
 
   export NODE_PORT_DEFAULT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "aas-proxy.fullname" . }}}")
-  export NODE_PORT_PUBLIC=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[1].nodePort}" services {{ include "aas-proxy.fullname" . }}}")
-  export NODE_PORT_CONTROL=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[2].nodePort}" services {{ include "aas-proxy.fullname" . }}}")
-  export NODE_PORT_METRICS=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[3].nodePort}" services {{ include "aas-proxy.fullname" . }}}")
 
   echo "Visit http://$NODE_IP:$NODE_PORT_DEFAULT to access the default api"
-  echo "Visit http://$NODE_IP:$NODE_PORT_PUBLIC to access the public data transfer api"
-  echo "Visit http://$NODE_IP:$NODE_PORT_CONTROL to access the control api"
-  echo "Visit http://$NODE_IP:$NODE_PORT_METRICS to access the metrics api"
 
 {{- else if contains "ClusterIP" .Values.service.type }}
 Get the application URL by running these commands:
@@ -36,19 +30,10 @@ Get the application URL by running these commands:
   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ include "aas-proxy.name" . }},app.kubernetes.io/instance={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
 
   export CONTAINER_PORT_DEFAULT=$(kubectl get pod --namespace {{ .Release.Namespace }} $POD_NAME -o jsonpath="{.spec.containers[0].ports[0].containerPort}")
-  export CONTAINER_PORT_PUBLIC=$(kubectl get pod --namespace {{ .Release.Namespace }} $POD_NAME -o jsonpath="{.spec.containers[0].ports[1].containerPort}")
-  export CONTAINER_PORT_CONTROL=$(kubectl get pod --namespace {{ .Release.Namespace }} $POD_NAME -o jsonpath="{.spec.containers[0].ports[2].containerPort}")
-  export CONTAINER_PORT_METRICS=$(kubectl get pod --namespace {{ .Release.Namespace }} $POD_NAME -o jsonpath="{.spec.containers[0].ports[3].containerPort}")
 
-  echo "Visit http://127.0.0.1:8080 to access the default api"
-  echo "Visit http://127.0.0.1:8185 to access the public data transfer api"
-  echo "Visit http://127.0.0.1:9999 to access the control api"
-  echo "Visit http://127.0.0.1:9090 to access the metrics api"
+  echo "Visit http://127.0.0.1:CONTAINER_PORT_DEFAULT to access the default api"
 
   kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME \
-    8080:$CONTAINER_PORT_DEFAULT \
-    8185:$CONTAINER_PORT_PUBLIC \
-    9999:$CONTAINER_PORT_CONTROL \
-    9090:$CONTAINER_PORT_METRICS
+    8080:$CONTAINER_PORT_DEFAULT
 
 {{- end }}
