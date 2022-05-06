@@ -25,7 +25,7 @@ dependencies {
 
     api("jakarta.ws.rs:jakarta.ws.rs-api:3.1.0")
 
-    implementation("com.auth0:java-jwt:3.19.1")
+    implementation("com.auth0:java-jwt:3.19.2")
 }
 
 java {
