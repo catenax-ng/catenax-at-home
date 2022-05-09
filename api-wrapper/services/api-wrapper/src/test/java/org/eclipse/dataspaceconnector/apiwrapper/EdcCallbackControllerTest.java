@@ -1,6 +1,5 @@
 package org.eclipse.dataspaceconnector.apiwrapper;
 
-import org.eclipse.dataspaceconnector.apiwrapper.EdcCallbackController;
 import org.eclipse.dataspaceconnector.apiwrapper.cache.InMemoryEndpointDataReferenceCache;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
