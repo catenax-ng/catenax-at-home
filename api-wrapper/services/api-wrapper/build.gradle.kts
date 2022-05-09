@@ -26,9 +26,9 @@ dependencies {
     implementation("jakarta.ws.rs:jakarta.ws.rs-api:3.1.0")
     implementation("com.auth0:java-jwt:3.19.2")
 
-    implementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
-    implementation("org.assertj:assertj-core:3.21.0")
-    implementation("org.mockito:mockito-inline:3.6.28")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
+    testImplementation("org.assertj:assertj-core:3.21.0")
+    testImplementation("org.mockito:mockito-inline:3.6.28")
 }
 
 java {
