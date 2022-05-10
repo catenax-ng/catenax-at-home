@@ -7,9 +7,6 @@ public final class ApiWrapperConfigKeys {
     @EdcSetting(required = true)
     public static final String CONSUMER_EDC_DATAMANAGEMENT_URL = "wrapper.consumer.edc.datamanagement.url";
 
-    @EdcSetting(required = true)
-    public static final String CONSUMER_EDC_CONTROL_URL = "wrapper.consumer.edc.control.url";
-
     @EdcSetting
     public static final String CONSUMER_EDC_APIKEY_NAME = "wrapper.consumer.edc.apikey.name";
 

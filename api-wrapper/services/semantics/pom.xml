@@ -58,7 +58,7 @@
 		<spring.boot.version>2.6.7</spring.boot.version>
 		<spring.cloud.version>2020.0.3</spring.cloud.version>
 		<spring.version>5.3.19</spring.version>
-		<spring.feign.version>3.1.1</spring.feign.version>
+		<spring.feign.version>3.1.2</spring.feign.version>
 		<springdoc.version>1.6.8</springdoc.version>
 		<springfox.version>3.0.0</springfox.version>
 		<collection-utlis.version>4.4</collection-utlis.version>
@@ -97,7 +97,7 @@
 		<!-- persistence -->
 		<mapstruct.version>1.4.2.Final</mapstruct.version>
 		<mapstruct.lombok.version>0.2.0</mapstruct.lombok.version>
-		<postgresql.version>42.3.4</postgresql.version>
+		<postgresql.version>42.3.5</postgresql.version>
 		<h2.version>2.1.212</h2.version>
 		<liquibase.version>4.9.1</liquibase.version>
 		<!-- test libs -->

@@ -160,7 +160,7 @@ public class ApiWrapperController {
             transferProcessService.initiateHttpProxyTransferProcess(
                     agreementId,
                     assetId,
-                    config.getConsumerEdcControlUrl(),
+                    config.getConsumerEdcDataManagementUrl(),
                     providerConnectorUrl + IDS_PATH,
                     header
             );
@@ -194,7 +194,7 @@ public class ApiWrapperController {
         monitor.info("Initialize contract negotiation");
         var contractOffer = contractOfferService.findContractOffer4AssetId(
                 assetId,
-                config.getConsumerEdcControlUrl(),
+                config.getConsumerEdcDataManagementUrl(),
                 providerConnectorUrl + IDS_PATH,
                 header
         );

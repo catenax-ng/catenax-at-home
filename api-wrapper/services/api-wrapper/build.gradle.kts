@@ -12,20 +12,24 @@ val rsApi = "3.0.0"
 val swaggerJaxrs2Version = "2.2.0"
 
 dependencies {
-    api("$edcGroup:core-boot:$edcVersion")
-    api("$edcGroup:core-base:$edcVersion")
-    api("$edcGroup:http:$edcVersion")
+    implementation("$edcGroup:core-boot:$edcVersion")
+    implementation("$edcGroup:core-base:$edcVersion")
+    implementation("$edcGroup:http:$edcVersion")
 
-    api("$edcGroup:filesystem-configuration:$edcVersion")
+    implementation("$edcGroup:filesystem-configuration:$edcVersion")
 
-    api("$edcGroup:catalog-spi:$edcVersion")
-    api("$edcGroup:contract-spi:$edcVersion")
-    api("$edcGroup:transfer-spi:$edcVersion")
-    api("$edcGroup:auth-spi:$edcVersion")
+    implementation("$edcGroup:catalog-spi:$edcVersion")
+    implementation("$edcGroup:contract-spi:$edcVersion")
+    implementation("$edcGroup:transfer-spi:$edcVersion")
+    implementation("$edcGroup:auth-spi:$edcVersion")
 
-    api("jakarta.ws.rs:jakarta.ws.rs-api:3.1.0")
+    implementation("jakarta.ws.rs:jakarta.ws.rs-api:3.1.0")
+    implementation("com.auth0:java-jwt:3.19.2")
 
-    implementation("com.auth0:java-jwt:3.19.1")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.1")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
+    testImplementation("org.assertj:assertj-core:3.21.0")
+    testImplementation("org.mockito:mockito-inline:3.6.28")
 }
 
 java {
