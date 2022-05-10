@@ -72,7 +72,6 @@ public class ApiWrapperExtension implements ServiceExtension {
         ApiWrapperConfig.Builder builder = ApiWrapperConfig.Builder.newInstance();
 
         builder.consumerEdcDataManagementUrl(config.getString(ApiWrapperConfigKeys.CONSUMER_EDC_DATAMANAGEMENT_URL));
-        builder.consumerEdcControlUrl(config.getString(ApiWrapperConfigKeys.CONSUMER_EDC_CONTROL_URL));
 
         var consumerEdcApiKeyName = config.getString(ApiWrapperConfigKeys.CONSUMER_EDC_APIKEY_NAME, null);
         if (consumerEdcApiKeyName != null) {

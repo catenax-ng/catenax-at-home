@@ -21,7 +21,7 @@ public class ContractOfferService {
     private final ObjectMapper objectMapper;
     private final OkHttpClient httpClient;
 
-    private static final String CATALOG_PATH = "/control/catalog?provider=";
+    private static final String CATALOG_PATH = "/catalog?providerUrl=";
 
     public ContractOfferService(Monitor monitor, TypeManager typeManager, OkHttpClient httpClient) {
         this.monitor = monitor;
@@ -31,12 +31,12 @@ public class ContractOfferService {
 
     public Optional<ContractOffer> findContractOffer4AssetId(
             String assetId,
-            String consumerControlUrl,
+            String consumerEdcDataManagementUrl,
             String providerConnectorControlPlaneIDSUrl,
             Map<String, String> header
     ) throws IOException {
         var catalog = getCatalogFromProvider(
-                consumerControlUrl,
+                consumerEdcDataManagementUrl,
                 providerConnectorControlPlaneIDSUrl,
                 header
         );
@@ -51,11 +51,11 @@ public class ContractOfferService {
     }
 
     private Catalog getCatalogFromProvider(
-            String consumerControlUrl,
+            String consumerEdcDataManagementUrl,
             String providerConnectorControlPlaneIDSUrl,
             Map<String, String> headers
     ) throws IOException {
-        var url = consumerControlUrl + CATALOG_PATH + providerConnectorControlPlaneIDSUrl;
+        var url = consumerEdcDataManagementUrl + CATALOG_PATH + providerConnectorControlPlaneIDSUrl;
         var request = new Request.Builder()
                 .url(url);
         headers.forEach(request::addHeader);
