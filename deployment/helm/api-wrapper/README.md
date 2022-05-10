@@ -4,9 +4,8 @@
 
 In addition to the "normal" Helm/Kubernetes/EDC configurations, you must specify the following values:
 
-| Value                                   | Description                                                                                                          |
-|-----------------------------------------|----------------------------------------------------------------------------------------------------------------------|
-| `wrapper.consumer.edc.control.url`        | Url to the control api of the connector (incl. base path).                                                           |
+| Value                                     | Description                                                                                                          |
+|-------------------------------------------|----------------------------------------------------------------------------------------------------------------------|
 | `wrapper.consumer.edc.datamanagement.url` | Url to the data management api of the connector (incl. base path).                                                   |
 | `wrapper.consumer.edc.apikey.name`        | (Optional) If the connectors data management api is secured with token based auth, this defines the header key name. |
 | `wrapper.consumer.edc.apikey.value`       | (Optional) If the connectors data management api is secured with token based auth, this defines the token value.     |
