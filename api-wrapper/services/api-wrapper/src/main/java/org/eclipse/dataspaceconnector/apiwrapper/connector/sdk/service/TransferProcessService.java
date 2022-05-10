@@ -73,7 +73,10 @@ public class TransferProcessService {
                 throw new InternalServerErrorException(format("Control plane responded with: %s %s", response.code(), body != null ? body.string() : ""));
             }
 
+            // For debugging purposes:
+            // var transferProcessId = TransferId.Builder.newInstance().id(body.string()).build();
             var transferProcessId = objectMapper.readValue(body.string(), TransferId.class);
+
             monitor.info(format("Transfer process (%s) initiated", transferProcessId));
 
             return transferProcessId;

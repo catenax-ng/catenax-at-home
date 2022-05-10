@@ -55,7 +55,10 @@ public class ContractNegotiationService {
                 throw new InternalServerErrorException(format("Control plane responded with: %s %s", response.code(), body != null ? body.string() : ""));
             }
 
+            // For debugging purposes:
+            // var negotiationId = NegotiationId.Builder.newInstance().id(body.string()).build();
             var negotiationId = objectMapper.readValue(body.string(), NegotiationId.class);
+
             monitor.info("Started negotiation with ID: " + negotiationId.getId());
 
             return negotiationId;
