@@ -18,12 +18,10 @@ public class ApiWrapperConfigTest {
 
         ApiWrapperConfig apiWrapperTest = ApiWrapperConfig.Builder.newInstance()
                 .consumerEdcDataManagementUrl("urlConsumer")
-                .consumerEdcControlUrl("urlControl")
                 .consumerEdcApiKeyValue("apiValue")
                 .basicAuthUsers(map).build();
 
         assertAll(() -> assertThat(apiWrapperTest.getConsumerEdcDataManagementUrl()).isEqualTo("urlConsumer"),
-                () -> assertThat(apiWrapperTest.getConsumerEdcControlUrl()).isEqualTo("urlControl"),
                 () -> assertThat(apiWrapperTest.getConsumerEdcApiKeyValue()).isEqualTo("apiValue"),
                 () -> assertThat(apiWrapperTest.getBasicAuthUsers().get("userId")).isEqualTo("userPwd"),
                 () -> assertThat(apiWrapperTest.getConsumerEdcApiKeyName()).isEqualTo("X-Api-Key"));
