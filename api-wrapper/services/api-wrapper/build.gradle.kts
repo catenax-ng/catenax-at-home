@@ -9,7 +9,7 @@ val javaVersion = 11
 val edcGroup = "org.eclipse.dataspaceconnector"
 val edcVersion = "0.0.1-SNAPSHOT"
 val rsApi = "3.0.0"
-val swaggerJaxrs2Version = "2.1.11"
+val swaggerJaxrs2Version = "2.2.0"
 
 dependencies {
     implementation("$edcGroup:core-boot:$edcVersion")
