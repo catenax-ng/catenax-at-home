@@ -21,7 +21,7 @@ public class ContractOfferService {
     private final ObjectMapper objectMapper;
     private final OkHttpClient httpClient;
 
-    private static final String CATALOG_PATH = "/catalog?provider=";
+    private static final String CATALOG_PATH = "/catalog?providerUrl=";
 
     public ContractOfferService(Monitor monitor, TypeManager typeManager, OkHttpClient httpClient) {
         this.monitor = monitor;
