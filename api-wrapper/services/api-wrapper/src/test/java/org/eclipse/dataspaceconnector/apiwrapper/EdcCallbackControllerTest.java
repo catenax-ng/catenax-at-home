@@ -4,11 +4,11 @@ import org.eclipse.dataspaceconnector.apiwrapper.cache.InMemoryEndpointDataRefer
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
 import org.junit.jupiter.api.Test;
-import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 public class EdcCallbackControllerTest {
@@ -16,13 +16,13 @@ public class EdcCallbackControllerTest {
     private final Monitor monitor = mock(Monitor.class);
     private final InMemoryEndpointDataReferenceCache endpointDataReferenceCache = new InMemoryEndpointDataReferenceCache();
 
-    private final EdcCallbackController edcCallbackController = new EdcCallbackController(monitor,endpointDataReferenceCache);
+    private final EdcCallbackController edcCallbackController = new EdcCallbackController(monitor, endpointDataReferenceCache);
 
     @Test
-    void receiveEdcCallbackByDataReference(){
+    void receiveEdcCallbackByDataReference() {
 
-        Map<String,String> map = new HashMap<>();
-        map.put("cid","reference");
+        Map<String, String> map = new HashMap<>();
+        map.put("cid", "reference");
 
         EndpointDataReference endpointDataReference = EndpointDataReference.Builder.newInstance()
                 .id("idRef")
