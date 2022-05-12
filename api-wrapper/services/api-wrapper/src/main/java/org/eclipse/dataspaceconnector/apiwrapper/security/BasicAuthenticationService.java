@@ -2,10 +2,12 @@ package org.eclipse.dataspaceconnector.apiwrapper.security;
 
 import org.eclipse.dataspaceconnector.api.auth.AuthenticationService;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
+import org.eclipse.dataspaceconnector.spi.result.Result;
 
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class BasicAuthenticationService implements AuthenticationService {
 
@@ -20,28 +22,28 @@ public class BasicAuthenticationService implements AuthenticationService {
     }
 
     @Override
-    public boolean isAuthenticated(Map<String, List<String>> map) {
-        var authHeader = map.get("Authorization");
+    public boolean isAuthenticated(Map<String, List<String>> headers) {
 
-        if (authHeader == null || authHeader.isEmpty()) {
-            monitor.debug("No authentication header specified");
+        Objects.requireNonNull(headers,"headers");
+
+        return headers.keySet().stream()
+                .filter(k -> k.equalsIgnoreCase("Authorization"))
+                .map(headers::get)
+                .filter(list -> !list.isEmpty())
+                .anyMatch(list -> list.stream()
+                        .map(this::decodeAuthHeader)
+                        .anyMatch(this::checkBasicAuthValid));
+    }
+
+    private boolean checkBasicAuthValid(Result<BasicAuthCredentials> basicAuthCredentialsResult) {
+        if (basicAuthCredentialsResult.failed()){
+            basicAuthCredentialsResult.getFailureMessages().forEach(monitor::debug);
             return false;
         }
 
-        var separatedAuthHeader = authHeader.get(0).split(" ");
-
-        if (separatedAuthHeader.length != 2) {
-            throw new IllegalArgumentException("Authorization header format is not supported");
-        }
-
-        var authCredentials = new String(b64Decoder.decode(separatedAuthHeader[1])).split(":");
-
-        if (authCredentials.length != 2) {
-            throw new IllegalArgumentException("Authorization header format is not supported");
-        }
-
-        var username = authCredentials[0];
-        var password = authCredentials[1];
+        var creds = basicAuthCredentialsResult.getContent();
+        var username = creds.username;
+        var password = creds.password;
         var password4Username = users.get(username);
 
         if (password4Username == null || !password4Username.equals(password)) {
@@ -51,4 +53,36 @@ public class BasicAuthenticationService implements AuthenticationService {
 
         return true;
     }
+
+    private Result<BasicAuthCredentials> decodeAuthHeader(String authHeader) {
+        String[] authCredentials;
+        var separatedAuthHeader = authHeader.split(" ");
+
+        if (separatedAuthHeader.length != 2) {
+            return Result.failure("Authorization header value is not a valid Bearer token");
+        }
+
+        try {
+            authCredentials = new String(b64Decoder.decode(separatedAuthHeader[1])).split(":");
+        } catch (IllegalArgumentException ex) {
+            return Result.failure("Authorization header could no base64 decoded");
+        }
+
+        if (authCredentials.length != 2) {
+            return Result.failure("Authorization header could be base64 decoded but is not in format of 'username:password'");
+        }
+
+        return Result.success(new BasicAuthCredentials(authCredentials[0], authCredentials[1]));
+    }
+
+    static class BasicAuthCredentials {
+        String username;
+        String password;
+
+        public BasicAuthCredentials(String username, String password) {
+            this.username = username;
+            this.password = password;
+        }
+    }
+
 }
