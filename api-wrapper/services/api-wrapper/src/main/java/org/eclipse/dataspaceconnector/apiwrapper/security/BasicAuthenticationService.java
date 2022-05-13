@@ -24,7 +24,7 @@ public class BasicAuthenticationService implements AuthenticationService {
     @Override
     public boolean isAuthenticated(Map<String, List<String>> headers) {
 
-        Objects.requireNonNull(headers,"headers");
+        Objects.requireNonNull(headers, "headers");
 
         return headers.keySet().stream()
                 .filter(k -> k.equalsIgnoreCase("Authorization"))
@@ -36,14 +36,14 @@ public class BasicAuthenticationService implements AuthenticationService {
     }
 
     private boolean checkBasicAuthValid(Result<BasicAuthCredentials> basicAuthCredentialsResult) {
-        if (basicAuthCredentialsResult.failed()){
+        if (basicAuthCredentialsResult.failed()) {
             basicAuthCredentialsResult.getFailureMessages().forEach(monitor::debug);
             return false;
         }
 
-        var creds = basicAuthCredentialsResult.getContent();
-        var username = creds.username;
-        var password = creds.password;
+        var credentials = basicAuthCredentialsResult.getContent();
+        var username = credentials.username;
+        var password = credentials.password;
         var password4Username = users.get(username);
 
         if (password4Username == null || !password4Username.equals(password)) {
@@ -65,7 +65,7 @@ public class BasicAuthenticationService implements AuthenticationService {
         try {
             authCredentials = new String(b64Decoder.decode(separatedAuthHeader[1])).split(":");
         } catch (IllegalArgumentException ex) {
-            return Result.failure("Authorization header could no base64 decoded");
+            return Result.failure("Authorization header could not be base64 decoded");
         }
 
         if (authCredentials.length != 2) {
