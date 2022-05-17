@@ -74,8 +74,8 @@ public class TransferProcessService {
             }
 
             // For debugging purposes:
-            var transferProcessId = TransferId.Builder.newInstance().id(body.string()).build();
-            // var transferProcessId = objectMapper.readValue(body.string(), TransferId.class);
+            // var transferProcessId = TransferId.Builder.newInstance().id(body.string()).build();
+            var transferProcessId = objectMapper.readValue(body.string(), TransferId.class);
 
             monitor.info(format("Transfer process (%s) initiated", transferProcessId));
 

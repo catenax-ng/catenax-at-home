@@ -56,8 +56,8 @@ public class ContractNegotiationService {
             }
 
             // For debugging purposes:
-            var negotiationId = NegotiationId.Builder.newInstance().id(body.string()).build();
-            // var negotiationId = objectMapper.readValue(body.string(), NegotiationId.class);
+            // var negotiationId = NegotiationId.Builder.newInstance().id(body.string()).build();
+            var negotiationId = objectMapper.readValue(body.string(), NegotiationId.class);
 
             monitor.info("Started negotiation with ID: " + negotiationId.getId());
 
