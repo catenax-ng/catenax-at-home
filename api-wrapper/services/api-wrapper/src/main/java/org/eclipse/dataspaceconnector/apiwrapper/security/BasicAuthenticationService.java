@@ -1,9 +1,11 @@
 package org.eclipse.dataspaceconnector.apiwrapper.security;
 
 import org.eclipse.dataspaceconnector.api.auth.AuthenticationService;
+import org.eclipse.dataspaceconnector.core.security.fs.FsVault;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.eclipse.dataspaceconnector.spi.result.Result;
 
+import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +16,7 @@ public class BasicAuthenticationService implements AuthenticationService {
     private final Base64.Decoder b64Decoder;
     private final Monitor monitor;
     private final Map<String, String> users;
+    private final FsVault vault = new FsVault(Paths.get("vault.properties"),false);
 
     public BasicAuthenticationService(Monitor monitor, Map<String, String> users) {
         this.monitor = monitor;
@@ -44,13 +47,15 @@ public class BasicAuthenticationService implements AuthenticationService {
         var credentials = basicAuthCredentialsResult.getContent();
         var username = credentials.username;
         var password = credentials.password;
-        var password4Username = users.get(username);
+
+        var password4Username = vault.resolveSecret("user");
+
+        //var password4Username = users.get(username);
 
         if (password4Username == null || !password4Username.equals(password)) {
             monitor.debug("Basic auth user could not be found or password wrong");
             return false;
         }
-
         return true;
     }
 
