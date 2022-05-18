@@ -16,7 +16,7 @@ dependencies {
     implementation("$edcGroup:core-base:$edcVersion")
     implementation("$edcGroup:http:$edcVersion")
 
-    implementation("$edcGroup:filesystem-configuration:$edcVersion")
+    implementation("$edcGroup:filesystem-vault:$edcVersion")
 
     implementation("$edcGroup:catalog-spi:$edcVersion")
     implementation("$edcGroup:contract-spi:$edcVersion")
@@ -30,6 +30,8 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
     testImplementation("org.assertj:assertj-core:3.21.0")
     testImplementation("org.mockito:mockito-inline:3.6.28")
+    testImplementation("org.powermock:powermock-api-mockito:1.6.2")
+
 }
 
 java {
