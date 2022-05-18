@@ -1,6 +1,7 @@
 package org.eclipse.dataspaceconnector.apiwrapper.security;
 
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
+import org.eclipse.dataspaceconnector.spi.result.Result;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
+import org.powermock.reflect.Whitebox;
 
 public class BasicAuthenticationServiceTest {
 
@@ -20,40 +22,46 @@ public class BasicAuthenticationServiceTest {
     private final BasicAuthenticationService authenticationServiceTest = new BasicAuthenticationService(monitor, users);
 
     @Test
-    void isAuthenticated_shouldReturnNoAuthenticationHeaderSpecified() {
+    void CredentialsHaveNoAuthorizationLabel(){
+        Map<String, List<String>> mapCorrectPassword = Map.of("user", new ArrayList<>(Arrays.asList("user dXNlcjpwYXNzd29yZA==", "blablabla")));
+        assertThat(authenticationServiceTest.isAuthenticated(mapCorrectPassword)).isEqualTo(false);
 
-        Map<String, List<String>> map = Map.of("Authorization", new ArrayList<>());
-        assertThat(authenticationServiceTest.isAuthenticated(map)).isEqualTo(false);
     }
 
     @Test
-    void isAuthenticated_shouldReturnHeaderFormatNotSupported() {
-
-        Map<String, List<String>> map1authorizationComponent = Map.of("Authorization", new ArrayList<>(Arrays.asList("Only1Compoment")));
-        Map<String, List<String>> map3authorizationComponents = Map.of("Authorization", new ArrayList<>(Arrays.asList("First", "2nd", "3")));
-
-        assertThatThrownBy(() -> authenticationServiceTest.isAuthenticated(map1authorizationComponent)).isInstanceOf(IllegalArgumentException.class);
-        assertThatThrownBy(() -> authenticationServiceTest.isAuthenticated(map3authorizationComponents)).isInstanceOf(IllegalArgumentException.class);
+    void AuthorizationHeaderIsNotValidToken(){
+        Map<String, List<String>> mapCorrectPassword = Map.of("Authorization", new ArrayList<>(Arrays.asList("userdXNlcjpwYXNzd29yZA==")));
+        assertThat(authenticationServiceTest.isAuthenticated(mapCorrectPassword)).isEqualTo(false);
     }
 
     @Test
-    void isAuthenticated_shouldReturnIncorrectlylyDecodedAuthorizationHeaderNotSupported() {
-        Map<String, List<String>> mapUnsupported = Map.of("Authorization", new ArrayList<>(Arrays.asList("user password", "blablabla")));
-
-        assertThatThrownBy(() -> authenticationServiceTest.isAuthenticated(mapUnsupported)).isInstanceOf(IllegalArgumentException.class);
+    void shouldReturnIsAuthenticated_shouldReturnNoAuthenticationHeaderSpecified() throws Exception {
+        Result<BasicAuthenticationService.BasicAuthCredentials> result = Whitebox.invokeMethod(authenticationServiceTest,"decodeAuthHeader","userdXNlcjpwYXNzd29yZA");
+        assertThat(result.getFailureMessages().get(0)).isEqualTo("Authorization header value is not a valid Bearer token");
     }
 
     @Test
-    void isAuthenticated_shouldReturnPasswordWrong() {
-        Map<String, List<String>> mapWrongPassword = Map.of("Authorization", new ArrayList<>(Arrays.asList("user aGVsbG86bXlQYXNzd29yQW==", "blablabla")));
-
-        assertThat(authenticationServiceTest.isAuthenticated(mapWrongPassword)).isEqualTo(false);
+    void shouldReturnAuthorizationHeaderCouldNotBeBase64Decoded() throws Exception {
+        Result<BasicAuthenticationService.BasicAuthCredentials> result = Whitebox.invokeMethod(authenticationServiceTest,"decodeAuthHeader","user dXNlñjpwYXNzd29yZA==");
+        assertThat(result.getFailureMessages().get(0)).isEqualTo("Authorization header could not be base64 decoded");
     }
 
     @Test
-    void isAuthenticated_shouldReturnCorrectAuthentication() {
-        Map<String, List<String>> mapWrongPassword = Map.of("Authorization", new ArrayList<>(Arrays.asList("user aGVsbG86bXlQYXNzd29yZA==", "blablabla")));
-
-        assertThat(authenticationServiceTest.isAuthenticated(mapWrongPassword)).isEqualTo(true);
+    void ShouldReturnDecodedAuthorizationHeaderHasFalseFormat() throws Exception {
+        Result<BasicAuthenticationService.BasicAuthCredentials> result = Whitebox.invokeMethod(authenticationServiceTest,"decodeAuthHeader","user yesIsayNo");
+        assertThat(result.getFailureMessages().get(0)).isEqualTo("Authorization header could not be base64 decoded");
     }
+
+    @Test
+    void sendIncorrectPassword() {
+        Map<String, List<String>> mapCorrectPassword = Map.of("Authorization", new ArrayList<>(Arrays.asList("user dXNldkqxYXNzd29yZA==", "blablabla")));
+        assertThat(authenticationServiceTest.isAuthenticated(mapCorrectPassword)).isEqualTo(false);
+    }
+
+    @Test
+    void sendCorrectPassword() {
+        Map<String, List<String>> mapCorrectPassword = Map.of("Authorization", new ArrayList<>(Arrays.asList("user dXNlcjpwYXNzd29yZA==", "blablabla")));
+        assertThat(authenticationServiceTest.isAuthenticated(mapCorrectPassword)).isEqualTo(true);
+    }
+
 }
