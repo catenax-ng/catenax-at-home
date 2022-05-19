@@ -2,6 +2,7 @@ package net.catenax.edc.apiwrapper.security;
 
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.eclipse.dataspaceconnector.spi.result.Result;
+import org.eclipse.dataspaceconnector.spi.security.Vault;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -10,16 +11,18 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.any;
+
 import org.powermock.reflect.Whitebox;
 
 public class BasicAuthenticationServiceTest {
 
     private final Monitor monitor = mock(Monitor.class);
-    private final Map<String, String> users = Map.of("hello", "myPassword");
+    private final Vault vault = mock(Vault.class);
 
-    private final BasicAuthenticationService authenticationServiceTest = new BasicAuthenticationService(monitor, users);
+    private final BasicAuthenticationService authenticationServiceTest = new BasicAuthenticationService(monitor, vault);
 
     @Test
     void CredentialsHaveNoAuthorizationLabel(){
@@ -55,12 +58,14 @@ public class BasicAuthenticationServiceTest {
     @Test
     void sendIncorrectPassword() {
         Map<String, List<String>> mapCorrectPassword = Map.of("Authorization", new ArrayList<>(Arrays.asList("user dXNldkqxYXNzd29yZA==", "blablabla")));
+        when(vault.resolveSecret(any())).thenReturn("password");
         assertThat(authenticationServiceTest.isAuthenticated(mapCorrectPassword)).isEqualTo(false);
     }
 
     @Test
     void sendCorrectPassword() {
         Map<String, List<String>> mapCorrectPassword = Map.of("Authorization", new ArrayList<>(Arrays.asList("user dXNlcjpwYXNzd29yZA==", "blablabla")));
+        when(vault.resolveSecret(any())).thenReturn("password");
         assertThat(authenticationServiceTest.isAuthenticated(mapCorrectPassword)).isEqualTo(true);
     }
 
