@@ -31,6 +31,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
     testImplementation("org.assertj:assertj-core:3.21.0")
     testImplementation("org.mockito:mockito-inline:3.6.28")
+    testImplementation("org.powermock:powermock-api-mockito:1.6.2")
 }
 
 java {
