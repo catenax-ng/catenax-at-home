@@ -17,6 +17,7 @@ dependencies {
     implementation("$edcGroup:http:$edcVersion")
 
     implementation("$edcGroup:filesystem-configuration:$edcVersion")
+    implementation("$edcGroup:filesystem-vault:$edcVersion")
 
     implementation("$edcGroup:catalog-spi:$edcVersion")
     implementation("$edcGroup:contract-spi:$edcVersion")
