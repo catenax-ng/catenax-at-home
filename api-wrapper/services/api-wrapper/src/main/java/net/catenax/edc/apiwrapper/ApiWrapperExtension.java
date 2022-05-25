@@ -2,6 +2,7 @@ package net.catenax.edc.apiwrapper;
 
 import net.catenax.edc.apiwrapper.cache.InMemoryContractAgreementCache;
 import net.catenax.edc.apiwrapper.cache.InMemoryEndpointDataReferenceCache;
+import net.catenax.edc.apiwrapper.config.BasicAuthVaultLabels;
 import net.catenax.edc.apiwrapper.connector.sdk.service.TransferProcessService;
 import net.catenax.edc.apiwrapper.security.BasicAuthenticationService;
 import okhttp3.OkHttpClient;
@@ -17,6 +18,8 @@ import org.eclipse.dataspaceconnector.spi.system.Inject;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtension;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtensionContext;
 import org.eclipse.dataspaceconnector.spi.system.configuration.Config;
+
+import java.util.stream.Collectors;
 
 public class ApiWrapperExtension implements ServiceExtension {
 
@@ -43,7 +46,7 @@ public class ApiWrapperExtension implements ServiceExtension {
 
         // Register basic authentication filter
         if (!config.getBasicAuthUsers().isEmpty()) {
-            var authService = new BasicAuthenticationService(context.getMonitor(), vault);
+            var authService = new BasicAuthenticationService(context.getMonitor(), vault, config.getBasicAuthUsers());
             webService.registerResource(new AuthenticationRequestFilter(authService));
         }
 
@@ -85,8 +88,11 @@ public class ApiWrapperExtension implements ServiceExtension {
             builder.consumerEdcApiKeyValue(consumerEdcApiKeyValue);
         }
 
-        var basicAuthUsers = config.getConfig(ApiWrapperConfigKeys.BASIC_AUTH).getRelativeEntries();
-        if (!basicAuthUsers.isEmpty()) {
+        var basicAuthUsers = config.getConfig
+                        (ApiWrapperConfigKeys.BASIC_AUTH).getRelativeEntries().entrySet().stream()
+                .map(entry -> new BasicAuthVaultLabels(entry.getKey(), entry.getValue()))
+                .collect(Collectors.toList());
+        if (!basicAuthUsers.isEmpty()){
             builder.basicAuthUsers(basicAuthUsers);
         }
 

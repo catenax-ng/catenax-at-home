@@ -1,5 +1,6 @@
 package net.catenax.edc.apiwrapper.security;
 
+import net.catenax.edc.apiwrapper.config.BasicAuthVaultLabels;
 import org.eclipse.dataspaceconnector.api.auth.AuthenticationService;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.eclipse.dataspaceconnector.spi.result.Result;
@@ -9,17 +10,21 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class BasicAuthenticationService implements AuthenticationService {
 
     private final Base64.Decoder b64Decoder;
     private final Monitor monitor;
     private final Vault vault;
+    private final List<BasicAuthVaultLabels> listAuthVault;
 
-    public BasicAuthenticationService(Monitor monitor, Vault vault) {
+    public BasicAuthenticationService(Monitor monitor, Vault vault, List<BasicAuthVaultLabels> listAuthVault) {
         this.monitor = monitor;
         this.vault = vault;
         this.b64Decoder = Base64.getDecoder();
+        this.listAuthVault = listAuthVault;
     }
 
     @Override
@@ -46,13 +51,10 @@ public class BasicAuthenticationService implements AuthenticationService {
         var username = credentials.username;
         var password = credentials.password;
 
-        var password4Username = vault.resolveSecret(username);
+        Predicate<BasicAuthVaultLabels> isCorrectUser = e -> e.getUsername().equals(username);
+        Predicate<BasicAuthVaultLabels> isCorrectVaultKey = e -> vault.resolveSecret(e.getVaultKey()).equals(password);
 
-        if (password4Username == null || !password4Username.equals(password)) {
-            monitor.debug("Basic auth user could not be found or password wrong");
-            return false;
-        }
-        return true;
+        return this.listAuthVault.stream().filter(isCorrectUser).filter(isCorrectVaultKey).findAny().isPresent();
     }
 
     private Result<BasicAuthCredentials> decodeAuthHeader(String authHeader) {
