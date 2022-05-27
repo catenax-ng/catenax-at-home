@@ -26,24 +26,16 @@ public class BasicAuthenticationServiceTest {
 
     private final Monitor monitor = mock(Monitor.class);
     private final Vault vault = mock(Vault.class);
-    private final List<BasicAuthVaultLabels> config = new ArrayList<>();
+    private final List<BasicAuthVaultLabels> config = List.of(
+            new BasicAuthVaultLabels("usera", "api-basic-auth-usera"),
+            new BasicAuthVaultLabels("userb", "api-basic-auth-userb")
+    );
 
     private final BasicAuthenticationService authenticationServiceTest = new BasicAuthenticationService(monitor, vault, config);
 
     @Test
     void CredentialsHaveNoAuthorizationLabel(){
         Map<String, List<String>> mapCorrectPassword = Map.of("user", new ArrayList<>(Arrays.asList("user dXNlcjpwYXNzd29yZA==", "blablabla")));
-
-        BasicAuthVaultLabels auth1 = new BasicAuthVaultLabels("usr1","pwd1");
-        BasicAuthVaultLabels auth2 = new BasicAuthVaultLabels("usr2","pwd2");
-
-        Predicate<BasicAuthVaultLabels> isCorrectUser = e -> e.getUsername() == "usr1";
-        Predicate<BasicAuthVaultLabels> isCorrectVaultKey = e -> e.getVaultKey() == "pwd2";
-
-        var result = new ArrayList<>(Arrays.asList(auth1, auth2));
-
-        var res2 = !result.stream().filter(isCorrectUser).filter(isCorrectVaultKey).findAny().isEmpty();
-
         assertThat(authenticationServiceTest.isAuthenticated(mapCorrectPassword)).isEqualTo(false);
     }
 
@@ -73,14 +65,14 @@ public class BasicAuthenticationServiceTest {
 
     @Test
     void sendIncorrectPassword() {
-        Map<String, List<String>> mapCorrectPassword = Map.of("Authorization", new ArrayList<>(Arrays.asList("user dXNldkqxYXNzd29yZA==", "blablabla")));
+        Map<String, List<String>> mapCorrectPassword = Map.of("Authorization", new ArrayList<>(Arrays.asList("user dXNlcjpwYXNzd29yZA==", "blablabla")));
         when(vault.resolveSecret(any())).thenReturn("password");
         assertThat(authenticationServiceTest.isAuthenticated(mapCorrectPassword)).isEqualTo(false);
     }
 
     @Test
     void sendCorrectPassword() {
-        Map<String, List<String>> mapCorrectPassword = Map.of("Authorization", new ArrayList<>(Arrays.asList("user dXNlcjpwYXNzd29yZA==", "blablabla")));
+        Map<String, List<String>> mapCorrectPassword = Map.of("Authorization", new ArrayList<>(Arrays.asList("user dXNlcmE6cGFzc3dvcmQ=", "blablabla")));
         when(vault.resolveSecret(any())).thenReturn("password");
         assertThat(authenticationServiceTest.isAuthenticated(mapCorrectPassword)).isEqualTo(true);
     }
