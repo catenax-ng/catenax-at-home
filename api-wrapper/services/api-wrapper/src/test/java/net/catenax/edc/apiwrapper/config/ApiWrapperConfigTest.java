@@ -2,7 +2,6 @@ package net.catenax.edc.apiwrapper.config;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -13,7 +12,7 @@ public class ApiWrapperConfigTest {
     @Test
     void testBuild() {
 
-        List<BasicAuthVaultLabels> credentialsList = List.of(new BasicAuthVaultLabels("UserId","UserPwd"));
+        List<BasicAuthVaultLabels> credentialsList = List.of(new BasicAuthVaultLabels("UserId", "UserPwd"));
 
         ApiWrapperConfig apiWrapperTest = ApiWrapperConfig.Builder.newInstance()
                 .consumerEdcDataManagementUrl("urlConsumer")
