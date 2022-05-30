@@ -13,9 +13,7 @@ public class ApiWrapperConfigTest {
     @Test
     void testBuild() {
 
-        List<BasicAuthVaultLabels> credentialsList = new ArrayList<>();
-        BasicAuthVaultLabels credentials = new BasicAuthVaultLabels("UserId","UserPwd");
-        credentialsList.add(credentials);
+        List<BasicAuthVaultLabels> credentialsList = List.of(new BasicAuthVaultLabels("UserId","UserPwd"));
 
         ApiWrapperConfig apiWrapperTest = ApiWrapperConfig.Builder.newInstance()
                 .consumerEdcDataManagementUrl("urlConsumer")

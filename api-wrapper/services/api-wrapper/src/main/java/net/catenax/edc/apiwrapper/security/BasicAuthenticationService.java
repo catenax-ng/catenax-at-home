@@ -11,20 +11,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 public class BasicAuthenticationService implements AuthenticationService {
 
     private final Base64.Decoder b64Decoder;
     private final Monitor monitor;
     private final Vault vault;
-    private final List<BasicAuthVaultLabels> listAuthVault;
+    private final List<BasicAuthVaultLabels> basicAuthVaultLabels;
 
-    public BasicAuthenticationService(Monitor monitor, Vault vault, List<BasicAuthVaultLabels> listAuthVault) {
+    public BasicAuthenticationService(Monitor monitor, Vault vault, List<BasicAuthVaultLabels> basicAuthVaultLabels) {
         this.monitor = monitor;
         this.vault = vault;
         this.b64Decoder = Base64.getDecoder();
-        this.listAuthVault = listAuthVault;
+        this.basicAuthVaultLabels = basicAuthVaultLabels;
     }
 
     @Override
@@ -54,7 +53,11 @@ public class BasicAuthenticationService implements AuthenticationService {
         Predicate<BasicAuthVaultLabels> isCorrectUser = e -> e.getUsername().equals(username);
         Predicate<BasicAuthVaultLabels> isCorrectVaultKey = e -> vault.resolveSecret(e.getVaultKey()).equals(password);
 
-        return this.listAuthVault.stream().filter(isCorrectUser).filter(isCorrectVaultKey).findAny().isPresent();
+        return this.basicAuthVaultLabels.stream()
+                .filter(isCorrectUser)
+                .filter(isCorrectVaultKey)
+                .findAny()
+                .isPresent();
     }
 
     private Result<BasicAuthCredentials> decodeAuthHeader(String authHeader) {

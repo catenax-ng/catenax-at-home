@@ -2,16 +2,16 @@ package net.catenax.edc.apiwrapper;
 
 import net.catenax.edc.apiwrapper.cache.InMemoryContractAgreementCache;
 import net.catenax.edc.apiwrapper.cache.InMemoryEndpointDataReferenceCache;
+import net.catenax.edc.apiwrapper.config.ApiWrapperConfig;
+import net.catenax.edc.apiwrapper.config.ApiWrapperConfigKeys;
 import net.catenax.edc.apiwrapper.config.BasicAuthVaultLabels;
+import net.catenax.edc.apiwrapper.connector.sdk.service.ContractNegotiationService;
+import net.catenax.edc.apiwrapper.connector.sdk.service.ContractOfferService;
+import net.catenax.edc.apiwrapper.connector.sdk.service.HttpProxyService;
 import net.catenax.edc.apiwrapper.connector.sdk.service.TransferProcessService;
 import net.catenax.edc.apiwrapper.security.BasicAuthenticationService;
 import okhttp3.OkHttpClient;
 import org.eclipse.dataspaceconnector.api.auth.AuthenticationRequestFilter;
-import net.catenax.edc.apiwrapper.config.ApiWrapperConfig;
-import net.catenax.edc.apiwrapper.config.ApiWrapperConfigKeys;
-import net.catenax.edc.apiwrapper.connector.sdk.service.ContractNegotiationService;
-import net.catenax.edc.apiwrapper.connector.sdk.service.ContractOfferService;
-import net.catenax.edc.apiwrapper.connector.sdk.service.HttpProxyService;
 import org.eclipse.dataspaceconnector.spi.WebService;
 import org.eclipse.dataspaceconnector.spi.security.Vault;
 import org.eclipse.dataspaceconnector.spi.system.Inject;
@@ -88,11 +88,11 @@ public class ApiWrapperExtension implements ServiceExtension {
             builder.consumerEdcApiKeyValue(consumerEdcApiKeyValue);
         }
 
-        var basicAuthUsers = config.getConfig
-                        (ApiWrapperConfigKeys.BASIC_AUTH).getRelativeEntries().entrySet().stream()
-                .map(entry -> new BasicAuthVaultLabels(entry.getKey(), entry.getValue()))
+        var basicAuthUsers = config.getConfig(ApiWrapperConfigKeys.BASIC_AUTH)
+                .getRelativeEntries().entrySet().stream()
+                .map(entryConfig -> new BasicAuthVaultLabels(entryConfig.getKey(), entryConfig.getValue()))
                 .collect(Collectors.toList());
-        if (!basicAuthUsers.isEmpty()){
+        if (!basicAuthUsers.isEmpty()) {
             builder.basicAuthUsers(basicAuthUsers);
         }
 
