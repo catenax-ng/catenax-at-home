@@ -2,8 +2,8 @@
 
 ## Basic authentication
 
-This module contains an `AuthenticationService` implementation for basic authentication. It will be active when you 
-provide at least one credential pair.
+This module section contains an `AuthenticationService` implementation for basic authentication. It will be active when
+you provide at least one credential pair.
 
 ### Usage/Example
 
