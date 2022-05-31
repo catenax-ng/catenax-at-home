@@ -101,7 +101,7 @@
 		<h2.version>2.1.212</h2.version>
 		<liquibase.version>4.9.1</liquibase.version>
 		<!-- test libs -->
-		<assertj.version>3.22.0</assertj.version>
+		<assertj.version>3.23.1</assertj.version>
 		<junit.version>5.8.2</junit.version>
 
 		<!-- build -->
