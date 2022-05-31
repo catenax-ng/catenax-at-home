@@ -13,6 +13,7 @@ would recommend using the following key format:
 ```plain
 wraper-auth-basic-<USERNAME>
 ```
+
 In your EDC configuration you must then specify the respective vault key for the respective user:
 
 ```properties

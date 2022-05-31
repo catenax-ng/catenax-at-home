@@ -51,13 +51,11 @@ public class BasicAuthenticationService implements AuthenticationService {
         var password = credentials.password;
 
         Predicate<BasicAuthVaultLabels> isCorrectUser = e -> e.getUsername().equals(username);
-        Predicate<BasicAuthVaultLabels> isCorrectVaultKey = e -> vault.resolveSecret(e.getVaultKey()).equals(password);
+        Predicate<BasicAuthVaultLabels> isCorrectVaultKey = e -> Objects.equals(vault.resolveSecret(e.getVaultKey()),password);
 
         return this.basicAuthVaultLabels.stream()
                 .filter(isCorrectUser)
-                .filter(isCorrectVaultKey)
-                .findAny()
-                .isPresent();
+                .anyMatch(isCorrectVaultKey);
     }
 
     private Result<BasicAuthCredentials> decodeAuthHeader(String authHeader) {
