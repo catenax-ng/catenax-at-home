@@ -95,7 +95,7 @@
 		<shacl.version>1.4.2</shacl.version>
 
 		<!-- persistence -->
-		<mapstruct.version>1.4.2.Final</mapstruct.version>
+		<mapstruct.version>1.5.1.Final</mapstruct.version>
 		<mapstruct.lombok.version>0.2.0</mapstruct.lombok.version>
 		<postgresql.version>42.3.5</postgresql.version>
 		<h2.version>2.1.212</h2.version>
