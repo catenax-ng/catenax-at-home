@@ -92,7 +92,7 @@ public class SubmodelProxy implements AssetIdentifierApiDelegate {
             if("s".equals(edcMatcher.group("secure"))) {
                 protocol="https";
             }
-            params.put("provider-connector-url",protocol+"://"+edcMatcher.group("provider"));
+            params.put("provider-connector-url", protocol + "://" + edcMatcher.group("provider") + "/" + edcMatcher.group("bpn"));
         }
         SubmodelInterfaceApi api=builder.target(SubmodelInterfaceApi.class,endpoint);
         return new AbstractMap.SimpleImmutableEntry<SubmodelInterfaceApi,Map<String,Object>>(api,params);
