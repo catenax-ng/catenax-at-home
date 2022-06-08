@@ -1,24 +1,29 @@
 package net.catenax.edc.apiwrapper.security;
 
+import net.catenax.edc.apiwrapper.config.BasicAuthVaultLabels;
 import org.eclipse.dataspaceconnector.api.auth.AuthenticationService;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.eclipse.dataspaceconnector.spi.result.Result;
+import org.eclipse.dataspaceconnector.spi.security.Vault;
 
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Predicate;
 
 public class BasicAuthenticationService implements AuthenticationService {
 
     private final Base64.Decoder b64Decoder;
     private final Monitor monitor;
-    private final Map<String, String> users;
+    private final Vault vault;
+    private final List<BasicAuthVaultLabels> basicAuthVaultLabels;
 
-    public BasicAuthenticationService(Monitor monitor, Map<String, String> users) {
+    public BasicAuthenticationService(Monitor monitor, Vault vault, List<BasicAuthVaultLabels> basicAuthVaultLabels) {
         this.monitor = monitor;
-        this.users = users;
+        this.vault = vault;
         this.b64Decoder = Base64.getDecoder();
+        this.basicAuthVaultLabels = basicAuthVaultLabels;
     }
 
     @Override
@@ -44,14 +49,13 @@ public class BasicAuthenticationService implements AuthenticationService {
         var credentials = basicAuthCredentialsResult.getContent();
         var username = credentials.username;
         var password = credentials.password;
-        var password4Username = users.get(username);
 
-        if (password4Username == null || !password4Username.equals(password)) {
-            monitor.debug("Basic auth user could not be found or password wrong");
-            return false;
-        }
+        Predicate<BasicAuthVaultLabels> isCorrectUser = e -> e.getUsername().equals(username);
+        Predicate<BasicAuthVaultLabels> isCorrectVaultKey = e -> Objects.equals(vault.resolveSecret(e.getVaultKey()),password);
 
-        return true;
+        return this.basicAuthVaultLabels.stream()
+                .filter(isCorrectUser)
+                .anyMatch(isCorrectVaultKey);
     }
 
     private Result<BasicAuthCredentials> decodeAuthHeader(String authHeader) {
@@ -84,5 +88,4 @@ public class BasicAuthenticationService implements AuthenticationService {
             this.password = password;
         }
     }
-
 }

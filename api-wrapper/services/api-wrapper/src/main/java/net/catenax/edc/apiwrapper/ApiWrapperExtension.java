@@ -2,20 +2,24 @@ package net.catenax.edc.apiwrapper;
 
 import net.catenax.edc.apiwrapper.cache.InMemoryContractAgreementCache;
 import net.catenax.edc.apiwrapper.cache.InMemoryEndpointDataReferenceCache;
-import net.catenax.edc.apiwrapper.connector.sdk.service.TransferProcessService;
-import okhttp3.OkHttpClient;
-import org.eclipse.dataspaceconnector.api.auth.AuthenticationRequestFilter;
 import net.catenax.edc.apiwrapper.config.ApiWrapperConfig;
 import net.catenax.edc.apiwrapper.config.ApiWrapperConfigKeys;
+import net.catenax.edc.apiwrapper.config.BasicAuthVaultLabels;
 import net.catenax.edc.apiwrapper.connector.sdk.service.ContractNegotiationService;
 import net.catenax.edc.apiwrapper.connector.sdk.service.ContractOfferService;
 import net.catenax.edc.apiwrapper.connector.sdk.service.HttpProxyService;
+import net.catenax.edc.apiwrapper.connector.sdk.service.TransferProcessService;
 import net.catenax.edc.apiwrapper.security.BasicAuthenticationService;
+import okhttp3.OkHttpClient;
+import org.eclipse.dataspaceconnector.api.auth.AuthenticationRequestFilter;
 import org.eclipse.dataspaceconnector.spi.WebService;
+import org.eclipse.dataspaceconnector.spi.security.Vault;
 import org.eclipse.dataspaceconnector.spi.system.Inject;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtension;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtensionContext;
 import org.eclipse.dataspaceconnector.spi.system.configuration.Config;
+
+import java.util.stream.Collectors;
 
 public class ApiWrapperExtension implements ServiceExtension {
 
@@ -37,11 +41,12 @@ public class ApiWrapperExtension implements ServiceExtension {
     public void initialize(ServiceExtensionContext context) {
         var config = createApiWrapperConfig(context.getConfig());
         var monitor = context.getMonitor();
+        var vault = context.getService(Vault.class);
         var typeManager = context.getTypeManager();
 
         // Register basic authentication filter
         if (!config.getBasicAuthUsers().isEmpty()) {
-            var authService = new BasicAuthenticationService(context.getMonitor(), config.getBasicAuthUsers());
+            var authService = new BasicAuthenticationService(context.getMonitor(), vault, config.getBasicAuthUsers());
             webService.registerResource(new AuthenticationRequestFilter(authService));
         }
 
@@ -83,7 +88,10 @@ public class ApiWrapperExtension implements ServiceExtension {
             builder.consumerEdcApiKeyValue(consumerEdcApiKeyValue);
         }
 
-        var basicAuthUsers = config.getConfig(ApiWrapperConfigKeys.BASIC_AUTH).getRelativeEntries();
+        var basicAuthUsers = config.getConfig(ApiWrapperConfigKeys.BASIC_AUTH)
+                .getRelativeEntries().entrySet().stream()
+                .map(entryConfig -> new BasicAuthVaultLabels(entryConfig.getKey(), entryConfig.getValue()))
+                .collect(Collectors.toList());
         if (!basicAuthUsers.isEmpty()) {
             builder.basicAuthUsers(basicAuthUsers);
         }
