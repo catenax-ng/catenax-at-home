@@ -2,15 +2,15 @@ package net.catenax.edc.apiwrapper;
 
 import net.catenax.edc.apiwrapper.cache.InMemoryContractAgreementCache;
 import net.catenax.edc.apiwrapper.cache.InMemoryEndpointDataReferenceCache;
-import net.catenax.edc.apiwrapper.connector.sdk.service.TransferProcessService;
-import okhttp3.OkHttpClient;
-import org.eclipse.dataspaceconnector.api.auth.AuthenticationRequestFilter;
 import net.catenax.edc.apiwrapper.config.ApiWrapperConfig;
 import net.catenax.edc.apiwrapper.config.ApiWrapperConfigKeys;
 import net.catenax.edc.apiwrapper.connector.sdk.service.ContractNegotiationService;
 import net.catenax.edc.apiwrapper.connector.sdk.service.ContractOfferService;
 import net.catenax.edc.apiwrapper.connector.sdk.service.HttpProxyService;
+import net.catenax.edc.apiwrapper.connector.sdk.service.TransferProcessService;
 import net.catenax.edc.apiwrapper.security.BasicAuthenticationService;
+import okhttp3.OkHttpClient;
+import org.eclipse.dataspaceconnector.api.auth.AuthenticationRequestFilter;
 import org.eclipse.dataspaceconnector.spi.WebService;
 import org.eclipse.dataspaceconnector.spi.system.Inject;
 import org.eclipse.dataspaceconnector.spi.system.ServiceExtension;
@@ -47,7 +47,7 @@ public class ApiWrapperExtension implements ServiceExtension {
 
         // In-memory stores
         var endpointDataReferenceCache = new InMemoryEndpointDataReferenceCache();
-        var contractAgreementCache = new InMemoryContractAgreementCache();
+        var contractAgreementCache = new InMemoryContractAgreementCache(config.getCacheEnabled());
 
         // Setup controller
         var contractOfferService = new ContractOfferService(monitor, typeManager, httpClient);
@@ -87,6 +87,8 @@ public class ApiWrapperExtension implements ServiceExtension {
         if (!basicAuthUsers.isEmpty()) {
             builder.basicAuthUsers(basicAuthUsers);
         }
+
+        builder.cacheEnabled(config.getBoolean(ApiWrapperConfigKeys.CACHE_ENABLED, false));
 
         return builder.build();
     }

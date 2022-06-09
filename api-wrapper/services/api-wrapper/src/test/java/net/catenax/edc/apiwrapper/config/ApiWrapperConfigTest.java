@@ -8,7 +8,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-public class ApiWrapperConfigTest {
+class ApiWrapperConfigTest {
 
     @Test
     void testBuild() {
@@ -19,11 +19,15 @@ public class ApiWrapperConfigTest {
         ApiWrapperConfig apiWrapperTest = ApiWrapperConfig.Builder.newInstance()
                 .consumerEdcDataManagementUrl("urlConsumer")
                 .consumerEdcApiKeyValue("apiValue")
-                .basicAuthUsers(map).build();
+                .basicAuthUsers(map)
+                .cacheEnabled(true)
+                .build();
 
         assertAll(() -> assertThat(apiWrapperTest.getConsumerEdcDataManagementUrl()).isEqualTo("urlConsumer"),
                 () -> assertThat(apiWrapperTest.getConsumerEdcApiKeyValue()).isEqualTo("apiValue"),
-                () -> assertThat(apiWrapperTest.getBasicAuthUsers().get("userId")).isEqualTo("userPwd"),
-                () -> assertThat(apiWrapperTest.getConsumerEdcApiKeyName()).isEqualTo("X-Api-Key"));
+                () -> assertThat(apiWrapperTest.getBasicAuthUsers()).containsEntry("userId", "userPwd"),
+                () -> assertThat(apiWrapperTest.getConsumerEdcApiKeyName()).isEqualTo("X-Api-Key"),
+                () -> assertThat(apiWrapperTest.getCacheEnabled()).isTrue()
+        );
     }
 }
