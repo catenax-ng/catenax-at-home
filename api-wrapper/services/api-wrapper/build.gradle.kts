@@ -26,10 +26,10 @@ dependencies {
     implementation("jakarta.ws.rs:jakarta.ws.rs-api:3.1.0")
     implementation("com.auth0:java-jwt:3.19.2")
 
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.1")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
-    testImplementation("org.assertj:assertj-core:3.21.0")
-    testImplementation("org.mockito:mockito-inline:3.6.28")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.2")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
+    testImplementation("org.assertj:assertj-core:3.22.0")
+    testImplementation("org.mockito:mockito-inline:4.5.1")
 }
 
 java {
@@ -40,6 +40,10 @@ java {
 
 application {
     mainClass.set("$edcGroup.boot.system.runtime.BaseRuntime")
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }
 
 tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {

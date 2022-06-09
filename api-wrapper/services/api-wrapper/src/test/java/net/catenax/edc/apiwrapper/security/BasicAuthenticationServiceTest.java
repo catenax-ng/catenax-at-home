@@ -9,10 +9,9 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 
-public class BasicAuthenticationServiceTest {
+class BasicAuthenticationServiceTest {
 
     private final Monitor monitor = mock(Monitor.class);
     private final Map<String, String> users = Map.of("hello", "myPassword");
@@ -23,37 +22,39 @@ public class BasicAuthenticationServiceTest {
     void isAuthenticated_shouldReturnNoAuthenticationHeaderSpecified() {
 
         Map<String, List<String>> map = Map.of("Authorization", new ArrayList<>());
-        assertThat(authenticationServiceTest.isAuthenticated(map)).isEqualTo(false);
+        assertThat(authenticationServiceTest.isAuthenticated(map)).isFalse();
     }
 
     @Test
     void isAuthenticated_shouldReturnHeaderFormatNotSupported() {
 
-        Map<String, List<String>> map1authorizationComponent = Map.of("Authorization", new ArrayList<>(Arrays.asList("Only1Compoment")));
+        Map<String, List<String>> map1authorizationComponent = Map.of("Authorization", new ArrayList<>(List.of("Only1Compoment")));
         Map<String, List<String>> map3authorizationComponents = Map.of("Authorization", new ArrayList<>(Arrays.asList("First", "2nd", "3")));
 
-        assertThatThrownBy(() -> authenticationServiceTest.isAuthenticated(map1authorizationComponent)).isInstanceOf(IllegalArgumentException.class);
-        assertThatThrownBy(() -> authenticationServiceTest.isAuthenticated(map3authorizationComponents)).isInstanceOf(IllegalArgumentException.class);
+        assertThat(authenticationServiceTest.isAuthenticated(map1authorizationComponent)).isFalse();
+        assertThat(authenticationServiceTest.isAuthenticated(map3authorizationComponents)).isFalse();
     }
 
     @Test
-    void isAuthenticated_shouldReturnIncorrectlylyDecodedAuthorizationHeaderNotSupported() {
-        Map<String, List<String>> mapUnsupported = Map.of("Authorization", new ArrayList<>(Arrays.asList("user password", "blablabla")));
+    void isAuthenticated_shouldReturnIncorrectlyDecodedAuthorizationHeaderNotSupported() {
+        Map<String, List<String>> mapUnsupported = Map.of(
+                "Authorization", new ArrayList<>(Arrays.asList("user password", "blablabla"))
+        );
 
-        assertThatThrownBy(() -> authenticationServiceTest.isAuthenticated(mapUnsupported)).isInstanceOf(IllegalArgumentException.class);
+        assertThat(authenticationServiceTest.isAuthenticated(mapUnsupported)).isFalse();
     }
 
     @Test
     void isAuthenticated_shouldReturnPasswordWrong() {
         Map<String, List<String>> mapWrongPassword = Map.of("Authorization", new ArrayList<>(Arrays.asList("user aGVsbG86bXlQYXNzd29yQW==", "blablabla")));
 
-        assertThat(authenticationServiceTest.isAuthenticated(mapWrongPassword)).isEqualTo(false);
+        assertThat(authenticationServiceTest.isAuthenticated(mapWrongPassword)).isFalse();
     }
 
     @Test
     void isAuthenticated_shouldReturnCorrectAuthentication() {
         Map<String, List<String>> mapWrongPassword = Map.of("Authorization", new ArrayList<>(Arrays.asList("user aGVsbG86bXlQYXNzd29yZA==", "blablabla")));
 
-        assertThat(authenticationServiceTest.isAuthenticated(mapWrongPassword)).isEqualTo(true);
+        assertThat(authenticationServiceTest.isAuthenticated(mapWrongPassword)).isTrue();
     }
 }
