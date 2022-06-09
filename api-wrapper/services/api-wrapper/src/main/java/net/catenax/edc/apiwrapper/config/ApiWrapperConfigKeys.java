@@ -16,5 +16,8 @@ public final class ApiWrapperConfigKeys {
     @EdcSetting
     public static final String BASIC_AUTH = "wrapper.auth.basic";
 
+    @EdcSetting
+    public static final String CACHE_ENABLED = "wrapper.cache.enabled";
+
     private ApiWrapperConfigKeys() {}
 }
