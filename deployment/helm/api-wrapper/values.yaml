@@ -14,7 +14,7 @@ image:
   ##
   ## Overrides the image tag whose default is the chart appVersion.
   ##
-  tag: "0.0.3"
+  tag: "0.0.4"
 
 ##
 ## Image pull secret to create to obtain the container image
