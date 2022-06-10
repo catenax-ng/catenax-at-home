@@ -19,5 +19,8 @@ public final class ApiWrapperConfigKeys {
     @EdcSetting
     public static final String CACHE_ENABLED = "wrapper.cache.enabled";
 
+    @EdcSetting
+    public static final String CALLBACK_TIMEOUT = "wrapper.callback.timeout";
+
     private ApiWrapperConfigKeys() {}
 }

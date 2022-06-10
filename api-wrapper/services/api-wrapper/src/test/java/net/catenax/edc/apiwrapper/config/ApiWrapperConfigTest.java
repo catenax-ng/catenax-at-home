@@ -21,13 +21,15 @@ class ApiWrapperConfigTest {
                 .consumerEdcApiKeyValue("apiValue")
                 .basicAuthUsers(map)
                 .cacheEnabled(true)
+                .callbackTimeout(10)
                 .build();
 
         assertAll(() -> assertThat(apiWrapperTest.getConsumerEdcDataManagementUrl()).isEqualTo("urlConsumer"),
                 () -> assertThat(apiWrapperTest.getConsumerEdcApiKeyValue()).isEqualTo("apiValue"),
                 () -> assertThat(apiWrapperTest.getBasicAuthUsers()).containsEntry("userId", "userPwd"),
                 () -> assertThat(apiWrapperTest.getConsumerEdcApiKeyName()).isEqualTo("X-Api-Key"),
-                () -> assertThat(apiWrapperTest.getCacheEnabled()).isTrue()
+                () -> assertThat(apiWrapperTest.getCacheEnabled()).isTrue(),
+                () -> assertThat(apiWrapperTest.getCallbackTimeout()).isEqualTo(10)
         );
     }
 }

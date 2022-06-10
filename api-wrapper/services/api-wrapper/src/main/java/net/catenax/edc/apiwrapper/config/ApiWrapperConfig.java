@@ -10,19 +10,22 @@ public class ApiWrapperConfig {
     private final String consumerEdcApiKeyValue;
     private final Map<String, String> basicAuthUsers;
     private final Boolean cacheEnabled;
+    private final int callbackTimeout;
 
     public ApiWrapperConfig(
             String consumerEdcDataManagementUrl,
             String consumerEdcApiKeyName,
             String consumerEdcApiKeyValue,
             Map<String, String> basicAuthUsers,
-            Boolean cacheEnabled
+            Boolean cacheEnabled,
+            int callbackTimeout
     ) {
         this.consumerEdcDataManagementUrl = consumerEdcDataManagementUrl;
         this.consumerEdcApiKeyName = consumerEdcApiKeyName;
         this.consumerEdcApiKeyValue = consumerEdcApiKeyValue;
         this.basicAuthUsers = basicAuthUsers;
         this.cacheEnabled = cacheEnabled;
+        this.callbackTimeout = callbackTimeout;
     }
 
     public String getConsumerEdcDataManagementUrl() {
@@ -45,12 +48,17 @@ public class ApiWrapperConfig {
         return cacheEnabled;
     }
 
+    public int getCallbackTimeout() {
+        return callbackTimeout;
+    }
+
     public static final class Builder {
         private String consumerEdcDataManagementUrl = null;
         private String consumerEdcApiKeyName = "X-Api-Key";
         private String consumerEdcApiKeyValue = "";
         private Map<String, String> basicAuthUsers = Collections.emptyMap();
         private Boolean cacheEnabled = false;
+        private int callbackTimeout = 20;
 
         private Builder() {
         }
@@ -84,13 +92,19 @@ public class ApiWrapperConfig {
             return this;
         }
 
+        public Builder callbackTimeout(int callbackTimeout) {
+            this.callbackTimeout = callbackTimeout;
+            return this;
+        }
+
         public ApiWrapperConfig build() {
             return new ApiWrapperConfig(
                     consumerEdcDataManagementUrl,
                     consumerEdcApiKeyName,
                     consumerEdcApiKeyValue,
                     basicAuthUsers,
-                    cacheEnabled
+                    cacheEnabled,
+                    callbackTimeout
             );
         }
     }

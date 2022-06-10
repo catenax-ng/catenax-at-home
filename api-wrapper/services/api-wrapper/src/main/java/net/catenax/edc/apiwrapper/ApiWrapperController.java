@@ -15,14 +15,14 @@ import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.UriInfo;
 import net.catenax.edc.apiwrapper.cache.InMemoryContractAgreementCache;
 import net.catenax.edc.apiwrapper.cache.InMemoryEndpointDataReferenceCache;
-import net.catenax.edc.apiwrapper.connector.sdk.service.HttpProxyService;
-import net.catenax.edc.apiwrapper.connector.sdk.service.TransferProcessService;
 import net.catenax.edc.apiwrapper.config.ApiWrapperConfig;
 import net.catenax.edc.apiwrapper.connector.sdk.model.ContractNegotiationDto;
 import net.catenax.edc.apiwrapper.connector.sdk.model.ContractOfferDescription;
 import net.catenax.edc.apiwrapper.connector.sdk.model.NegotiationInitiateRequestDto;
 import net.catenax.edc.apiwrapper.connector.sdk.service.ContractNegotiationService;
 import net.catenax.edc.apiwrapper.connector.sdk.service.ContractOfferService;
+import net.catenax.edc.apiwrapper.connector.sdk.service.HttpProxyService;
+import net.catenax.edc.apiwrapper.connector.sdk.service.TransferProcessService;
 import org.eclipse.dataspaceconnector.policy.model.Action;
 import org.eclipse.dataspaceconnector.policy.model.Permission;
 import org.eclipse.dataspaceconnector.policy.model.Policy;
@@ -249,7 +249,7 @@ public class ApiWrapperController {
 
     private EndpointDataReference getDataReference(String agreementId) throws InterruptedException {
         EndpointDataReference dataReference = null;
-        var waitTimeout = 10;
+        var waitTimeout = config.getCallbackTimeout();
 
         while (dataReference == null && waitTimeout > 0) {
             Thread.sleep(1000);

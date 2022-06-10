@@ -89,6 +89,7 @@ public class ApiWrapperExtension implements ServiceExtension {
         }
 
         builder.cacheEnabled(config.getBoolean(ApiWrapperConfigKeys.CACHE_ENABLED, false));
+        builder.callbackTimeout(config.getInteger(ApiWrapperConfigKeys.CALLBACK_TIMEOUT, 20));
 
         return builder.build();
     }
