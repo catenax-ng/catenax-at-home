@@ -56,7 +56,7 @@
 		<!-- version properties -->
 		<!-- framework and base stuff -->
 		<spring.boot.version>2.6.7</spring.boot.version>
-		<spring.cloud.version>2020.0.3</spring.cloud.version>
+		<spring.cloud.version>2021.0.3</spring.cloud.version>
 		<spring.version>5.3.19</spring.version>
 		<spring.feign.version>3.1.2</spring.feign.version>
 		<springdoc.version>1.6.8</springdoc.version>
