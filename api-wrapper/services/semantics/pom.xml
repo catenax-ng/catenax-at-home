@@ -59,7 +59,7 @@
 		<spring.cloud.version>2020.0.3</spring.cloud.version>
 		<spring.version>5.3.19</spring.version>
 		<spring.feign.version>3.1.2</spring.feign.version>
-		<springdoc.version>1.6.8</springdoc.version>
+		<springdoc.version>1.6.9</springdoc.version>
 		<springfox.version>3.0.0</springfox.version>
 		<collection-utlis.version>4.4</collection-utlis.version>
 		<lombok.version>1.18.24</lombok.version>
