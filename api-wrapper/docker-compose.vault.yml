@@ -1,0 +1,26 @@
+version: "3.9"
+
+services:
+  hashicorp-vault:
+    image: vault:1.11.2
+    ports:
+      - "8200:8200"
+    networks:
+      - api-wrapper
+    environment:
+      VAULT_DEV_ROOT_TOKEN_ID: password
+
+  init-vault:
+    build:
+      context: vault
+    working_dir: /
+    privileged: true
+    environment:
+      VAULT_URL: http://hashicorp-vault:8200
+      VAULT_TOKEN: password
+    networks:
+      - api-wrapper
+
+networks:
+  api-wrapper:
+    driver: bridge
