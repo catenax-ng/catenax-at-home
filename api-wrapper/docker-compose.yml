@@ -32,21 +32,6 @@ services:
       - ./config/consumer-data-plane.config/logging.properties:/app/logging.properties
       - ./config/consumer-data-plane.config/opentelemetry.properties:/app/opentelemetry.properties
 
-#  consumer-api-wrapper:
-#    build:
-#      context: services/api-wrapper
-#      args:
-#        JAR: build/libs/edc.jar
-#    platform: ${DOCKER_PLATFORM:-linux/amd64}
-#    ports:
-#      - "8193:9191" # default
-##      - "9192" # callback
-#      - "5007:8090" # debugging
-#    environment:
-#      EDC_FS_CONFIG: /config/configuration.properties
-#    volumes:
-#      - ./config/consumer-api-wrapper.config:/config
-
   provider-control-plane:
     image: edc-controlplane-memory:latest
     platform: ${DOCKER_PLATFORM:-linux/amd64}

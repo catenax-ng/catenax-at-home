@@ -214,7 +214,6 @@ public class ApiWrapperController {
         var contractOfferDescription = new ContractOfferDescription(
                 contractOffer.get().getId(),
                 contractOffer.get().getAsset().getId(),
-                null,
                 policy
         );
         var contractNegotiationRequest = NegotiationInitiateRequestDto.Builder.newInstance()

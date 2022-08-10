@@ -17,6 +17,7 @@ package net.catenax.edc.apiwrapper.connector.sdk.model;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import jakarta.validation.constraints.NotNull;
 import org.eclipse.dataspaceconnector.spi.types.domain.DataAddress;
 import org.eclipse.dataspaceconnector.spi.types.domain.transfer.TransferType;
 
@@ -26,18 +27,30 @@ import java.util.Map;
 @JsonDeserialize(builder = TransferRequestDto.Builder.class)
 public class TransferRequestDto {
 
+    private String id;
+    @NotNull(message = "connectorAddress cannot be null")
     private String connectorAddress;
+    @NotNull(message = "contractId cannot be null")
     private String contractId;
+    @NotNull(message = "dataDestination cannot be null")
     private DataAddress dataDestination;
     private boolean managedResources = true;
     private Map<String, String> properties = new HashMap<>();
-    private TransferType transferType;
+    @NotNull(message = "transferType cannot be null")
+    private TransferType transferType = new TransferType();
+    @NotNull(message = "protocol cannot be null")
     private String protocol = "ids-multipart";
+    @NotNull(message = "connectorId cannot be null")
     private String connectorId;
+    @NotNull(message = "assetId cannot be null")
     private String assetId;
 
     public String getConnectorAddress() {
         return connectorAddress;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public String getContractId() {
@@ -83,6 +96,11 @@ public class TransferRequestDto {
         @JsonCreator
         public static Builder newInstance() {
             return new Builder();
+        }
+
+        public Builder id(String id){
+            request.id = id;
+            return this;
         }
 
         public Builder connectorAddress(String connectorAddress) {

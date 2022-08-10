@@ -17,21 +17,26 @@ package net.catenax.edc.apiwrapper.connector.sdk.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotNull;
 import org.eclipse.dataspaceconnector.policy.model.Policy;
 
 public class ContractOfferDescription {
+    @NotNull
     private final String offerId;
+    @NotNull
     private final String assetId;
-    private final String policyId;
+    @NotNull
     private final Policy policy;
 
     @JsonCreator
-    public ContractOfferDescription(@JsonProperty("offerId") String offerId, @JsonProperty("assetId") String assetId, @JsonProperty("policyId") String policyId, @JsonProperty("policy") Policy policy) {
+    public ContractOfferDescription(@JsonProperty("offerId") String offerId,
+                                    @JsonProperty("assetId") String assetId,
+                                    @JsonProperty("policy") Policy policy) {
         this.offerId = offerId;
         this.assetId = assetId;
-        this.policyId = policyId;
         this.policy = policy;
     }
+
 
     public String getOfferId() {
         return this.offerId;
@@ -39,10 +44,6 @@ public class ContractOfferDescription {
 
     public String getAssetId() {
         return this.assetId;
-    }
-
-    public String getPolicyId() {
-        return this.policyId;
     }
 
     public Policy getPolicy() {

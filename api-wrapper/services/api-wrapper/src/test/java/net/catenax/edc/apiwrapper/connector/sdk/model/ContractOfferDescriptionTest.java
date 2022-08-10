@@ -11,16 +11,14 @@ class ContractOfferDescriptionTest {
     @Test
     void verifyGetMethods() {
 
-        Policy policy = Policy.Builder.newInstance().id("policyId").build();
+        Policy policy = Policy.Builder.newInstance().build();
 
         ContractOfferDescription contractOfferDescription = new ContractOfferDescription(
-                "offerId", "assetId", "policyId", policy);
+                "offerId", "assetId", policy);
 
         assertAll(
                 () -> assertThat(contractOfferDescription.getOfferId()).isEqualTo("offerId"),
-                () -> assertThat(contractOfferDescription.getAssetId()).isEqualTo("assetId"),
-                () -> assertThat(contractOfferDescription.getPolicyId()).isEqualTo("policyId"),
-                () -> assertThat(contractOfferDescription.getPolicy().getUid()).isEqualTo("policyId")
+                () -> assertThat(contractOfferDescription.getAssetId()).isEqualTo("assetId")
         );
     }
 

@@ -267,7 +267,7 @@ public class ApiWrapperControllerTest {
 
         return ContractOffer.Builder.newInstance()
                 .id("DummyPolicyId")
-                .policy(Policy.Builder.newInstance().id("policyDummyId").build())
+                .policy(Policy.Builder.newInstance().build())
                 .asset(Asset.Builder.newInstance().id("assetDummyId").build())
                 .provider(URI.create("Uri/Provider"))
                 .consumer(URI.create("Uri/Consumer"))
