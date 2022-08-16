@@ -73,6 +73,8 @@ services:
     ports:
       - "8194:8080" # default
       - "5010:8090" # debugging
+    networks:
+      - api-wrapper
 
 networks:
   api-wrapper:
