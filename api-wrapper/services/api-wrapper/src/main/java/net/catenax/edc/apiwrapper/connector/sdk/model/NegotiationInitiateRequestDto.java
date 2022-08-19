@@ -14,17 +14,12 @@
 
 package net.catenax.edc.apiwrapper.connector.sdk.model;
 
-import jakarta.validation.constraints.NotNull;
 
 public class NegotiationInitiateRequestDto {
 
-    @NotNull
     private String connectorAddress;
-    @NotNull
     private String protocol = "ids-multipart";
-    @NotNull
     private String connectorId;
-    @NotNull
     private ContractOfferDescription offer;
 
     private NegotiationInitiateRequestDto() {

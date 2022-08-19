@@ -17,15 +17,11 @@ package net.catenax.edc.apiwrapper.connector.sdk.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.NotNull;
 import org.eclipse.dataspaceconnector.policy.model.Policy;
 
 public class ContractOfferDescription {
-    @NotNull
     private final String offerId;
-    @NotNull
     private final String assetId;
-    @NotNull
     private final Policy policy;
 
     @JsonCreator
