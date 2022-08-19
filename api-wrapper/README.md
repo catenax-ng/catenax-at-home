@@ -32,6 +32,7 @@ docker-compose -f ./docker-compose.vault.yml -f ./docker-compose.api-wrapper.yml
 ```shell
 cd services/api-wrapper
 ./gradlew clean build
+cd ../..
 docker-compose -f ./docker-compose.api-wrapper.yml up --build -d
 ```
 
@@ -40,8 +41,6 @@ docker-compose -f ./docker-compose.api-wrapper.yml up --build -d
 ```shell
 ./1-aas-client-get.sh
 ```
-
-
 
 ## Destroy everything
 
