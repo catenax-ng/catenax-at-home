@@ -1,0 +1,24 @@
+version: "3.9"
+
+services:
+
+  consumer-api-wrapper:
+    build:
+      context: services/api-wrapper
+      args:
+        JAR: build/libs/edc.jar
+    ports:
+      - "8193:9191" # default
+#      - "9192" # callback
+      - "5007:8090" # debugging
+    environment:
+      EDC_FS_CONFIG: /config/configuration.properties
+      JAVA_TOOL_OPTIONS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8090
+    networks:
+      - api-wrapper
+    volumes:
+      - ./config/consumer-api-wrapper.config:/config
+
+networks:
+  api-wrapper:
+    driver: bridge

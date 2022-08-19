@@ -14,7 +14,6 @@
 
 package net.catenax.edc.apiwrapper.connector.sdk.model;
 
-import org.jetbrains.annotations.NotNull;
 
 public class NegotiationInitiateRequestDto {
 
@@ -39,7 +38,7 @@ public class NegotiationInitiateRequestDto {
         return connectorId;
     }
 
-    public @NotNull ContractOfferDescription getOffer() {
+    public ContractOfferDescription getOffer() {
         return offer;
     }
 

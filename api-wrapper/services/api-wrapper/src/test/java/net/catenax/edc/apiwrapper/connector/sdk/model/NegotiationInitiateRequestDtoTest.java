@@ -11,10 +11,10 @@ class NegotiationInitiateRequestDtoTest {
     @Test
     void verifyBuilder() {
 
-        Policy policy = Policy.Builder.newInstance().id("policyId").build();
+        Policy policy = Policy.Builder.newInstance().build();
 
         ContractOfferDescription contractOfferDescription = new ContractOfferDescription(
-                "offerId", "assetId", "policyId", policy);
+                "offerId", "assetId", policy);
 
         NegotiationInitiateRequestDto dto = NegotiationInitiateRequestDto.Builder.newInstance()
                 .connectorId("connectorId")

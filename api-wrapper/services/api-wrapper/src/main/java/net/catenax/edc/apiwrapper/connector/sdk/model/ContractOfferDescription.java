@@ -22,16 +22,17 @@ import org.eclipse.dataspaceconnector.policy.model.Policy;
 public class ContractOfferDescription {
     private final String offerId;
     private final String assetId;
-    private final String policyId;
     private final Policy policy;
 
     @JsonCreator
-    public ContractOfferDescription(@JsonProperty("offerId") String offerId, @JsonProperty("assetId") String assetId, @JsonProperty("policyId") String policyId, @JsonProperty("policy") Policy policy) {
+    public ContractOfferDescription(@JsonProperty("offerId") String offerId,
+                                    @JsonProperty("assetId") String assetId,
+                                    @JsonProperty("policy") Policy policy) {
         this.offerId = offerId;
         this.assetId = assetId;
-        this.policyId = policyId;
         this.policy = policy;
     }
+
 
     public String getOfferId() {
         return this.offerId;
@@ -39,10 +40,6 @@ public class ContractOfferDescription {
 
     public String getAssetId() {
         return this.assetId;
-    }
-
-    public String getPolicyId() {
-        return this.policyId;
     }
 
     public Policy getPolicy() {

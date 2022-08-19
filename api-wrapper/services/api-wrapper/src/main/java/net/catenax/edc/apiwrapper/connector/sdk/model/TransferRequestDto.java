@@ -26,18 +26,23 @@ import java.util.Map;
 @JsonDeserialize(builder = TransferRequestDto.Builder.class)
 public class TransferRequestDto {
 
+    private String id;
     private String connectorAddress;
     private String contractId;
     private DataAddress dataDestination;
     private boolean managedResources = true;
     private Map<String, String> properties = new HashMap<>();
-    private TransferType transferType;
+    private TransferType transferType = new TransferType();
     private String protocol = "ids-multipart";
     private String connectorId;
     private String assetId;
 
     public String getConnectorAddress() {
         return connectorAddress;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public String getContractId() {
@@ -83,6 +88,11 @@ public class TransferRequestDto {
         @JsonCreator
         public static Builder newInstance() {
             return new Builder();
+        }
+
+        public Builder id(String id){
+            request.id = id;
+            return this;
         }
 
         public Builder connectorAddress(String connectorAddress) {
