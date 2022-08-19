@@ -9,6 +9,8 @@ services:
       - "8195:9193" # data
 #      - "8282" # ids
       - "5005:8090" # debugging
+    environment:
+      JAVA_TOOL_OPTIONS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8090
     networks:
       - api-wrapper
     volumes:
@@ -23,6 +25,8 @@ services:
 #      - "9192" # public
       - "5006:8090" # debugging
 #      - "9193" # control
+    environment:
+      JAVA_TOOL_OPTIONS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8090
     networks:
       - api-wrapper
     volumes:
@@ -38,6 +42,8 @@ services:
       - "8187:9193" # data
 #      - "8282" # ids
       - "5008:8090" # debugging
+    environment:
+      JAVA_TOOL_OPTIONS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8090
     networks:
       - api-wrapper
     volumes:
@@ -52,6 +58,8 @@ services:
       - "8183:9192" # public
       - "5009:8090" # debugging
 #      - "9193" # control
+    environment:
+      JAVA_TOOL_OPTIONS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8090
     networks:
       - api-wrapper
     volumes:

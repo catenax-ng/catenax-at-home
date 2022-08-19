@@ -13,11 +13,11 @@ services:
       - "5007:8090" # debugging
     environment:
       EDC_FS_CONFIG: /config/configuration.properties
-    volumes:
-      - ./config/consumer-api-wrapper.config:/config
+      JAVA_TOOL_OPTIONS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8090
     networks:
       - api-wrapper
-
+    volumes:
+      - ./config/consumer-api-wrapper.config:/config
 
 networks:
   api-wrapper:
