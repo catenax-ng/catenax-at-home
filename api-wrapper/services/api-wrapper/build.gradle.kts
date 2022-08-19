@@ -30,7 +30,7 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.2")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
     testImplementation("org.assertj:assertj-core:3.22.0")
-    testImplementation("org.mockito:mockito-inline:4.5.1")
+    testImplementation("org.mockito:mockito-inline:4.7.0")
 }
 
 java {
