@@ -7,7 +7,7 @@ plugins {
 
 val javaVersion = 11
 val edcGroup = "org.eclipse.dataspaceconnector"
-val edcVersion = "0.0.1-milestone-5"
+val edcVersion = "0.0.1-milestone-5.1"
 
 dependencies {
     implementation("$edcGroup:core-boot:$edcVersion")
