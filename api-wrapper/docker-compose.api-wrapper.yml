@@ -7,7 +7,6 @@ services:
       context: services/api-wrapper
       args:
         JAR: build/libs/edc.jar
-    platform: ${DOCKER_PLATFORM:-linux/amd64}
     ports:
       - "8193:9191" # default
       - "9192" # callback
