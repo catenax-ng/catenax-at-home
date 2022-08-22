@@ -8,6 +8,9 @@ dpVerifierPublicKeyAlias="dp-verifier-public-key"
 dpSignerPrivateKeyPath="${dpSignerPrivateKeyAlias}.pem"
 dpVerifierPublicKeyPath="${dpVerifierPublicKeyAlias}.pem"
 
+dataEncryptionKeyAlias="data-encryption"
+dataEncryptionKeyPath="${dataEncryptionKeyAlias}.aes"
+
 [ -z "$VAULT_URL" ] && VAULT_URL="http://localhost:8200"
 [ -z "$VAULT_TOKEN" ] && VAULT_TOKEN="password"
 
@@ -30,6 +33,9 @@ openssl genpkey -out "${dpSignerPrivateKeyPath}" -algorithm RSA -pkeyopt rsa_key
 # Public Key
 openssl rsa -in "${dpSignerPrivateKeyPath}" -out "${dpVerifierPublicKeyPath}" -pubout -outform PEM
 
+# DataEncryption Key
+openssl rand -base64 32 > "${dataEncryptionKeyPath}"
+
 echo "Waiting for Vault..."
 while [ "$(curl -XGET --insecure --silent -H "X-Vault-Token: ${VAULT_TOKEN}" "${VAULT_URL}/v1/sys/health" | jq '.initialized')" != "true" ]; do
     echo 'Vault is Initializing...'
@@ -44,3 +50,4 @@ vault login -non-interactive=true -no-print -address="${VAULT_URL}" token="${VAU
 echo "Adding secrets to Vault..."
 vault kv put -address="${VAULT_URL}" "secret/${dpSignerPrivateKeyAlias}" content=- < "${dpSignerPrivateKeyPath}"
 vault kv put -address="${VAULT_URL}" "secret/${dpVerifierPublicKeyAlias}" content=- < "${dpVerifierPublicKeyPath}"
+vault kv put -address="${VAULT_URL}" "secret/${dataEncryptionKeyAlias}" content=- < "${dataEncryptionKeyPath}"
