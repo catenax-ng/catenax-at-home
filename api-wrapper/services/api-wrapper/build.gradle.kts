@@ -7,7 +7,7 @@ plugins {
 
 val javaVersion = 11
 val edcGroup = "org.eclipse.dataspaceconnector"
-val edcVersion = "0.0.1-20220818-SNAPSHOT"
+val edcVersion = "0.0.1-20220902-SNAPSHOT"
 
 dependencies {
     implementation("$edcGroup:core-boot:$edcVersion")
@@ -28,7 +28,7 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.0")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.0")
     testImplementation("org.assertj:assertj-core:3.23.1")
-    testImplementation("org.mockito:mockito-inline:4.7.0")
+    testImplementation("org.mockito:mockito-inline:4.8.0")
 }
 
 java {
