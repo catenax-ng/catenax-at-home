@@ -21,7 +21,7 @@ public class ContractOfferService {
     private final ObjectMapper objectMapper;
     private final OkHttpClient httpClient;
 
-    private static final String CATALOG_PATH = "/catalog?providerUrl=";
+    private static final String CATALOG_PATH = "/catalog?limit=1000000000&providerUrl=";
 
     public ContractOfferService(Monitor monitor, TypeManager typeManager, OkHttpClient httpClient) {
         this.monitor = monitor;
