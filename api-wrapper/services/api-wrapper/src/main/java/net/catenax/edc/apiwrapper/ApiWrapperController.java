@@ -261,7 +261,7 @@ public class ApiWrapperController {
                 throw new TimeoutException("Contract negotiation took too long");
             }
             Thread.sleep(500);
-        } while (negotiation.getState().equals("CONFIRMED"));
+        } while (!negotiation.getState().equals("CONFIRMED"));
 
         String agreementId = negotiation.getContractAgreementId();
         contractAgreementCache.put(assetId, agreementId);
