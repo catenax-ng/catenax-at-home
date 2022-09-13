@@ -7,6 +7,6 @@ public class TimeoutException extends ServerErrorException {
     private static final long serialVersionUID = -2740045367379265061L;
 
     public TimeoutException(String message) {
-        super(message, Response.Status.REQUEST_TIMEOUT);
+        super(message, Response.Status.GATEWAY_TIMEOUT);
     }
 }
