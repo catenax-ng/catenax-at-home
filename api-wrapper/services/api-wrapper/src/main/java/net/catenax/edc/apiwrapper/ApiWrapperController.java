@@ -23,6 +23,8 @@ import net.catenax.edc.apiwrapper.connector.sdk.service.ContractNegotiationServi
 import net.catenax.edc.apiwrapper.connector.sdk.service.ContractOfferService;
 import net.catenax.edc.apiwrapper.connector.sdk.service.HttpProxyService;
 import net.catenax.edc.apiwrapper.connector.sdk.service.TransferProcessService;
+import net.catenax.edc.apiwrapper.exceptions.TimeoutException;
+import net.catenax.edc.apiwrapper.exceptions.UnavailableForLegalReasonsException;
 import org.eclipse.dataspaceconnector.policy.model.Action;
 import org.eclipse.dataspaceconnector.policy.model.Permission;
 import org.eclipse.dataspaceconnector.policy.model.Policy;
@@ -31,7 +33,9 @@ import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -229,16 +233,35 @@ public class ApiWrapperController {
         );
 
         // Check negotiation state
-        ContractNegotiationDto negotiation = null;
-
-        while (negotiation == null || !negotiation.getState().equals("CONFIRMED")) {
-            Thread.sleep(1000);
+        ContractNegotiationDto negotiation;
+        var cancelStates = List.of(
+                "DECLINED",
+                "ERROR"
+        );
+        var startTime = Instant.now();
+        var timeoutSeconds = 30;
+        var timeIsUp = false;
+        do {
             negotiation = contractNegotiationService.getNegotiation(
                     negotiationId,
                     config.getConsumerEdcDataManagementUrl(),
                     header
             );
-        }
+
+            ContractNegotiationDto finalNegotiation = negotiation;
+            var isErrorOccurred = cancelStates.stream().anyMatch(
+                    it -> it.equals(finalNegotiation.getState())
+            );
+            if (isErrorOccurred) {
+                throw new UnavailableForLegalReasonsException("Contract negotiation was declined by provider");
+            }
+
+            timeIsUp = startTime.isBefore(Instant.now().minusSeconds(timeoutSeconds));
+            if (timeIsUp) {
+                throw new TimeoutException("Contract negotiation took too long");
+            }
+            Thread.sleep(500);
+        } while (negotiation.getState().equals("CONFIRMED"));
 
         String agreementId = negotiation.getContractAgreementId();
         contractAgreementCache.put(assetId, agreementId);
