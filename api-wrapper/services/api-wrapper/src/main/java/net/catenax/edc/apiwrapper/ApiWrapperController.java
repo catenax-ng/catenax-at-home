@@ -35,11 +35,12 @@ import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference
 import java.io.IOException;
 import java.time.Instant;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static java.lang.String.format;
 
 @Consumes()
 @Produces({ MediaType.APPLICATION_JSON })
@@ -49,6 +50,12 @@ public class ApiWrapperController {
     // Connection configurations
     private static final String IDS_PATH = "/api/v1/ids/data";
     private static final Pattern RESPONSE_PATTERN = Pattern.compile("\\{\"data\":\"(?<embeddedData>.*)\"\\}");
+
+    private static final String NEGOTIATION_DECLINED_STATE = "DECLINED";
+    private static final String NEGOTIATION_ERROR_STATE = "ERROR";
+
+    private static final int NEGOTIATION_TIMEOUT_SECONDS = 30;
+    private static final int NEGOTIATION_CHECK_LOOP_WAIT_MILLIS = 500;
 
     private final Monitor monitor;
     private final ContractOfferService contractOfferService;
@@ -234,13 +241,9 @@ public class ApiWrapperController {
 
         // Check negotiation state
         ContractNegotiationDto negotiation;
-        var cancelStates = List.of(
-                "DECLINED",
-                "ERROR"
-        );
         var startTime = Instant.now();
-        var timeoutSeconds = 30;
         var timeIsUp = false;
+
         do {
             negotiation = contractNegotiationService.getNegotiation(
                     negotiationId,
@@ -248,19 +251,27 @@ public class ApiWrapperController {
                     header
             );
 
-            ContractNegotiationDto finalNegotiation = negotiation;
-            var isErrorOccurred = cancelStates.stream().anyMatch(
-                    it -> it.equals(finalNegotiation.getState())
-            );
-            if (isErrorOccurred) {
-                throw new UnavailableForLegalReasonsException("Contract negotiation was declined by provider");
-            }
+            switch(negotiation.getState()) {
+                case NEGOTIATION_ERROR_STATE:
+                    throw new InternalServerErrorException(format(
+                            "Error while the contract negotiation occurred (Details: %s)",
+                            negotiation.getErrorDetail()
+                    ));
 
-            timeIsUp = startTime.isBefore(Instant.now().minusSeconds(timeoutSeconds));
-            if (timeIsUp) {
-                throw new TimeoutException("Contract negotiation took too long");
+                case NEGOTIATION_DECLINED_STATE:
+                    throw new UnavailableForLegalReasonsException("Contract negotiation was declined by provider");
+
+                default:
+                    timeIsUp = startTime.isBefore(Instant.now().minusSeconds(
+                            NEGOTIATION_TIMEOUT_SECONDS
+                    ));
+
+                    if (timeIsUp) {
+                        throw new TimeoutException("Contract negotiation took too long");
+                    }
+
+                    Thread.sleep(NEGOTIATION_CHECK_LOOP_WAIT_MILLIS);
             }
-            Thread.sleep(500);
         } while (!negotiation.getState().equals("CONFIRMED"));
 
         String agreementId = negotiation.getContractAgreementId();

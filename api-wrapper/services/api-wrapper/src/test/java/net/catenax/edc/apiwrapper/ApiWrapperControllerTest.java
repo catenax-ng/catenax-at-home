@@ -24,7 +24,6 @@ import org.mockito.MockedStatic;
 
 import java.io.IOException;
 import java.net.URI;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -282,6 +281,50 @@ class ApiWrapperControllerTest {
     }
 
     @Test
+    void getWrapperFromParameters_ContractNegotiationError() throws IOException {
+        String providerConnectorUrl = "http://localhost:8081";
+        String assetId = "anAsset";
+        String subUrl = "aSubUrl";
+        UriInfo uriInfo = mock(UriInfo.class);
+
+        when(contractAgreementCache.get(any())).thenReturn(null);
+        when(contractOfferService.findContractOffer4AssetId(any(), any(), any(), any())).thenReturn(Optional.of(getDummyContractOffer()));
+        when(contractNegotiationService.initiateNegotiation(
+                any(),
+                any(),
+                any()
+        )).thenReturn(getDummyNegotiationId());
+        when(contractNegotiationService.getNegotiation(any(), any(), any())).thenReturn(getDummyErrorContractNegotiationDto());
+
+        assertThatThrownBy(() -> apiWrapperController.getWrapper(
+                providerConnectorUrl,
+                assetId,
+                subUrl,
+                uriInfo
+        )).isInstanceOf(InternalServerErrorException.class);
+    }
+
+    @Test
+    void postWrapperFromParameters_ContractNegotiationError() throws IOException {
+        String providerConnectorUrl = "http://localhost:8081";
+        String assetId = "anAsset";
+        String subUrl = "aSubUrl";
+        UriInfo uriInfo = mock(UriInfo.class);
+
+        when(contractAgreementCache.get(any())).thenReturn(null);
+        when(contractOfferService.findContractOffer4AssetId(any(), any(), any(), any())).thenReturn(Optional.of(getDummyContractOffer()));
+        when(contractNegotiationService.getNegotiation(any(), any(), any())).thenReturn(getDummyErrorContractNegotiationDto());
+
+        assertThatThrownBy(() -> apiWrapperController.postWrapper(
+                providerConnectorUrl,
+                assetId,
+                subUrl,
+                "body",
+                uriInfo
+        )).isInstanceOf(InternalServerErrorException.class);
+    }
+
+    @Test
     void getWrapperFromParameters_ContractNegotiationTimeout() throws IOException {
         String providerConnectorUrl = "http://localhost:8081";
         String assetId = "anAsset";
@@ -321,7 +364,6 @@ class ApiWrapperControllerTest {
     }
 
     private ContractOffer getDummyContractOffer() {
-
         return ContractOffer.Builder.newInstance()
                 .id("DummyPolicyId")
                 .policy(Policy.Builder.newInstance().build())
@@ -329,9 +371,9 @@ class ApiWrapperControllerTest {
                 .provider(URI.create("Uri/Provider"))
                 .consumer(URI.create("Uri/Consumer"))
                 .offerStart(ZonedDateTime.now())
-                .offerEnd(ZonedDateTime.of(2025, 10, 25, 15, 10, 21, 252, ZoneId.of("America/Chicago")))
+                .offerEnd(ZonedDateTime.now().plusDays(1))
                 .contractStart(ZonedDateTime.now())
-                .contractEnd((ZonedDateTime.of(2025, 10, 25, 15, 10, 21, 252, ZoneId.of("America/Chicago"))))
+                .contractEnd(ZonedDateTime.now().plusDays(1))
                 .build();
     }
 
@@ -365,6 +407,17 @@ class ApiWrapperControllerTest {
                 .id("dtoId")
                 .protocol("ids-multipart")
                 .state("DECLINED")
+                .build();
+    }
+
+    private ContractNegotiationDto getDummyErrorContractNegotiationDto() {
+        return ContractNegotiationDto.Builder.newInstance()
+                .contractAgreementId("cAgrId")
+                .counterPartyAddress("cpAddress")
+                .errorDetail("")
+                .id("dtoId")
+                .protocol("ids-multipart")
+                .state("ERROR")
                 .build();
     }
 
