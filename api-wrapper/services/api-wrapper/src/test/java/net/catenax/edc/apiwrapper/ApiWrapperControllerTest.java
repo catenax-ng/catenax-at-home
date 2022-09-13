@@ -7,10 +7,13 @@ import net.catenax.edc.apiwrapper.cache.InMemoryContractAgreementCache;
 import net.catenax.edc.apiwrapper.cache.InMemoryEndpointDataReferenceCache;
 import net.catenax.edc.apiwrapper.config.ApiWrapperConfig;
 import net.catenax.edc.apiwrapper.connector.sdk.model.ContractNegotiationDto;
+import net.catenax.edc.apiwrapper.connector.sdk.model.NegotiationId;
 import net.catenax.edc.apiwrapper.connector.sdk.service.ContractNegotiationService;
 import net.catenax.edc.apiwrapper.connector.sdk.service.ContractOfferService;
 import net.catenax.edc.apiwrapper.connector.sdk.service.HttpProxyService;
 import net.catenax.edc.apiwrapper.connector.sdk.service.TransferProcessService;
+import net.catenax.edc.apiwrapper.exceptions.TimeoutException;
+import net.catenax.edc.apiwrapper.exceptions.UnavailableForLegalReasonsException;
 import org.eclipse.dataspaceconnector.policy.model.Policy;
 import org.eclipse.dataspaceconnector.spi.monitor.Monitor;
 import org.eclipse.dataspaceconnector.spi.types.domain.asset.Asset;
@@ -34,7 +37,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
-public class ApiWrapperControllerTest {
+class ApiWrapperControllerTest {
 
     private final Monitor monitor = mock(Monitor.class);
     private final ContractOfferService contractOfferService = mock(ContractOfferService.class);
@@ -46,12 +49,18 @@ public class ApiWrapperControllerTest {
     private final ApiWrapperConfig apiWrapperConfig = mock(ApiWrapperConfig.class);
 
     private final ApiWrapperController apiWrapperController = new ApiWrapperController(
-            monitor, contractOfferService, contractNegotiationService, transferProcessService,
-            httpProxyService, endpointDataReferenceCache, contractAgreementCache, apiWrapperConfig);
+            monitor,
+            contractOfferService,
+            contractNegotiationService,
+            transferProcessService,
+            httpProxyService,
+            endpointDataReferenceCache,
+            contractAgreementCache,
+            apiWrapperConfig
+    );
 
     @Test
     void getWrapperFromParameters_agreementIdShouldExistAndDataReferenceShouldBeValid() throws IOException, InterruptedException {
-
         String providerConnectorUrl = "http://localhost:8081";
         String assetId = "anAsset";
         String subUrl = "aSubUrl";
@@ -73,7 +82,6 @@ public class ApiWrapperControllerTest {
         when(httpProxyService.sendGETRequest(any(), any(), any())).thenReturn("theDataResult");
 
         try (MockedStatic<InMemoryEndpointDataReferenceCache> mockedStatic = mockStatic(InMemoryEndpointDataReferenceCache.class)) {
-
             when(InMemoryEndpointDataReferenceCache.endpointDataRefTokenExpired(any())).thenReturn(Boolean.TRUE);
 
             String data = apiWrapperController.getWrapper(providerConnectorUrl, assetId, subUrl, uriInfo);
@@ -83,7 +91,6 @@ public class ApiWrapperControllerTest {
 
     @Test
     void postWrapperFromParameters_agreementIdShouldExistAndDataReferenceShouldBeValid() throws IOException, InterruptedException {
-
         String providerConnectorUrl = "http://localhost:8081";
         String assetId = "anAsset";
         String subUrl = "aSubUrl";
@@ -105,7 +112,6 @@ public class ApiWrapperControllerTest {
         when(httpProxyService.sendPOSTRequest(any(), any(), any(), any(), any())).thenReturn("theDataResult");
 
         try (MockedStatic<InMemoryEndpointDataReferenceCache> mockedStatic = mockStatic(InMemoryEndpointDataReferenceCache.class)) {
-
             when(InMemoryEndpointDataReferenceCache.endpointDataRefTokenExpired(any())).thenReturn(Boolean.TRUE);
 
             String data = apiWrapperController.postWrapper(providerConnectorUrl, assetId, subUrl, "body", uriInfo);
@@ -115,7 +121,6 @@ public class ApiWrapperControllerTest {
 
     @Test
     void getWrapperFromParameters_ContractOfferIsEmpty() throws IOException {
-
         String providerConnectorUrl = "http://localhost:8081";
         String assetId = "anAsset";
         String subUrl = "aSubUrl";
@@ -129,7 +134,6 @@ public class ApiWrapperControllerTest {
 
     @Test
     void postWrapperFromParameters_ContractOfferIsEmpty() throws IOException {
-
         String providerConnectorUrl = "http://localhost:8081";
         String assetId = "anAsset";
         String subUrl = "aSubUrl";
@@ -143,7 +147,6 @@ public class ApiWrapperControllerTest {
 
     @Test
     void getWrapperFromParameters_ContractOfferIsNotEmptyAndDataReferenceShouldNotBeValid() throws IOException, InterruptedException {
-
         String providerConnectorUrl = "http://localhost:8081";
         String assetId = "anAsset";
         String subUrl = "aSubUrl";
@@ -162,12 +165,11 @@ public class ApiWrapperControllerTest {
 
         when(contractAgreementCache.get(any())).thenReturn(null);
         when(contractOfferService.findContractOffer4AssetId(any(), any(), any(), any())).thenReturn(Optional.of(getDummyContractOffer()));
-        when(contractNegotiationService.getNegotiation(any(), any(), any())).thenReturn(getDummyContractNegotiaionDto());
+        when(contractNegotiationService.getNegotiation(any(), any(), any())).thenReturn(getDummyContractNegotiationDto());
         when(httpProxyService.sendGETRequest(any(), any(), any())).thenReturn("theDataResult");
         when(endpointDataReferenceCache.get(any())).thenReturn(endpointDataReferenceTest);
 
         try (MockedStatic<InMemoryEndpointDataReferenceCache> mockedStatic = mockStatic(InMemoryEndpointDataReferenceCache.class)) {
-
             when(InMemoryEndpointDataReferenceCache.endpointDataRefTokenExpired(any())).thenReturn(Boolean.TRUE);
 
             String data = apiWrapperController.getWrapper(providerConnectorUrl, assetId, subUrl, uriInfo);
@@ -177,7 +179,6 @@ public class ApiWrapperControllerTest {
 
     @Test
     void postWrapperFromParameters_ContractOfferIsNotEmptyAndDataReferenceShouldNotBeValid() throws IOException, InterruptedException {
-
         String providerConnectorUrl = "http://localhost:8081";
         String assetId = "anAsset";
         String subUrl = "aSubUrl";
@@ -196,12 +197,11 @@ public class ApiWrapperControllerTest {
 
         when(contractAgreementCache.get(any())).thenReturn(null);
         when(contractOfferService.findContractOffer4AssetId(any(), any(), any(), any())).thenReturn(Optional.of(getDummyContractOffer()));
-        when(contractNegotiationService.getNegotiation(any(), any(), any())).thenReturn(getDummyContractNegotiaionDto());
+        when(contractNegotiationService.getNegotiation(any(), any(), any())).thenReturn(getDummyContractNegotiationDto());
         when(httpProxyService.sendPOSTRequest(any(), any(), any(), any(), any())).thenReturn("theDataResult");
         when(endpointDataReferenceCache.get(any())).thenReturn(endpointDataReferenceTest);
 
         try (MockedStatic<InMemoryEndpointDataReferenceCache> mockedStatic = mockStatic(InMemoryEndpointDataReferenceCache.class)) {
-
             when(InMemoryEndpointDataReferenceCache.endpointDataRefTokenExpired(any())).thenReturn(Boolean.TRUE);
 
             String data = apiWrapperController.postWrapper(providerConnectorUrl, assetId, subUrl, "body", uriInfo);
@@ -211,56 +211,113 @@ public class ApiWrapperControllerTest {
 
     @Test
     void getWrapperFromParameters_shouldNotExistAgreementAndIsNotValidDataReference() throws IOException {
-
         String providerConnectorUrl = "http://localhost:8081";
         String assetId = "anAsset";
         String subUrl = "aSubUrl";
         UriInfo uriInfo = mock(UriInfo.class);
 
-        Map<String, String> map = new HashMap<>();
-        map.put("cid", "reference");
-
-        EndpointDataReference endpointDataReferenceTest = EndpointDataReference.Builder.newInstance()
-                .id("idRef")
-                .endpoint("anEndpoint")
-                .authKey("myKey")
-                .authCode("SecCode")
-                .properties(map)
-                .build();
-
         when(contractAgreementCache.get(any())).thenReturn(null);
         when(contractOfferService.findContractOffer4AssetId(any(), any(), any(), any())).thenReturn(Optional.of(getDummyContractOffer()));
-        when(contractNegotiationService.getNegotiation(any(), any(), any())).thenReturn(getDummyContractNegotiaionDto());
+        when(contractNegotiationService.getNegotiation(any(), any(), any())).thenReturn(getDummyContractNegotiationDto());
 
         assertThatThrownBy(() -> apiWrapperController.getWrapper(providerConnectorUrl, assetId, subUrl, uriInfo)).isInstanceOf(InternalServerErrorException.class);
-
     }
 
     @Test
     void postWrapperFromParameters_shouldNotExistAgreementAndIsNotValidDataReference() throws IOException {
-
         String providerConnectorUrl = "http://localhost:8081";
         String assetId = "anAsset";
         String subUrl = "aSubUrl";
         UriInfo uriInfo = mock(UriInfo.class);
 
-        Map<String, String> map = new HashMap<>();
-        map.put("cid", "reference");
+        when(contractAgreementCache.get(any())).thenReturn(null);
+        when(contractOfferService.findContractOffer4AssetId(any(), any(), any(), any())).thenReturn(Optional.of(getDummyContractOffer()));
+        when(contractNegotiationService.getNegotiation(any(), any(), any())).thenReturn(getDummyContractNegotiationDto());
 
-        EndpointDataReference endpointDataReferenceTest = EndpointDataReference.Builder.newInstance()
-                .id("idRef")
-                .endpoint("anEndpoint")
-                .authKey("myKey")
-                .authCode("SecCode")
-                .properties(map)
-                .build();
+        assertThatThrownBy(() -> apiWrapperController.postWrapper(providerConnectorUrl, assetId, subUrl, "body", uriInfo)).isInstanceOf(InternalServerErrorException.class);
+    }
+
+    @Test
+    void getWrapperFromParameters_ContractNegotiationWasDeclined() throws IOException {
+        String providerConnectorUrl = "http://localhost:8081";
+        String assetId = "anAsset";
+        String subUrl = "aSubUrl";
+        UriInfo uriInfo = mock(UriInfo.class);
 
         when(contractAgreementCache.get(any())).thenReturn(null);
         when(contractOfferService.findContractOffer4AssetId(any(), any(), any(), any())).thenReturn(Optional.of(getDummyContractOffer()));
-        when(contractNegotiationService.getNegotiation(any(), any(), any())).thenReturn(getDummyContractNegotiaionDto());
+        when(contractNegotiationService.initiateNegotiation(
+                any(),
+                any(),
+                any()
+        )).thenReturn(getDummyNegotiationId());
+        when(contractNegotiationService.getNegotiation(any(), any(), any())).thenReturn(getDummyDeclinedContractNegotiationDto());
 
-        assertThatThrownBy(() -> apiWrapperController.postWrapper(providerConnectorUrl, assetId, subUrl, "body", uriInfo)).isInstanceOf(InternalServerErrorException.class);
+        assertThatThrownBy(() -> apiWrapperController.getWrapper(
+                providerConnectorUrl,
+                assetId,
+                subUrl,
+                uriInfo
+        )).isInstanceOf(UnavailableForLegalReasonsException.class);
+    }
 
+    @Test
+    void postWrapperFromParameters_ContractNegotiationWasDeclined() throws IOException {
+        String providerConnectorUrl = "http://localhost:8081";
+        String assetId = "anAsset";
+        String subUrl = "aSubUrl";
+        UriInfo uriInfo = mock(UriInfo.class);
+
+        when(contractAgreementCache.get(any())).thenReturn(null);
+        when(contractOfferService.findContractOffer4AssetId(any(), any(), any(), any())).thenReturn(Optional.of(getDummyContractOffer()));
+        when(contractNegotiationService.getNegotiation(any(), any(), any())).thenReturn(getDummyDeclinedContractNegotiationDto());
+
+        assertThatThrownBy(() -> apiWrapperController.postWrapper(
+                providerConnectorUrl,
+                assetId,
+                subUrl,
+                "body",
+                uriInfo
+        )).isInstanceOf(UnavailableForLegalReasonsException.class);
+    }
+
+    @Test
+    void getWrapperFromParameters_ContractNegotiationTimeout() throws IOException {
+        String providerConnectorUrl = "http://localhost:8081";
+        String assetId = "anAsset";
+        String subUrl = "aSubUrl";
+        UriInfo uriInfo = mock(UriInfo.class);
+
+        when(contractAgreementCache.get(any())).thenReturn(null);
+        when(contractOfferService.findContractOffer4AssetId(any(), any(), any(), any())).thenReturn(Optional.of(getDummyContractOffer()));
+        when(contractNegotiationService.getNegotiation(any(), any(), any())).thenReturn(getDummyRequestedContractNegotiationDto());
+
+        assertThatThrownBy(() -> apiWrapperController.getWrapper(
+                providerConnectorUrl,
+                assetId,
+                subUrl,
+                uriInfo
+        )).isInstanceOf(TimeoutException.class);
+    }
+
+    @Test
+    void postWrapperFromParameters_ContractNegotiationTimeout() throws IOException {
+        String providerConnectorUrl = "http://localhost:8081";
+        String assetId = "anAsset";
+        String subUrl = "aSubUrl";
+        UriInfo uriInfo = mock(UriInfo.class);
+
+        when(contractAgreementCache.get(any())).thenReturn(null);
+        when(contractOfferService.findContractOffer4AssetId(any(), any(), any(), any())).thenReturn(Optional.of(getDummyContractOffer()));
+        when(contractNegotiationService.getNegotiation(any(), any(), any())).thenReturn(getDummyRequestedContractNegotiationDto());
+
+        assertThatThrownBy(() -> apiWrapperController.postWrapper(
+                providerConnectorUrl,
+                assetId,
+                subUrl,
+                "body",
+                uriInfo
+        )).isInstanceOf(TimeoutException.class);
     }
 
     private ContractOffer getDummyContractOffer() {
@@ -278,8 +335,7 @@ public class ApiWrapperControllerTest {
                 .build();
     }
 
-    private ContractNegotiationDto getDummyContractNegotiaionDto() {
-
+    private ContractNegotiationDto getDummyContractNegotiationDto() {
         return ContractNegotiationDto.Builder.newInstance()
                 .contractAgreementId("cAgrId")
                 .counterPartyAddress("cpAddress")
@@ -287,6 +343,34 @@ public class ApiWrapperControllerTest {
                 .id("dtoId")
                 .protocol("ids-multipart")
                 .state("CONFIRMED")
+                .build();
+    }
+
+    private ContractNegotiationDto getDummyRequestedContractNegotiationDto() {
+        return ContractNegotiationDto.Builder.newInstance()
+                .contractAgreementId("cAgrId")
+                .counterPartyAddress("cpAddress")
+                .errorDetail("")
+                .id("dtoId")
+                .protocol("ids-multipart")
+                .state("REQUESTED")
+                .build();
+    }
+
+    private ContractNegotiationDto getDummyDeclinedContractNegotiationDto() {
+        return ContractNegotiationDto.Builder.newInstance()
+                .contractAgreementId("cAgrId")
+                .counterPartyAddress("cpAddress")
+                .errorDetail("")
+                .id("dtoId")
+                .protocol("ids-multipart")
+                .state("DECLINED")
+                .build();
+    }
+
+    private NegotiationId getDummyNegotiationId() {
+        return NegotiationId.Builder.newInstance()
+                .id("testid")
                 .build();
     }
 }
