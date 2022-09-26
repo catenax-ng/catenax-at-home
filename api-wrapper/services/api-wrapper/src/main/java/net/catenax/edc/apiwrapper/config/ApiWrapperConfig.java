@@ -11,6 +11,7 @@ public class ApiWrapperConfig {
     private final Map<String, String> basicAuthUsers;
     private final Boolean cacheEnabled;
     private final int callbackTimeout;
+    private long catalogCachePeriod;
 
     public ApiWrapperConfig(
             String consumerEdcDataManagementUrl,
@@ -18,14 +19,15 @@ public class ApiWrapperConfig {
             String consumerEdcApiKeyValue,
             Map<String, String> basicAuthUsers,
             Boolean cacheEnabled,
-            int callbackTimeout
-    ) {
+            int callbackTimeout,
+            long catalogCachePeriod) {
         this.consumerEdcDataManagementUrl = consumerEdcDataManagementUrl;
         this.consumerEdcApiKeyName = consumerEdcApiKeyName;
         this.consumerEdcApiKeyValue = consumerEdcApiKeyValue;
         this.basicAuthUsers = basicAuthUsers;
         this.cacheEnabled = cacheEnabled;
         this.callbackTimeout = callbackTimeout;
+        this.catalogCachePeriod = catalogCachePeriod;
     }
 
     public String getConsumerEdcDataManagementUrl() {
@@ -52,6 +54,16 @@ public class ApiWrapperConfig {
         return callbackTimeout;
     }
 
+    public Map<String, String> getHeaders() {
+        return getConsumerEdcApiKeyValue() != null
+                ? Collections.singletonMap(getConsumerEdcApiKeyName(), getConsumerEdcApiKeyValue())
+                : Collections.emptyMap();
+    }
+
+    public long getCatalogCachePeriod() {
+        return catalogCachePeriod;
+    }
+
     public static final class Builder {
         private String consumerEdcDataManagementUrl = null;
         private String consumerEdcApiKeyName = "X-Api-Key";
@@ -59,6 +71,7 @@ public class ApiWrapperConfig {
         private Map<String, String> basicAuthUsers = Collections.emptyMap();
         private Boolean cacheEnabled = false;
         private int callbackTimeout = 20;
+        private long catalogCachePeriod;
 
         private Builder() {
         }
@@ -97,6 +110,11 @@ public class ApiWrapperConfig {
             return this;
         }
 
+        public Builder catalogCachePeriod(long catalogCachePeriod) {
+            this.catalogCachePeriod = catalogCachePeriod;
+            return this;
+        }
+
         public ApiWrapperConfig build() {
             return new ApiWrapperConfig(
                     consumerEdcDataManagementUrl,
@@ -104,7 +122,8 @@ public class ApiWrapperConfig {
                     consumerEdcApiKeyValue,
                     basicAuthUsers,
                     cacheEnabled,
-                    callbackTimeout
+                    callbackTimeout,
+                    catalogCachePeriod
             );
         }
     }

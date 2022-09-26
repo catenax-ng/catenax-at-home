@@ -34,8 +34,6 @@ import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference
 
 import java.io.IOException;
 import java.time.Instant;
-import java.util.Collections;
-import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -69,8 +67,6 @@ public class ApiWrapperController {
 
     private final ApiWrapperConfig config;
 
-    private Map<String, String> header;
-
     public ApiWrapperController(Monitor monitor,
                                 ContractOfferService contractOfferService,
                                 ContractNegotiationService contractNegotiationService,
@@ -87,10 +83,6 @@ public class ApiWrapperController {
         this.endpointDataReferenceCache = endpointDataReferenceCache;
         this.contractAgreementCache = contractAgreementCache;
         this.config = config;
-
-        if (config.getConsumerEdcApiKeyValue() != null) {
-            this.header = Collections.singletonMap(config.getConsumerEdcApiKeyName(), config.getConsumerEdcApiKeyValue());
-        }
     }
 
     @GET
@@ -121,7 +113,7 @@ public class ApiWrapperController {
                     assetId,
                     config.getConsumerEdcDataManagementUrl(),
                     providerConnectorUrl + IDS_PATH,
-                    header
+                    config.getHeaders()
             );
 
             dataReference = getDataReference(agreementId);
@@ -173,7 +165,7 @@ public class ApiWrapperController {
                     assetId,
                     config.getConsumerEdcDataManagementUrl(),
                     providerConnectorUrl + IDS_PATH,
-                    header
+                    config.getHeaders()
             );
 
             dataReference = getDataReference(agreementId);
@@ -205,9 +197,7 @@ public class ApiWrapperController {
         monitor.info("Initialize contract negotiation");
         var contractOffer = contractOfferService.findContractOffer4AssetId(
                 assetId,
-                config.getConsumerEdcDataManagementUrl(),
-                providerConnectorUrl + IDS_PATH,
-                header
+                providerConnectorUrl + IDS_PATH
         );
 
         if (contractOffer.isEmpty()) {
@@ -236,7 +226,7 @@ public class ApiWrapperController {
         var negotiationId = contractNegotiationService.initiateNegotiation(
                 contractNegotiationRequest,
                 config.getConsumerEdcDataManagementUrl(),
-                header
+                config.getHeaders()
         );
 
         // Check negotiation state
@@ -248,7 +238,7 @@ public class ApiWrapperController {
             negotiation = contractNegotiationService.getNegotiation(
                     negotiationId,
                     config.getConsumerEdcDataManagementUrl(),
-                    header
+                    config.getHeaders()
             );
 
             switch(negotiation.getState()) {
