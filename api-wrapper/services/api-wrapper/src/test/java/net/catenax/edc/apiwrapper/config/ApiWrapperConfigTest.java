@@ -11,25 +11,41 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 class ApiWrapperConfigTest {
 
     @Test
-    void testBuild() {
+    void test() {
 
         Map<String, String> map = new HashMap<>();
         map.put("userId", "userPwd");
 
-        ApiWrapperConfig apiWrapperTest = ApiWrapperConfig.Builder.newInstance()
+        ApiWrapperConfig config = ApiWrapperConfig.Builder.newInstance()
                 .consumerEdcDataManagementUrl("urlConsumer")
                 .consumerEdcApiKeyValue("apiValue")
                 .basicAuthUsers(map)
-                .cacheEnabled(true)
+                .agreementCacheEnabled(true)
                 .callbackTimeout(10)
+                .catalogCachePeriod(300L)
                 .build();
 
-        assertAll(() -> assertThat(apiWrapperTest.getConsumerEdcDataManagementUrl()).isEqualTo("urlConsumer"),
-                () -> assertThat(apiWrapperTest.getConsumerEdcApiKeyValue()).isEqualTo("apiValue"),
-                () -> assertThat(apiWrapperTest.getBasicAuthUsers()).containsEntry("userId", "userPwd"),
-                () -> assertThat(apiWrapperTest.getConsumerEdcApiKeyName()).isEqualTo("X-Api-Key"),
-                () -> assertThat(apiWrapperTest.getCacheEnabled()).isTrue(),
-                () -> assertThat(apiWrapperTest.getCallbackTimeout()).isEqualTo(10)
+        assertAll(
+                () -> assertThat(config.getConsumerEdcDataManagementUrl()).isEqualTo("urlConsumer"),
+                () -> assertThat(config.getConsumerEdcApiKeyValue()).isEqualTo("apiValue"),
+                () -> assertThat(config.getBasicAuthUsers()).containsEntry("userId", "userPwd"),
+                () -> assertThat(config.getConsumerEdcApiKeyName()).isEqualTo("X-Api-Key"),
+                () -> assertThat(config.isAgreementCacheEnabled()).isTrue(),
+                () -> assertThat(config.getCatalogCachePeriod()).isEqualTo(300L),
+                () -> assertThat(config.isCatalogCacheEnabled()).isTrue(),
+                () -> assertThat(config.getCallbackTimeout()).isEqualTo(10)
+        );
+    }
+
+    @Test
+    void disabledCatalogCache() {
+        ApiWrapperConfig config = ApiWrapperConfig.Builder.newInstance()
+                .catalogCachePeriod(0L)
+                .build();
+
+        assertAll(
+                () -> assertThat(config.getCatalogCachePeriod()).isZero(),
+                () -> assertThat(config.isCatalogCacheEnabled()).isFalse()
         );
     }
 }

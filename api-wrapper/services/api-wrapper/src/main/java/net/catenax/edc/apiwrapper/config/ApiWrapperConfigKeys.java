@@ -17,12 +17,12 @@ public final class ApiWrapperConfigKeys {
     public static final String BASIC_AUTH = "wrapper.auth.basic";
 
     @EdcSetting
-    public static final String CACHE_ENABLED = "wrapper.cache.enabled";
+    public static final String CACHE_AGREEMENT_ENABLED = "wrapper.cache.agreement.enabled";
 
     @EdcSetting
     public static final String CALLBACK_TIMEOUT = "wrapper.callback.timeout";
 
-    @EdcSetting(value = "Catalog cache period in seconds. Default is 300 (5 minutes)")
+    @EdcSetting(value = "Catalog cache period in seconds. 0 will disable the cache. Default is 300 (5 minutes)")
     public static final String CATALOG_CACHE_PERIOD = "wrapper.cache.catalog.period";
 
     private ApiWrapperConfigKeys() {}
