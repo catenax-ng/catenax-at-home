@@ -27,6 +27,7 @@ public class ContractOfferService {
     private final ObjectMapper objectMapper;
     private final OkHttpClient httpClient;
     private final ApiWrapperConfig config;
+    // ProviderIDSUrl -> AssetId -> List<ContractOffer>
     private final Map<String, Map<String, List<ContractOffer>>> byAssetIdCache = new ConcurrentHashMap<>();
 
     private static final String CATALOG_PATH = "/catalog?limit=1000000000&providerUrl=";
