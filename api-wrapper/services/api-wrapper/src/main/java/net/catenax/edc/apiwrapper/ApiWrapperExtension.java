@@ -47,10 +47,10 @@ public class ApiWrapperExtension implements ServiceExtension {
 
         // In-memory stores
         var endpointDataReferenceCache = new InMemoryEndpointDataReferenceCache();
-        var contractAgreementCache = new InMemoryContractAgreementCache(config.getCacheEnabled());
+        var contractAgreementCache = new InMemoryContractAgreementCache(config.isAgreementCacheEnabled());
 
         // Setup controller
-        var contractOfferService = new ContractOfferService(monitor, typeManager, httpClient);
+        var contractOfferService = new ContractOfferService(monitor, typeManager, httpClient, config);
         var contractOfferRequestService = new ContractNegotiationService(monitor, typeManager, httpClient);
         var transferProcessService = new TransferProcessService(monitor, typeManager, httpClient);
         var httpProxyService = new HttpProxyService(monitor, httpClient);
@@ -88,8 +88,9 @@ public class ApiWrapperExtension implements ServiceExtension {
             builder.basicAuthUsers(basicAuthUsers);
         }
 
-        builder.cacheEnabled(config.getBoolean(ApiWrapperConfigKeys.CACHE_ENABLED, false));
+        builder.agreementCacheEnabled(config.getBoolean(ApiWrapperConfigKeys.CACHE_AGREEMENT_ENABLED, false));
         builder.callbackTimeout(config.getInteger(ApiWrapperConfigKeys.CALLBACK_TIMEOUT, 20));
+        builder.catalogCachePeriod(config.getLong(ApiWrapperConfigKeys.CATALOG_CACHE_PERIOD, 300L));
 
         return builder.build();
     }

@@ -25,8 +25,8 @@ dependencies {
     implementation("com.auth0:java-jwt:4.0.0")
     implementation("com.squareup.okhttp3:okhttp:4.10.0")
 
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.0")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.1")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.1")
     testImplementation("org.assertj:assertj-core:3.23.1")
     testImplementation("org.mockito:mockito-inline:4.8.0")
 }
@@ -59,6 +59,9 @@ repositories {
     }
     maven {
         url = uri("https://oss.sonatype.org/content/repositories/snapshots/")
+        mavenContent {
+            snapshotsOnly()
+        }
     }
 }
 
