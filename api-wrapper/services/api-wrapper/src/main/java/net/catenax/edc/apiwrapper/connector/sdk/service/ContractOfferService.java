@@ -27,6 +27,7 @@ public class ContractOfferService {
     private final ObjectMapper objectMapper;
     private final OkHttpClient httpClient;
     private final ApiWrapperConfig config;
+
     // ProviderIDSUrl -> AssetId -> List<ContractOffer>
     private final Map<String, Map<String, List<ContractOffer>>> byAssetIdCache = new ConcurrentHashMap<>();
 
@@ -37,15 +38,18 @@ public class ContractOfferService {
         this.objectMapper = typeManager.getMapper();
         this.httpClient = httpClient;
         this.config = config;
-        Executors.newScheduledThreadPool(1)
-                .scheduleAtFixedRate(refreshCache(), 0L, config.getCatalogCachePeriod(), SECONDS);
+
+        if (config.isCatalogCacheEnabled()) {
+            Executors.newScheduledThreadPool(1)
+                    .scheduleAtFixedRate(refreshCache(), 0L, config.getCatalogCachePeriod(), SECONDS);
+        }
     }
 
     public Optional<ContractOffer> findContractOffer4AssetId(
             String assetId,
             String providerConnectorControlPlaneIDSUrl
     ) {
-        if (!byAssetIdCache.containsKey(providerConnectorControlPlaneIDSUrl)) {
+        if (!config.isCatalogCacheEnabled() || !byAssetIdCache.containsKey(providerConnectorControlPlaneIDSUrl)) {
            fetchCatalog(providerConnectorControlPlaneIDSUrl);
         }
 
@@ -66,6 +70,7 @@ public class ContractOfferService {
             var byId = catalog.getContractOffers().stream().collect(groupingBy(it -> it.getAsset().getId()));
             byAssetIdCache.put(providerUrl, byId);
         } catch (IOException e) {
+            byAssetIdCache.remove(providerUrl);
             monitor.severe("Cannot fetch catalog from " + providerUrl, e);
         }
     }

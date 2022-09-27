@@ -42,6 +42,7 @@ class ContractOfferServiceTest {
         when(httpClient.newCall(any())).thenReturn(call);
         when(config.getConsumerEdcDataManagementUrl()).thenReturn("http://an-url");
         when(config.getCatalogCachePeriod()).thenReturn(300L);
+        when(config.isCatalogCacheEnabled()).thenReturn(true);
         service = new ContractOfferService(mock(Monitor.class), typeManager, httpClient, config);
     }
 
@@ -57,6 +58,26 @@ class ContractOfferServiceTest {
 
         assertThat(firstOffer).containsSame(secondOffer.get());
         verify(call, times(1)).execute();
+    }
+
+    @Test
+    void shouldNotCacheCatalog() throws IOException {
+        var contractOffer = createContractOffer("offerId", "assetId");
+        var catalog = createCatalog(contractOffer);
+        var providerUrl = "http//provider/url";
+        when(config.getCatalogCachePeriod()).thenReturn(0L);
+        when(config.isCatalogCacheEnabled()).thenReturn(false);
+
+        when(call.execute()).thenReturn(successfulResponse(catalog));
+        var firstOffer = service.findContractOffer4AssetId("assetId", providerUrl);
+
+        when(call.execute()).thenReturn(successfulResponse(catalog));
+        var secondOffer = service.findContractOffer4AssetId("assetId", providerUrl);
+
+        assertThat(firstOffer).isPresent();
+        assertThat(secondOffer).isPresent();
+        assertThat(firstOffer.get()).isNotEqualTo(secondOffer.get());
+        verify(call, times(2)).execute();
     }
 
     private Catalog createCatalog(ContractOffer contractOffer) {
