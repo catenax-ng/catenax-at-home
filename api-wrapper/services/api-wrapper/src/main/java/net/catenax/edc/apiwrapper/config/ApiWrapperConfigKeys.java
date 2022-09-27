@@ -22,5 +22,8 @@ public final class ApiWrapperConfigKeys {
     @EdcSetting
     public static final String CALLBACK_TIMEOUT = "wrapper.callback.timeout";
 
+    @EdcSetting(value = "Catalog cache period in seconds. Default is 300 (5 minutes)")
+    public static final String CATALOG_CACHE_PERIOD = "wrapper.cache.catalog.period";
+
     private ApiWrapperConfigKeys() {}
 }

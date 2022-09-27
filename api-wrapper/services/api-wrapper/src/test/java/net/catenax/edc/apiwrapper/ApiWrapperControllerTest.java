@@ -25,10 +25,12 @@ import org.mockito.MockedStatic;
 import java.io.IOException;
 import java.net.URI;
 import java.time.ZonedDateTime;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import static java.util.Collections.emptyMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -126,7 +128,7 @@ class ApiWrapperControllerTest {
         UriInfo uriInfo = mock(UriInfo.class);
 
         when(contractAgreementCache.get(any())).thenReturn(null);
-        when(contractOfferService.findContractOffer4AssetId(any(), any(), any(), any())).thenReturn(Optional.empty());
+        when(contractOfferService.findContractOffer4AssetId(any(), any())).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> apiWrapperController.getWrapper(providerConnectorUrl, assetId, subUrl, uriInfo)).isInstanceOf(BadRequestException.class);
     }
@@ -139,7 +141,7 @@ class ApiWrapperControllerTest {
         UriInfo uriInfo = mock(UriInfo.class);
 
         when(contractAgreementCache.get(any())).thenReturn(null);
-        when(contractOfferService.findContractOffer4AssetId(any(), any(), any(), any())).thenReturn(Optional.empty());
+        when(contractOfferService.findContractOffer4AssetId(any(), any())).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> apiWrapperController.postWrapper(providerConnectorUrl, assetId, subUrl, "body", uriInfo)).isInstanceOf(BadRequestException.class);
     }
@@ -163,7 +165,7 @@ class ApiWrapperControllerTest {
                 .build();
 
         when(contractAgreementCache.get(any())).thenReturn(null);
-        when(contractOfferService.findContractOffer4AssetId(any(), any(), any(), any())).thenReturn(Optional.of(getDummyContractOffer()));
+        when(contractOfferService.findContractOffer4AssetId(any(), any())).thenReturn(Optional.of(getDummyContractOffer()));
         when(contractNegotiationService.getNegotiation(any(), any(), any())).thenReturn(getDummyContractNegotiationDto());
         when(httpProxyService.sendGETRequest(any(), any(), any())).thenReturn("theDataResult");
         when(endpointDataReferenceCache.get(any())).thenReturn(endpointDataReferenceTest);
@@ -195,7 +197,7 @@ class ApiWrapperControllerTest {
                 .build();
 
         when(contractAgreementCache.get(any())).thenReturn(null);
-        when(contractOfferService.findContractOffer4AssetId(any(), any(), any(), any())).thenReturn(Optional.of(getDummyContractOffer()));
+        when(contractOfferService.findContractOffer4AssetId(any(), any())).thenReturn(Optional.of(getDummyContractOffer()));
         when(contractNegotiationService.getNegotiation(any(), any(), any())).thenReturn(getDummyContractNegotiationDto());
         when(httpProxyService.sendPOSTRequest(any(), any(), any(), any(), any())).thenReturn("theDataResult");
         when(endpointDataReferenceCache.get(any())).thenReturn(endpointDataReferenceTest);
@@ -216,7 +218,7 @@ class ApiWrapperControllerTest {
         UriInfo uriInfo = mock(UriInfo.class);
 
         when(contractAgreementCache.get(any())).thenReturn(null);
-        when(contractOfferService.findContractOffer4AssetId(any(), any(), any(), any())).thenReturn(Optional.of(getDummyContractOffer()));
+        when(contractOfferService.findContractOffer4AssetId(any(), any())).thenReturn(Optional.of(getDummyContractOffer()));
         when(contractNegotiationService.getNegotiation(any(), any(), any())).thenReturn(getDummyContractNegotiationDto());
 
         assertThatThrownBy(() -> apiWrapperController.getWrapper(providerConnectorUrl, assetId, subUrl, uriInfo)).isInstanceOf(InternalServerErrorException.class);
@@ -230,7 +232,7 @@ class ApiWrapperControllerTest {
         UriInfo uriInfo = mock(UriInfo.class);
 
         when(contractAgreementCache.get(any())).thenReturn(null);
-        when(contractOfferService.findContractOffer4AssetId(any(), any(), any(), any())).thenReturn(Optional.of(getDummyContractOffer()));
+        when(contractOfferService.findContractOffer4AssetId(any(), any())).thenReturn(Optional.of(getDummyContractOffer()));
         when(contractNegotiationService.getNegotiation(any(), any(), any())).thenReturn(getDummyContractNegotiationDto());
 
         assertThatThrownBy(() -> apiWrapperController.postWrapper(providerConnectorUrl, assetId, subUrl, "body", uriInfo)).isInstanceOf(InternalServerErrorException.class);
@@ -244,7 +246,7 @@ class ApiWrapperControllerTest {
         UriInfo uriInfo = mock(UriInfo.class);
 
         when(contractAgreementCache.get(any())).thenReturn(null);
-        when(contractOfferService.findContractOffer4AssetId(any(), any(), any(), any())).thenReturn(Optional.of(getDummyContractOffer()));
+        when(contractOfferService.findContractOffer4AssetId(any(), any())).thenReturn(Optional.of(getDummyContractOffer()));
         when(contractNegotiationService.initiateNegotiation(
                 any(),
                 any(),
@@ -268,7 +270,7 @@ class ApiWrapperControllerTest {
         UriInfo uriInfo = mock(UriInfo.class);
 
         when(contractAgreementCache.get(any())).thenReturn(null);
-        when(contractOfferService.findContractOffer4AssetId(any(), any(), any(), any())).thenReturn(Optional.of(getDummyContractOffer()));
+        when(contractOfferService.findContractOffer4AssetId(any(), any())).thenReturn(Optional.of(getDummyContractOffer()));
         when(contractNegotiationService.getNegotiation(any(), any(), any())).thenReturn(getDummyDeclinedContractNegotiationDto());
 
         assertThatThrownBy(() -> apiWrapperController.postWrapper(
@@ -288,7 +290,7 @@ class ApiWrapperControllerTest {
         UriInfo uriInfo = mock(UriInfo.class);
 
         when(contractAgreementCache.get(any())).thenReturn(null);
-        when(contractOfferService.findContractOffer4AssetId(any(), any(), any(), any())).thenReturn(Optional.of(getDummyContractOffer()));
+        when(contractOfferService.findContractOffer4AssetId(any(), any())).thenReturn(Optional.of(getDummyContractOffer()));
         when(contractNegotiationService.initiateNegotiation(
                 any(),
                 any(),
@@ -312,7 +314,7 @@ class ApiWrapperControllerTest {
         UriInfo uriInfo = mock(UriInfo.class);
 
         when(contractAgreementCache.get(any())).thenReturn(null);
-        when(contractOfferService.findContractOffer4AssetId(any(), any(), any(), any())).thenReturn(Optional.of(getDummyContractOffer()));
+        when(contractOfferService.findContractOffer4AssetId(any(), any())).thenReturn(Optional.of(getDummyContractOffer()));
         when(contractNegotiationService.getNegotiation(any(), any(), any())).thenReturn(getDummyErrorContractNegotiationDto());
 
         assertThatThrownBy(() -> apiWrapperController.postWrapper(
@@ -332,7 +334,7 @@ class ApiWrapperControllerTest {
         UriInfo uriInfo = mock(UriInfo.class);
 
         when(contractAgreementCache.get(any())).thenReturn(null);
-        when(contractOfferService.findContractOffer4AssetId(any(), any(), any(), any())).thenReturn(Optional.of(getDummyContractOffer()));
+        when(contractOfferService.findContractOffer4AssetId(any(), any())).thenReturn(Optional.of(getDummyContractOffer()));
         when(contractNegotiationService.getNegotiation(any(), any(), any())).thenReturn(getDummyRequestedContractNegotiationDto());
 
         assertThatThrownBy(() -> apiWrapperController.getWrapper(
@@ -351,7 +353,7 @@ class ApiWrapperControllerTest {
         UriInfo uriInfo = mock(UriInfo.class);
 
         when(contractAgreementCache.get(any())).thenReturn(null);
-        when(contractOfferService.findContractOffer4AssetId(any(), any(), any(), any())).thenReturn(Optional.of(getDummyContractOffer()));
+        when(contractOfferService.findContractOffer4AssetId(any(), any())).thenReturn(Optional.of(getDummyContractOffer()));
         when(contractNegotiationService.getNegotiation(any(), any(), any())).thenReturn(getDummyRequestedContractNegotiationDto());
 
         assertThatThrownBy(() -> apiWrapperController.postWrapper(
