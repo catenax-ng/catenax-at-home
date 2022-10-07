@@ -52,11 +52,11 @@ public class HttpProxyService {
         return sendRequest(request);
     }
 
-    private HttpUrl getUrl(String connectorUrl, String subUrl, MultivaluedMap<String, String> parameters) {
+    protected HttpUrl getUrl(String connectorUrl, String subUrl, MultivaluedMap<String, String> parameters) {
         var url = connectorUrl;
 
         if (subUrl != null && !subUrl.isEmpty()) {
-            url = url + "/" + subUrl;
+            url = url.endsWith("/") ? url + subUrl : url + "/" + subUrl;
         }
 
         HttpUrl.Builder httpBuilder = Objects.requireNonNull(HttpUrl.parse(url)).newBuilder();
