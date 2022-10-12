@@ -22,7 +22,7 @@ dependencies {
     implementation("$edcGroup:auth-spi:$edcVersion")
 
     implementation("jakarta.ws.rs:jakarta.ws.rs-api:3.1.0")
-    implementation("com.auth0:java-jwt:4.0.0")
+    implementation("com.auth0:java-jwt:4.1.0")
     implementation("com.squareup.okhttp3:okhttp:4.10.0")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.1")
