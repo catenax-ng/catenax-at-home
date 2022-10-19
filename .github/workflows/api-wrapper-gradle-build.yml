@@ -17,4 +17,4 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           build-root-directory: api-wrapper/services/api-wrapper
-          argument: build
+          arguments: build
