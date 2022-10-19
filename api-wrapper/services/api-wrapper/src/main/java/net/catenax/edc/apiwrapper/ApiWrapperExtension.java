@@ -91,6 +91,7 @@ public class ApiWrapperExtension implements ServiceExtension {
         builder.agreementCacheEnabled(config.getBoolean(ApiWrapperConfigKeys.CACHE_AGREEMENT_ENABLED, false));
         builder.callbackTimeout(config.getInteger(ApiWrapperConfigKeys.CALLBACK_TIMEOUT, 20));
         builder.catalogCachePeriod(config.getLong(ApiWrapperConfigKeys.CATALOG_CACHE_PERIOD, 300L));
+        builder.catalogPageSize(config.getInteger(ApiWrapperConfigKeys.CATALOG_PAGE_SIZE, 100));
 
         return builder.build();
     }

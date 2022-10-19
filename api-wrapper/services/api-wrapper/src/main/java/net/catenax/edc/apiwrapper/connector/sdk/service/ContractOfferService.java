@@ -12,6 +12,7 @@ import org.eclipse.dataspaceconnector.spi.types.domain.contract.offer.ContractOf
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -23,6 +24,8 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static java.util.stream.Collectors.groupingBy;
 
 public class ContractOfferService {
+
+    private static final String CATALOG_PATH = "/catalog?limit=%d&offset=%d&providerUrl=%s";
     private final Monitor monitor;
     private final ObjectMapper objectMapper;
     private final OkHttpClient httpClient;
@@ -30,8 +33,6 @@ public class ContractOfferService {
 
     // ProviderIDSUrl -> AssetId -> List<ContractOffer>
     private final Map<String, Map<String, List<ContractOffer>>> byAssetIdCache = new ConcurrentHashMap<>();
-
-    private static final String CATALOG_PATH = "/catalog?limit=1000000000&providerUrl=";
 
     public ContractOfferService(Monitor monitor, TypeManager typeManager, OkHttpClient httpClient, ApiWrapperConfig config) {
         this.monitor = monitor;
@@ -50,7 +51,7 @@ public class ContractOfferService {
             String providerConnectorControlPlaneIDSUrl
     ) {
         if (!config.isCatalogCacheEnabled() || !byAssetIdCache.containsKey(providerConnectorControlPlaneIDSUrl)) {
-           fetchCatalog(providerConnectorControlPlaneIDSUrl);
+            fetchCatalog(providerConnectorControlPlaneIDSUrl);
         }
 
         return Optional.of(providerConnectorControlPlaneIDSUrl)
@@ -65,6 +66,8 @@ public class ContractOfferService {
     }
 
     private void fetchCatalog(String providerUrl) {
+        monitor.info("Fetching catalog from " + providerUrl);
+
         try {
             var catalog = getCatalogFromProvider(providerUrl);
             var byId = catalog.getContractOffers().stream().collect(groupingBy(it -> it.getAsset().getId()));
@@ -76,23 +79,52 @@ public class ContractOfferService {
     }
 
     private Catalog getCatalogFromProvider(String providerConnectorControlPlaneIDSUrl) throws IOException {
-        var url = config.getConsumerEdcDataManagementUrl() + CATALOG_PATH + providerConnectorControlPlaneIDSUrl;
-        var request = new Request.Builder()
-                .url(url);
-        config.getHeaders().forEach(request::addHeader);
+        var limit = config.getCatalogPageSize();
+        var offset = 0;
+        var reachedLastPage = false;
 
-        try (var response = httpClient.newCall(request.build()).execute()) {
-            var body = response.body();
+        String catalogId;
+        var contractOffers = new ArrayList<ContractOffer>();
 
-            if (!response.isSuccessful() || body == null) {
-                throw new InternalServerErrorException(format("Control plane responded with: %s %s", response.code(), body != null ? body.string() : ""));
+        do {
+            var url = config.getConsumerEdcDataManagementUrl() + String.format(
+                    CATALOG_PATH,
+                    limit,
+                    offset,
+                    providerConnectorControlPlaneIDSUrl);
+            var request = new Request.Builder().url(url);
+
+            config.getHeaders().forEach(request::addHeader);
+
+            try (var response = httpClient.newCall(request.build()).execute()) {
+                var body = response.body();
+
+                if (!response.isSuccessful() || body == null) {
+                    throw new InternalServerErrorException(format("Control plane responded with: %s %s", response.code(), body != null ? body.string() : ""));
+                }
+
+                var catalogPage = objectMapper.readValue(body.string(), Catalog.class);
+                if (catalogPage.getContractOffers().size() < limit) {
+                    reachedLastPage = true;
+                }
+
+                catalogId = catalogPage.getId();
+                contractOffers.addAll(catalogPage.getContractOffers());
+
+            } catch (Exception e) {
+                monitor.severe(format("Error in calling the control plane at %s", url), e);
+                throw e;
             }
 
-            return objectMapper.readValue(body.string(), Catalog.class);
-        } catch (Exception e) {
-            monitor.severe(format("Error in calling the control plane at %s", url), e);
-            throw e;
-        }
+            offset += limit;
+        } while (!reachedLastPage);
+
+
+        monitor.info(String.format("Got %d contract-offers from %s", contractOffers.size(), providerConnectorControlPlaneIDSUrl));
+        return Catalog.Builder.newInstance()
+                .id(catalogId)
+                .contractOffers(contractOffers)
+                .build();
     }
 
 }

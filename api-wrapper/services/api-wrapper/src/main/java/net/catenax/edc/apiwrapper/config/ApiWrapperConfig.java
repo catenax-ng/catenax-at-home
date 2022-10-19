@@ -12,6 +12,7 @@ public class ApiWrapperConfig {
     private final Boolean agreementCacheEnabled;
     private final int callbackTimeout;
     private final long catalogCachePeriod;
+    private final int catalogPageSize;
 
     public ApiWrapperConfig(
             String consumerEdcDataManagementUrl,
@@ -20,7 +21,9 @@ public class ApiWrapperConfig {
             Map<String, String> basicAuthUsers,
             Boolean agreementCacheEnabled,
             int callbackTimeout,
-            long catalogCachePeriod) {
+            long catalogCachePeriod,
+            int catalogPageSize
+    ) {
         this.consumerEdcDataManagementUrl = consumerEdcDataManagementUrl;
         this.consumerEdcApiKeyName = consumerEdcApiKeyName;
         this.consumerEdcApiKeyValue = consumerEdcApiKeyValue;
@@ -28,6 +31,7 @@ public class ApiWrapperConfig {
         this.agreementCacheEnabled = agreementCacheEnabled;
         this.callbackTimeout = callbackTimeout;
         this.catalogCachePeriod = catalogCachePeriod;
+        this.catalogPageSize = catalogPageSize;
     }
 
     public String getConsumerEdcDataManagementUrl() {
@@ -64,6 +68,10 @@ public class ApiWrapperConfig {
         return catalogCachePeriod;
     }
 
+    public int getCatalogPageSize() {
+        return catalogPageSize;
+    }
+
     public boolean isCatalogCacheEnabled() {
         return getCatalogCachePeriod() != 0L;
     }
@@ -75,7 +83,8 @@ public class ApiWrapperConfig {
         private Map<String, String> basicAuthUsers = Collections.emptyMap();
         private Boolean agreementCacheEnabled = false;
         private int callbackTimeout = 20;
-        private long catalogCachePeriod;
+        private long catalogCachePeriod = 300;
+        private int catalogPageSize = 100;
 
         private Builder() {
         }
@@ -119,6 +128,15 @@ public class ApiWrapperConfig {
             return this;
         }
 
+        public Builder catalogPageSize(int catalogPagingSize) {
+            if (catalogPagingSize == 0) {
+                throw new IllegalArgumentException(ApiWrapperConfigKeys.CATALOG_PAGE_SIZE + " is not allowed to be 0");
+            }
+
+            this.catalogPageSize = catalogPagingSize;
+            return this;
+        }
+
         public ApiWrapperConfig build() {
             return new ApiWrapperConfig(
                     consumerEdcDataManagementUrl,
@@ -127,7 +145,8 @@ public class ApiWrapperConfig {
                     basicAuthUsers,
                     agreementCacheEnabled,
                     callbackTimeout,
-                    catalogCachePeriod
+                    catalogCachePeriod,
+                    catalogPageSize
             );
         }
     }
