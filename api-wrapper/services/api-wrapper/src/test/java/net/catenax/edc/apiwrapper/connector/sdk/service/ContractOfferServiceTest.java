@@ -43,6 +43,7 @@ class ContractOfferServiceTest {
         when(config.getConsumerEdcDataManagementUrl()).thenReturn("http://an-url");
         when(config.getCatalogCachePeriod()).thenReturn(300L);
         when(config.isCatalogCacheEnabled()).thenReturn(true);
+        when(config.getCatalogPageSize()).thenReturn(100);
         service = new ContractOfferService(mock(Monitor.class), typeManager, httpClient, config);
     }
 

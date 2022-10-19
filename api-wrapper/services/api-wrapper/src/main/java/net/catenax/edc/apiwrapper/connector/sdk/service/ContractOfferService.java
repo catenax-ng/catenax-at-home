@@ -25,12 +25,12 @@ import static java.util.stream.Collectors.groupingBy;
 
 public class ContractOfferService {
 
-    private static final String CATALOG_PATH = "/catalog?limit=%d&providerUrl=%s&offset=";
+    private static final String CATALOG_PATH = "/catalog?limit=%d&offset=%d&providerUrl=%s";
     private final Monitor monitor;
     private final ObjectMapper objectMapper;
     private final OkHttpClient httpClient;
     private final ApiWrapperConfig config;
-    private static final int limit = 100;
+
     // ProviderIDSUrl -> AssetId -> List<ContractOffer>
     private final Map<String, Map<String, List<ContractOffer>>> byAssetIdCache = new ConcurrentHashMap<>();
 
@@ -51,7 +51,7 @@ public class ContractOfferService {
             String providerConnectorControlPlaneIDSUrl
     ) {
         if (!config.isCatalogCacheEnabled() || !byAssetIdCache.containsKey(providerConnectorControlPlaneIDSUrl)) {
-           fetchCatalog(providerConnectorControlPlaneIDSUrl);
+            fetchCatalog(providerConnectorControlPlaneIDSUrl);
         }
 
         return Optional.of(providerConnectorControlPlaneIDSUrl)
@@ -66,6 +66,8 @@ public class ContractOfferService {
     }
 
     private void fetchCatalog(String providerUrl) {
+        monitor.info("Fetching catalog from " + providerUrl);
+
         try {
             var catalog = getCatalogFromProvider(providerUrl);
             var byId = catalog.getContractOffers().stream().collect(groupingBy(it -> it.getAsset().getId()));
@@ -77,33 +79,52 @@ public class ContractOfferService {
     }
 
     private Catalog getCatalogFromProvider(String providerConnectorControlPlaneIDSUrl) throws IOException {
+        var limit = config.getCatalogPageSize();
         var offset = 0;
         var reachedLastPage = false;
-        var catalog = Catalog.Builder.newInstance().build();
-        var currentCatalog = String.format(CATALOG_PATH,limit,providerConnectorControlPlaneIDSUrl);
+
+        String catalogId;
+        var contractOffers = new ArrayList<ContractOffer>();
+
         do {
-            var url = config.getConsumerEdcDataManagementUrl() + currentCatalog + offset;
-            var request = new Request.Builder()
-                    .url(url);
+            var url = config.getConsumerEdcDataManagementUrl() + String.format(
+                    CATALOG_PATH,
+                    limit,
+                    offset,
+                    providerConnectorControlPlaneIDSUrl);
+            var request = new Request.Builder().url(url);
+
             config.getHeaders().forEach(request::addHeader);
+
             try (var response = httpClient.newCall(request.build()).execute()) {
                 var body = response.body();
+
                 if (!response.isSuccessful() || body == null) {
                     throw new InternalServerErrorException(format("Control plane responded with: %s %s", response.code(), body != null ? body.string() : ""));
                 }
+
                 var catalogPage = objectMapper.readValue(body.string(), Catalog.class);
-                if (catalogPage.getContractOffers().size()
-                        < limit) {
+                if (catalogPage.getContractOffers().size() < limit) {
                     reachedLastPage = true;
                 }
-                catalog.getContractOffers().addAll(new ArrayList<>(catalogPage.getContractOffers()));
+
+                catalogId = catalogPage.getId();
+                contractOffers.addAll(catalogPage.getContractOffers());
+
             } catch (Exception e) {
                 monitor.severe(format("Error in calling the control plane at %s", url), e);
                 throw e;
             }
-            offset+=limit;
-        } while (reachedLastPage);
-        return catalog;
+
+            offset += limit;
+        } while (!reachedLastPage);
+
+
+        monitor.info(String.format("Got %d contract-offers from %s", contractOffers.size(), providerConnectorControlPlaneIDSUrl));
+        return Catalog.Builder.newInstance()
+                .id(catalogId)
+                .contractOffers(contractOffers)
+                .build();
     }
 
 }

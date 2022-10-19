@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 class ApiWrapperConfigTest {
@@ -17,23 +18,25 @@ class ApiWrapperConfigTest {
         map.put("userId", "userPwd");
 
         ApiWrapperConfig config = ApiWrapperConfig.Builder.newInstance()
-                .consumerEdcDataManagementUrl("urlConsumer")
-                .consumerEdcApiKeyValue("apiValue")
-                .basicAuthUsers(map)
                 .agreementCacheEnabled(true)
+                .basicAuthUsers(map)
                 .callbackTimeout(10)
                 .catalogCachePeriod(300L)
+                .catalogPageSize(50)
+                .consumerEdcApiKeyValue("apiValue")
+                .consumerEdcDataManagementUrl("urlConsumer")
                 .build();
 
         assertAll(
-                () -> assertThat(config.getConsumerEdcDataManagementUrl()).isEqualTo("urlConsumer"),
-                () -> assertThat(config.getConsumerEdcApiKeyValue()).isEqualTo("apiValue"),
-                () -> assertThat(config.getBasicAuthUsers()).containsEntry("userId", "userPwd"),
-                () -> assertThat(config.getConsumerEdcApiKeyName()).isEqualTo("X-Api-Key"),
                 () -> assertThat(config.isAgreementCacheEnabled()).isTrue(),
-                () -> assertThat(config.getCatalogCachePeriod()).isEqualTo(300L),
+                () -> assertThat(config.getBasicAuthUsers()).containsEntry("userId", "userPwd"),
+                () -> assertThat(config.getCallbackTimeout()).isEqualTo(10),
                 () -> assertThat(config.isCatalogCacheEnabled()).isTrue(),
-                () -> assertThat(config.getCallbackTimeout()).isEqualTo(10)
+                () -> assertThat(config.getCatalogCachePeriod()).isEqualTo(300L),
+                () -> assertThat(config.getCatalogPageSize()).isEqualTo(50),
+                () -> assertThat(config.getConsumerEdcApiKeyName()).isEqualTo("X-Api-Key"),
+                () -> assertThat(config.getConsumerEdcApiKeyValue()).isEqualTo("apiValue"),
+                () -> assertThat(config.getConsumerEdcDataManagementUrl()).isEqualTo("urlConsumer")
         );
     }
 
@@ -46,6 +49,14 @@ class ApiWrapperConfigTest {
         assertAll(
                 () -> assertThat(config.getCatalogCachePeriod()).isZero(),
                 () -> assertThat(config.isCatalogCacheEnabled()).isFalse()
+        );
+    }
+
+    @Test
+    void exceptionOnCatalogPageSizeBeenZero() {
+        var config = ApiWrapperConfig.Builder.newInstance();
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() ->
+            config.catalogPageSize(0)
         );
     }
 }
