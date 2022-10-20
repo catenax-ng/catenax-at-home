@@ -1,7 +1,7 @@
 name: API-Wrapper - Run new container image for release
 on:
   release:
-    types: [publish]
+    types: [released]
 
 env:
   REGISTRY: ghcr.io
