@@ -2,7 +2,7 @@ plugins {
     `java-library`
     id("application")
     id("com.github.johnrengelman.shadow") version "7.1.2"
-    id("io.swagger.core.v3.swagger-gradle-plugin") version "2.2.2"
+    id("io.swagger.core.v3.swagger-gradle-plugin") version "2.2.4"
 }
 
 val javaVersion = 11
@@ -22,13 +22,13 @@ dependencies {
     implementation("$edcGroup:auth-spi:$edcVersion")
 
     implementation("jakarta.ws.rs:jakarta.ws.rs-api:3.1.0")
-    implementation("com.auth0:java-jwt:4.0.0")
+    implementation("com.auth0:java-jwt:4.1.0")
     implementation("com.squareup.okhttp3:okhttp:4.10.0")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.1")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.1")
     testImplementation("org.assertj:assertj-core:3.23.1")
-    testImplementation("org.mockito:mockito-inline:4.8.0")
+    testImplementation("org.mockito:mockito-inline:4.8.1")
 }
 
 java {
@@ -73,7 +73,7 @@ buildscript {
 
 pluginManager.withPlugin("io.swagger.core.v3.swagger-gradle-plugin") {
     dependencies {
-        implementation("io.swagger.core.v3:swagger-jaxrs2-jakarta:2.2.2")
+        implementation("io.swagger.core.v3:swagger-jaxrs2-jakarta:2.2.4")
         implementation("jakarta.ws.rs:jakarta.ws.rs-api:3.0.0")
     }
 
