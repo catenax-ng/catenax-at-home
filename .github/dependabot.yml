@@ -5,25 +5,7 @@ updates:
     schedule:
       interval: "daily"
     open-pull-requests-limit: 20
-  - package-ecosystem: gradle
-    directory: "/api-wrapper/services/control-plane"
+  - package-ecosystem: "github-actions"
+    directory: "/"
     schedule:
-      interval: "daily"
-    open-pull-requests-limit: 20
-  - package-ecosystem: maven
-    directory: "/api-wrapper/services/semantics"
-    schedule:
-      interval: daily
-    open-pull-requests-limit: 20
-  - package-ecosystem: "gradle"
-    directory: "/api-wrapper/services/backend-data-service"
-    schedule:
-      interval: "daily"
-    open-pull-requests-limit: 20
-  - package-ecosystem: gradle
-    directory: "/api-wrapper/services/data-plane"
-    schedule:
-      interval: "daily"
-    open-pull-requests-limit: 20
-
-
+      interval: "weekly"
