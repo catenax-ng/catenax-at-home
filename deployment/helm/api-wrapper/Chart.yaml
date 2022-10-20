@@ -4,6 +4,6 @@ name: api-wrapper
 description: EDC based API-Wrapper
 home: https://github.com/catenax-ng/catenax-at-home/deployment/helm/api-wrapper
 type: application
-appVersion: "0.0.1"
-version: 0.0.1
+appVersion: "0.1.0"
+version: 0.1.0
 maintainers: []
