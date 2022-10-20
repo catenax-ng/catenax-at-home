@@ -5,7 +5,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: consumer-api-wrapper
+  IMAGE_NAME: catenax-ng/catenax-at-home/consumer-api-wrapper
 
 jobs:
   release:
