@@ -1,14 +1,14 @@
 name: API-Wrapper - Run gradle build on PRs
-on: pull_request
-#  release:
-#    types: [publish]
+on:
+  release:
+    types: [publish]
 
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: consumer-api-wrapper
 
 jobs:
-  build-and-publish:
+  release:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -37,13 +37,14 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,value=0.1.0-SNAPSHOT
+            type=raw,value=latest
+            type=pep440,pattern={{version}}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
           context: api-wrapper/services/api-wrapper
-          push: false
+          push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
