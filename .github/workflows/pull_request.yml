@@ -1,4 +1,4 @@
-name: API-Wrapper - Run gradle build on PRs
+name: API-Wrapper - Build PRs
 on: pull_request
 
 env:

@@ -1,4 +1,4 @@
-name: API-Wrapper - Run gradle build on PRs
+name: API-Wrapper - Run new container image for release
 on:
   release:
     types: [publish]
