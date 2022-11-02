@@ -73,7 +73,7 @@ buildscript {
 
 pluginManager.withPlugin("io.swagger.core.v3.swagger-gradle-plugin") {
     dependencies {
-        implementation("io.swagger.core.v3:swagger-jaxrs2-jakarta:2.2.4")
+        implementation("io.swagger.core.v3:swagger-jaxrs2-jakarta:2.2.6")
         implementation("jakarta.ws.rs:jakarta.ws.rs-api:3.0.0")
     }
 
