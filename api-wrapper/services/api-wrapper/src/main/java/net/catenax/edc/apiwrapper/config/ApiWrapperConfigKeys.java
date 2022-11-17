@@ -1,6 +1,6 @@
 package net.catenax.edc.apiwrapper.config;
 
-import org.eclipse.dataspaceconnector.spi.EdcSetting;
+import org.eclipse.dataspaceconnector.runtime.metamodel.annotation.EdcSetting;
 
 public final class ApiWrapperConfigKeys {
 
