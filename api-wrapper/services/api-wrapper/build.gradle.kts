@@ -25,7 +25,7 @@ dependencies {
     implementation("com.auth0:java-jwt:4.1.0")
     implementation("com.squareup.okhttp3:okhttp:4.10.0")
 
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.1")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.1")
     testImplementation("org.assertj:assertj-core:3.23.1")
     testImplementation("org.mockito:mockito-inline:4.8.1")
