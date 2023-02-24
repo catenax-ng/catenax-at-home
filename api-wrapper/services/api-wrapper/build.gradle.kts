@@ -74,7 +74,7 @@ buildscript {
 pluginManager.withPlugin("io.swagger.core.v3.swagger-gradle-plugin") {
     dependencies {
         implementation("io.swagger.core.v3:swagger-jaxrs2-jakarta:2.2.4")
-        implementation("jakarta.ws.rs:jakarta.ws.rs-api:3.0.0")
+        implementation("jakarta.ws.rs:jakarta.ws.rs-api:3.1.0")
     }
 
     tasks.withType<io.swagger.v3.plugins.gradle.tasks.ResolveTask> {
