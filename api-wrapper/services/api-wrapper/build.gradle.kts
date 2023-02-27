@@ -1,7 +1,7 @@
 plugins {
     `java-library`
     id("application")
-    id("com.github.johnrengelman.shadow") version "7.1.2"
+    id("com.github.johnrengelman.shadow") version "8.1.0"
     id("io.swagger.core.v3.swagger-gradle-plugin") version "2.2.4"
 }
 
