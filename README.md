@@ -1,4 +1,4 @@
-# :warning: **Catena-X@Home and the API wrapper it contains are deprecated!!**
+# :warning: **Catena-X@Home and the API-Wrapper are deprecated!!**
 
 The API-Wrapper is replaced with an extension directly within the Product-EDC which handels similar functionalities: [control-plane-adapter](https://github.com/catenax-ng/product-edc/tree/develop/edc-extensions/control-plane-adapter)
 
